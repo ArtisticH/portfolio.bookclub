@@ -1,0 +1,128 @@
+:root {
+  --font-Merriweather: "Merriweather", serif;
+  --font-notoKR:"Noto Sans KR", sans-serif;
+  --font-roboto: "Roboto", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-oswald: "Oswald", sans-serif;
+  --font-raleway: "Raleway", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-schoolbell: "Schoolbell", cursive;
+  --font-rubik: "Rubik", sans-serif;
+  --font-rubikScribble: "Rubik Scribble", system-ui;
+  --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
+  --font-rubik-bubbles: "Rubik Bubbles", system-ui;
+  --font-rock: "Rock Salt", cursive;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#fun {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.fun-left {
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  border-right: 0.5px solid black;
+  background-color: #ab181b;
+  color: white;
+}
+
+.fun-left__main {
+  height: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding-left: 10px;
+}
+
+.fun-left__title {
+  font-family: var(--font-montserrat);
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -2px;
+  margin-bottom: 5px;
+}
+
+.fun-left__sub {
+  font-family: var(--font-montserrat);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -1px;
+}
+
+.back__arrow {
+  width: 150px;
+  cursor: pointer;
+  margin-top: 40px;
+}
+
+.back__arrow__img {
+  display: block;
+  width: 100%;
+}
+
+.fun-right {
+
+}
+
+.fun-right__project {
+  height: 25%;
+  box-sizing: border-box;
+  border: 0.5px solid black;
+}
+
+.fun-right__blank {
+  padding: 20px;
+}
+
+.fun-right__blank__text {
+  font-family: var(--font-oswald);
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: -3px;
+}  
+
+
+@media all and (min-width: 650px) {
+  #fun {
+    grid-template-columns: 3fr 7fr;
+  }
+
+  .fun-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+  }  
+
+  .fun-right__project {
+    height: auto;
+  }  
+
+  .fun-right__blank {
+    background-color: #ab181b;
+    color: white;
+  }  
+}
+
+@media all and (min-width: 900px) {
+  .fun-right__blank__text {
+    font-size: 4rem;
+  }    
+}
+
+@media all and (min-width: 1300px) {
+  .fun-right__blank__text {
+    font-size: 5rem;
+  }      
+}

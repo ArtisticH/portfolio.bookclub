@@ -1,0 +1,140 @@
+:root {
+  --font-Merriweather: "Merriweather", serif;
+  --font-notoKR:"Noto Sans KR", sans-serif;
+  --font-roboto: "Roboto", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-oswald: "Oswald", sans-serif;
+  --font-raleway: "Raleway", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-schoolbell: "Schoolbell", cursive;
+  --font-rubik: "Rubik", sans-serif;
+  --font-rubikScribble: "Rubik Scribble", system-ui;
+  --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
+  --font-rubik-bubbles: "Rubik Bubbles", system-ui;
+  --font-rock: "Rock Salt", cursive;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#members {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.members-left {
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  border-right: 0.5px solid black;
+  background-color: #f1ca0b;
+  color: black;
+}
+
+.members-left__main {
+  height: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding-left: 10px;
+}
+
+.members-left__title {
+  font-family: var(--font-montserrat);
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: -2px;
+  margin-bottom: 5px;
+}
+
+.members-left__sub {
+  font-family: var(--font-montserrat);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -1px;
+}
+
+.back__arrow {
+  width: 150px;
+  cursor: pointer;
+  margin-top: 40px;
+}
+
+.back__arrow__img {
+  display: block;
+  width: 100%;
+}
+
+.members-right {
+  /* padding: 20px; */
+}
+
+.members__member {
+  height: 25%;
+  box-sizing: border-box;
+  border: 0.5px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.member__hangul {
+  font-family: var(--font-notoKR);
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+
+.member__alphabet {
+  font-family: var(--font-poppins);
+  font-size: 1.5rem;
+  font-weight: 100;
+  font-style: italic;
+  letter-spacing: -1px;
+  margin-left: -5px;
+  margin-bottom: 5px;
+}
+
+@media all and (min-width: 650px) {
+  #members {
+    grid-template-columns: 3fr 7fr;
+  }
+
+  .members-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  
+  .members__member {
+    height: auto;
+  }
+  
+  .member__hangul {
+    font-size: 4rem;
+  }
+  
+  .member__alphabet {
+    font-size: 2rem;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    margin-left: -10px;
+  }  
+}
+
+@media all and (min-width: 1000px) {
+  .member__hangul {
+    font-size: 5rem;
+  }
+  
+  .member__alphabet {
+    font-size: 2.5rem;
+    letter-spacing: -2px;
+    margin-bottom: 15px;
+  }  
+}

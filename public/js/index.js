@@ -2,7 +2,7 @@ class Index {
   constructor() {
     this.$body = document.querySelector('body');
     this.$main = document.getElementById('main');
-    this.start = this.$body.offsetTop + 100;
+    this.start = this.$body.offsetTop + 200;
     this.end = this.$body.offsetHeight - document.documentElement.clientHeight;
     this.step = (this.end - this.start) / 4;
 

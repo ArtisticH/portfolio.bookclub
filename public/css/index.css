@@ -141,7 +141,8 @@ body::-webkit-scrollbar {
   transform: translateY(-50%) rotate(-45deg);
 }
 
-.login {
+.login,
+.signup {
   height: 45%;
   display: flex;
   flex-direction: column;
@@ -149,16 +150,25 @@ body::-webkit-scrollbar {
   align-items: center;
 }
 
+.signup {
+  height: 55%;
+}
+
 .login__id,
 .login__pwd,
-.login__btn {
+.login__btn,
+.signup__id,
+.signup__nickname,
+.signup__pwd,
+.signup__btn {
   border: 1px solid black;
   margin-bottom: 10px;
   cursor: pointer;
   width: 100%;
 }
 
-.login__input {
+.login__input,
+.signup__input {
   border: none;
   width: 100%;
   box-sizing: border-box;
@@ -167,7 +177,8 @@ body::-webkit-scrollbar {
   padding: 5px;
 }
 
-.login__input__button {
+.login__input__button,
+.signup__input__button {
   width: 100%;
   font-size: 1.3rem;
   font-family: var(--font-montserrat);
@@ -270,13 +281,28 @@ body::-webkit-scrollbar {
   .login__pwd,
   .login__btn,
   .kakao,
-  .naver {
-    max-width: 250px;
-    margin-bottom: 10px;
+  .naver,
+  .signup__id,
+  .signup__nickname,
+  .signup__pwd,
+  .signup__btn {
+    max-width: 300px;
+    margin-bottom: 15px;
+  }
+
+  .login__input,
+  .signup__input {
+    padding: 10px;
+  }
+
+  .login__input__button,
+  .signup__input__button {
+    padding: 10px;
   }
 
   .kakao,
   .naver {
-    margin: 0 auto 10px auto;
+    padding: 10px;
+    margin: 0 auto 15px auto;
   }
 }

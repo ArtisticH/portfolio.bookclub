@@ -12,8 +12,9 @@ class Index {
     this.$mainTitle1 = document.querySelector('.main__top-right__title1');
     this.$mainTitle2 = document.querySelector('.main__top-right__title2');
     this.$mainBottomLeft = document.querySelector('.main__bottom-left');
-
-    this.colorIndex = null;
+    this.$cancelBtns = document.querySelectorAll('.cancel');
+    this.$formTarget = null;
+    this.colorIndex = 0;
 
     this.topright = ["linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #edd649 100%)", 
@@ -25,8 +26,18 @@ class Index {
     this.scroll = this.scroll.bind(this);
     this.pointerenter = this.pointerenter.bind(this);
     this.pointerleave = this.pointerleave.bind(this);
+    this.cancelBtn = this.cancelBtn.bind(this);
+    this.showForm = this.showForm.bind(this);
+
     this.$mainClickLogin.addEventListener('pointerenter', this.pointerenter);
+    this.$mainClickLogin.addEventListener('pointerleave', this.pointerleave);
     this.$mainClickSignup.addEventListener('pointerenter', this.pointerenter);
+    this.$mainClickSignup.addEventListener('pointerleave', this.pointerleave);
+
+    this.$mainClickLogin.addEventListener('click', this.showForm);
+    this.$cancelBtns.forEach(btn => {
+      btn.addEventListener('click', this.cancelBtn);
+    });
   }
 
   scroll() {
@@ -63,6 +74,16 @@ class Index {
 
   pointerleave(e) {
     e.currentTarget.style.color = `${this.bottomleft[this.colorIndex]}`;
+  }
+
+  showForm(e) {
+    this.$formTarget = document.getElementById(`${e.currentTarget.dataset.type}`);
+    this.$formTarget.classList.add('show');
+  }
+
+  cancelBtn(e) {
+    this.$formTarget = e.currentTarget.closest('.form-target');
+    this.$formTarget.classList.remove('show');
   }
 }
 

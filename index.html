@@ -20,8 +20,8 @@
       <div class="main__top-left">
         <div class="main__top-left__title">Book Club</div>
         <div class="main__top-left__click">
-          <div class="main__top-left__click__login">LOG IN</div>
-          <div class="main__top-left__click__signup">SIGN UP</div>
+          <div class="main__top-left__click__login" data-type="login">LOG IN</div>
+          <div class="main__top-left__click__signup" data-type="signup">SIGN UP</div>
         </div>
       </div>
       <div class="main__top-right">
@@ -33,15 +33,28 @@
           <img class="main__top-right__arrow__img" src="/public/img/main/arrow.png" alt="arrow">
         </div>
       </div>
-      <!-- <div id="login">
+      <div id="login" class="form-target">
         <div id="cancel">
           <div class="cancel">
             <div class="cancel__left"></div>
             <div class="cancel__right"></div>
           </div>
         </div>
+        <form class="login">
+          <div class="login__id">
+            <input class="login__input" type="text" placeholder="e-mail">
+          </div>
+          <div class="login__pwd">
+            <input class="login__input" type="password" placeholder="password">
+          </div>
+          <div class="login__btn">
+            <input class="login__input__button" type="button" value="LOG IN">
+          </div>
+        </form>
+        <div class="kakao">KAKAO</div>
+        <div class="naver">NAVER</div>  
       </div>  
-      <div id="signup"></div>   -->
+      <!-- <div id="signup"></div>   -->
     </div>
     <div class="main__bottom">
       <div class="main__bottom-left"></div>

@@ -30,11 +30,10 @@ class Index {
     this.showForm = this.showForm.bind(this);
 
     this.$mainClickLogin.addEventListener('pointerenter', this.pointerenter);
-    this.$mainClickLogin.addEventListener('pointerleave', this.pointerleave);
     this.$mainClickSignup.addEventListener('pointerenter', this.pointerenter);
-    this.$mainClickSignup.addEventListener('pointerleave', this.pointerleave);
 
     this.$mainClickLogin.addEventListener('click', this.showForm);
+    this.$mainClickSignup.addEventListener('click', this.showForm);
     this.$cancelBtns.forEach(btn => {
       btn.addEventListener('click', this.cancelBtn);
     });

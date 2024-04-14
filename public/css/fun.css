@@ -21,6 +21,10 @@ body {
   box-sizing: border-box;
 }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
 #fun {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -71,58 +75,88 @@ body {
 }
 
 .fun-right {
-
-}
-
-.fun-right__project {
-  height: 25%;
-  box-sizing: border-box;
-  border: 0.5px solid black;
-}
-
-.fun-right__blank {
   padding: 20px;
 }
 
-.fun-right__blank__text {
-  font-family: var(--font-oswald);
-  font-size: 3rem;
-  font-weight: 400;
-  letter-spacing: -3px;
-}  
+.fun-right__project {
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  padding: 0 0 5px 5px;
+  border: 1px solid black;
+  cursor: pointer;
+  height: 75px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  transition: height 0.2s ease-out;
+}
 
+.fun-right__project:hover {
+  /* 75 * 5 = 375px, 15 * 5 = 75px */
+  height: calc(100% - 375px - 75px);
+}
+
+.fun-right__project__play {
+  font-family: var(--font-montserrat);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #f1c909;
+}
+
+.fun-right__project__text {
+  font-family: var(--font-notoKR);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #ab181b;
+}
 
 @media all and (min-width: 650px) {
   #fun {
     grid-template-columns: 3fr 7fr;
   }
-
-  .fun-right {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 20px;
-    padding: 20px;
-  }  
-
-  .fun-right__project {
-    height: auto;
-  }  
-
-  .fun-right__blank {
-    background-color: #ab181b;
-    color: white;
-  }  
 }
 
 @media all and (min-width: 900px) {
-  .fun-right__blank__text {
-    font-size: 4rem;
-  }    
+  .fun-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .fun-right__project {
+    margin-bottom: 0px;
+    height: 100%;
+    padding: 0 10px 10px 10px;
+  }
+
+  .fun-right__project:hover {
+    height: auto;
+    background-color: black;
+  }
+
+  .fun-right__project__play {
+    font-size: 1.4rem;
+    letter-spacing: -1px;
+  }
+  
+  .fun-right__project__text {
+    font-size: 1.7rem;
+    letter-spacing: -1px;
+  }  
 }
 
 @media all and (min-width: 1300px) {
-  .fun-right__blank__text {
-    font-size: 5rem;
-  }      
+  .fun-right__project__play {
+    font-size: 1.6rem;
+    letter-spacing: -1px;
+  }
+  
+  .fun-right__project__text {
+    font-size: 1.9rem;
+    letter-spacing: -1px;
+  }  
 }
+
+

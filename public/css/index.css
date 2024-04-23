@@ -23,6 +23,11 @@ body {
   height: 1000vh;
 }
 
+a {
+  text-decoration: none;
+  color: black;
+}
+
 body::-webkit-scrollbar {
   display: none;
 }

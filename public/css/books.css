@@ -25,6 +25,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+.books-right::-webkit-scrollbar {
+  display: none;
+}
+
 #books {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -63,7 +67,8 @@ body::-webkit-scrollbar {
   letter-spacing: -1px;
 }
 
-.back__arrow {
+a.back__arrow {
+  display: block;
   width: 150px;
   cursor: pointer;
   margin-top: 40px;
@@ -76,6 +81,7 @@ body::-webkit-scrollbar {
 
 .books-right {
   padding: 20px;
+  overflow: scroll;
 }
 
 .books-right__book {
@@ -106,10 +112,6 @@ body::-webkit-scrollbar {
   background-color: #c8e5f4;
 }
 
-.book-deco {
-
-}
-
 .book-deco__text {
   font-family: var(--font-oswald);
   font-size: 2rem;
@@ -130,10 +132,8 @@ body::-webkit-scrollbar {
   }
 
   .books-right {
-    padding: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
     gap: 20px;
   }  
 

@@ -24,7 +24,7 @@ class Index {
     "linear-gradient(to top, #fff1eb 0%, #edd649 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #f3861a 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #de3d1f 100%)"];
-    this.title = ["Books.", "Members.", "Meetings.", "Fun."];
+    this.title = ["Books", "Members", "Meetings", "Fun"];
     this.bottomleft = ["#0c3aa5", "#f1ca0b", "#f06312", "#ab181b"];
 
     this.scroll = this.scroll.bind(this);
@@ -71,8 +71,10 @@ class Index {
     this.$mainClickLogin.style.color = `${this.bottomleft[index]}`;
     this.$mainClickSignup.style.backgroundColor = `${this.bottomleft[index]}`;
     this.$mainClickSignup.style.color = `${this.bottomleft[index]}`;
-    this.$mainTitle1.textContent = `${this.title[index]}`;
-    this.$mainTitle2.textContent = `${this.title[index]}`;
+    this.$mainTitle1.textContent = `${this.title[index]}.`;
+    this.$mainTitle2.textContent = `${this.title[index]}.`;
+    this.$mainTitle1.href = `/${this.title[index][0].toLowerCase() + this.title[index].slice(1)}`;
+    this.$mainTitle2.href = `/${this.title[index][0].toLowerCase() + this.title[index].slice(1)}`;
     this.$mainBottomLeft.style.backgroundColor = `${this.bottomleft[index]}`;
   }
 

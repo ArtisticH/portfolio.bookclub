@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOK CLUB</title>
+  <link rel="stylesheet" href="/public/css/book.css">
+  <script defer src="/public/js/book.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rock+Salt&family=Rubik+Bubbles&family=Rubik+Doodle+Shadow&family=Rubik+Scribble&family=Rubik:ital,wght@0,300..900;1,300..900&family=Schoolbell&display=swap" rel="stylesheet">
+  <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon2" sizes="180x180" href="/img/favicon/apple-icon.png">
+  <meta name="description" content="Seo Hanna Portfolio">
+</head>
+<body>
+  <section id="book">
+    <div class="book-left">
+      <div class="book-btn">Book</div>
+      <div class="book-href" hidden>
+        <a href="/books" class="book__back">
+          <img class="book__back__arrow" src="/public/img/main/back-arrow-white.png" alt="back-arrow-white">
+        </a>
+        <a href="/" class="book__home">Home</a>
+      </div>
+      <div class="book-itseft" hidden>
+        <div class="book__text">Book</div>
+        <div class="book__number"><span class="current__book__number">1</span>&nbsp;/&nbsp;12</div>
+      </div>
+      <div class="book-middle" hidden>
+        <div class="book-contents">
+          <div class="book__img-box">
+            <img class="book__img-box__img" src="/public/img/book/공정하다는 착각.jpeg" alt="BOOK - 공정하다는 착각">
+          </div>
+          <div class="book-contents-main">
+            <div class="book__title">공정하다는 착각</div>
+            <div class="book-contents__not-title">
+              <div class="book__author">마이클 샌델</div>
+              <div id="book__recommender">추천이: <span class="book__recommender">카리나</span></div>
+              <div id="book__date">모임 날짜: <span class="book__date">2022-11-09</span></div>        
+            </div>
+            <div class="book__rate">
+              <div class="book__rate__stars">
+                <div class="book__rate__star" data-star="full"></div>
+                <div class="book__rate__star" data-star="full"></div>
+                <div class="book__rate__star" data-star="full"></div>
+                <div class="book__rate__star" data-star="full"></div>
+                <div class="book__rate__star" data-star="empty"></div>  
+              </div>
+              <div class="book__rate__number">
+                <div class="book__rate__number__current">5</div>
+                <div class="book__rate__number__total">&nbsp;/&nbsp;5</div>
+              </div>
+            </div>    
+          </div>  
+        </div>  
+      </div>
+    </div>
+    <div class="book-right">
+      <div class="review-btn" hidden>Review</div>
+      <div class="review">
+        <div class="review__title">Review&nbsp;(<span class="review-title__total">17</span>)</div>
+        <div class="review__write">리뷰 작성</div>
+      </div>
+      <div class="review-box">
+        <div class="review-box__line"></div>
+        <div class="review-box__title">믿고 보는 모건 하우절</div>
+        <div class="review-box__info">
+          <div class="review-box__info__stars">
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+          </div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__nickname">카리나</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__date">2022-11-09</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__edit">수정</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__delete">삭제</div>
+        </div>
+        <div class="review-box__text">전작 '돈의 심리학'도 그렇고, 이번 신작 '불변의 법칙'도 페이지를 넘길 때마다 나도 모르게 탄성이 새어나오게 한다. 가독성이 좋아 읽기 쉽고, 무엇보다 근래 심적으로 힘든 시기에 당연히 알고 있었지만 잊고 있던 것들을 다시 한 번 일깨워주고, 생각하게 만들어 주는 책이다</div>
+        <div class="review-box__bottom">
+          <div class="review-box__more">
+            <div class="review-box__more__text">더보기</div>
+            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+          </div>
+          <div class="review-box__heart">
+            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <div class="review-box__heart__total">1</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-box">
+        <div class="review-box__line"></div>
+        <div class="review-box__title">믿고 보는 모건 하우절</div>
+        <div class="review-box__info">
+          <div class="review-box__info__stars">
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+          </div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__nickname">카리나</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__date">2022-11-09</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__edit">수정</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__delete">삭제</div>
+        </div>
+        <div class="review-box__text">전작 '돈의 심리학'도 그렇고, 이번 신작 '불변의 법칙'도 페이지를 넘길 때마다 나도 모르게 탄성이 새어나오게 한다. 가독성이 좋아 읽기 쉽고, 무엇보다 근래 심적으로 힘든 시기에 당연히 알고 있었지만 잊고 있던 것들을 다시 한 번 일깨워주고, 생각하게 만들어 주는 책이다</div>
+        <div class="review-box__bottom">
+          <div class="review-box__more">
+            <div class="review-box__more__text">더보기</div>
+            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+          </div>
+          <div class="review-box__heart">
+            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <div class="review-box__heart__total">1</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-box">
+        <div class="review-box__line"></div>
+        <div class="review-box__title">믿고 보는 모건 하우절</div>
+        <div class="review-box__info">
+          <div class="review-box__info__stars">
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+          </div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__nickname">카리나</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__date">2022-11-09</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__edit">수정</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__delete">삭제</div>
+        </div>
+        <div class="review-box__text">전작 '돈의 심리학'도 그렇고, 이번 신작 '불변의 법칙'도 페이지를 넘길 때마다 나도 모르게 탄성이 새어나오게 한다. 가독성이 좋아 읽기 쉽고, 무엇보다 근래 심적으로 힘든 시기에 당연히 알고 있었지만 잊고 있던 것들을 다시 한 번 일깨워주고, 생각하게 만들어 주는 책이다</div>
+        <div class="review-box__bottom">
+          <div class="review-box__more">
+            <div class="review-box__more__text">더보기</div>
+            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+          </div>
+          <div class="review-box__heart">
+            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <div class="review-box__heart__total">1</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-box">
+        <div class="review-box__line"></div>
+        <div class="review-box__title">믿고 보는 모건 하우절</div>
+        <div class="review-box__info">
+          <div class="review-box__info__stars">
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+          </div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__nickname">카리나</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__date">2022-11-09</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__edit">수정</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__delete">삭제</div>
+        </div>
+        <div class="review-box__text">전작 '돈의 심리학'도 그렇고, 이번 신작 '불변의 법칙'도 페이지를 넘길 때마다 나도 모르게 탄성이 새어나오게 한다. 가독성이 좋아 읽기 쉽고, 무엇보다 근래 심적으로 힘든 시기에 당연히 알고 있었지만 잊고 있던 것들을 다시 한 번 일깨워주고, 생각하게 만들어 주는 책이다</div>
+        <div class="review-box__bottom">
+          <div class="review-box__more">
+            <div class="review-box__more__text">더보기</div>
+            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+          </div>
+          <div class="review-box__heart">
+            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <div class="review-box__heart__total">1</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-box">
+        <div class="review-box__line"></div>
+        <div class="review-box__title">믿고 보는 모건 하우절</div>
+        <div class="review-box__info">
+          <div class="review-box__info__stars">
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+            <div class="review-box__info__stars__star"></div>
+          </div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__nickname">카리나</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__date">2022-11-09</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__edit">수정</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__delete">삭제</div>
+        </div>
+        <div class="review-box__text">전작 '돈의 심리학'도 그렇고, 이번 신작 '불변의 법칙'도 페이지를 넘길 때마다 나도 모르게 탄성이 새어나오게 한다. 가독성이 좋아 읽기 쉽고, 무엇보다 근래 심적으로 힘든 시기에 당연히 알고 있었지만 잊고 있던 것들을 다시 한 번 일깨워주고, 생각하게 만들어 주는 책이다</div>
+        <div class="review-box__bottom">
+          <div class="review-box__more">
+            <div class="review-box__more__text">더보기</div>
+            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+          </div>
+          <div class="review-box__heart">
+            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <div class="review-box__heart__total">1</div>
+          </div>
+        </div>
+      </div>
+      <form id="review-form" action="/book/review" method="post">
+        <div class="review-form__nav">
+          <div class="review-form__title">Review</div>
+          <div class="review-form__cancel">
+            <div class="review-form__cancel__left"></div>
+            <div class="review-form__cancel__right"></div>
+          </div>
+        </div>
+        <div class="review-form-middle">
+          <div class="review-form__img-box">
+            <img class="review-form__img" src="/public/img/book/공정하다는 착각.jpeg" alt="공정하다는 착각">
+          </div>
+          <div class="review-form__info">
+            <div class="review-form__title"></div>
+            <div class="review-form__rate-box">
+              <div class="review-form__stars">
+                <div class="review-form__star"></div>
+                <div class="review-form__star"></div>
+                <div class="review-form__star"></div>
+                <div class="review-form__star"></div>
+                <div class="review-form__star"></div>
+              </div>
+            </div>
+            <div class="review-form__numbers">
+              <div class="review-form__current-num"></div>
+              <div class="review-form__total-num">&nbsp;/&nbsp;</div>
+            </div>
+          </div>
+        </div>
+        <input type="text" class="review-form__title" placeholder="제목을 입력해주세요">
+        <textarea name="" id="review-form__text" cols="30" rows="10" placeholder="내용을 3000자 이내로 입력해주세요"></textarea>
+        <input class="review-form__submit" type="submit" value="등록">
+      </form>
+    </div>
+  </section>
+</body>
+</html>

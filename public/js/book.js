@@ -1,33 +1,22 @@
 class Book {
   constructor() {
-    this.$bookElem = document.getElementById('book');
-    this.$bookBtn = document.querySelector('.book-btn');
-    this.$bookLeft = document.querySelector('.book-left');
-    this.$reviewBtn = document.querySelector('.review-btn');
+    this.$reviewForm = document.getElementById('review-form');
+    this.$reviewWriteBtn = document.querySelector('.review__write');
+    this.$reviewFormCancelBtn = document.querySelector('.review-form__cancel');
 
-    this.$reviewBtn.onclick = this.gridChange.bind(this);
-    this.$bookBtn.onclick = this.gridChange.bind(this);
+    this.$reviewFormCancelBtn.onclick = this.reviewForm.bind(this);
+    this.$reviewWriteBtn.onclick = this.reviewForm.bind(this);
   }
 
-  gridChange(e) {
-    if(e.currentTarget === this.$reviewBtn) {
-      for(let elem of this.$bookLeft.children) {
-        elem.style.display = 'none';
-      }
-      this.$bookElem.style.gridTemplateColumns = '1fr 9fr';
-      this.$bookLeft.style.padding = '0';
-      this.$bookBtn.style.display = 'block'; 
-      this.$reviewBtn.style.display = 'none'; 
-    } else if(e.currentTarget === this.$bookBtn) {
-      this.$bookBtn.style.display = 'none';  
-      this.$bookLeft.style.padding = '';
-      this.$bookElem.style.gridTemplateColumns = '9fr 1fr';
-      for(let elem of this.$bookLeft.children) {
-        elem.style.display = '';
-      }
-      this.$reviewBtn.style.display = ''; 
+  reviewForm(e) {
+    if(e.currentTarget === this.$reviewFormCancelBtn) {
+      this.$reviewForm.style.display = '';
+      document.body.style.overflow = '';
+    } else if(e.currentTarget === this.$reviewWriteBtn) {
+      this.$reviewForm.style.display = 'block';
+      document.body.style.overflow = 'hidden';
     }
   }
 }
 
-new Book();
+const book = new Book();

@@ -13,7 +13,7 @@ class Book {
       this.$reviewForm.style.display = '';
       document.body.style.overflow = '';
     } else if(e.currentTarget === this.$reviewWriteBtn) {
-      this.$reviewForm.style.display = 'block';
+      this.$reviewForm.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
   }

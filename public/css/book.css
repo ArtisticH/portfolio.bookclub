@@ -517,7 +517,7 @@ clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   cursor: pointer;
 }
 
-@media all and (min-width: 600px) {
+@media all and (min-width: 650px) {
   #book {
     display: grid;
     grid-template-columns: 3fr 7fr;

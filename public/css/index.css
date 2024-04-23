@@ -13,6 +13,7 @@
   --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
   --font-rubik-bubbles: "Rubik Bubbles", system-ui;
   --font-rock: "Rock Salt", cursive;
+  --main-scroll-y: 1700%;
 }
 
 body {
@@ -203,11 +204,13 @@ body::-webkit-scrollbar {
 }
 
 .kakao {
-  color: #0c3aa5;
+  background-color: #0c3aa5;
+  color: white;
 }
 
 .naver {
-  color: #02bf3a;
+  background-color: #02bf3a;
+  color: white;
 }
 
 .main__top-right {
@@ -215,6 +218,7 @@ body::-webkit-scrollbar {
   border: 1px solid black;
   background-image: linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%);
   transition: all 0.3s ease-out;
+  position: relative;
 }
 
 .main__top-right__title {
@@ -237,15 +241,43 @@ body::-webkit-scrollbar {
   font-style: italic;
 }
 
-.main__top-right__arrow {
-  margin-top: 15px;
-  width: 200px;
+.main__top-right__bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 50%;
+  box-sizing: border-box;
+  padding-top: 15px;
+  width: 100%;
   cursor: pointer;
 }
 
-.main__top-right__arrow__img {
-  width: 100%;
+.main__top-right__arrow {
+  width: 200px;
   display: block;
+}
+
+.main__top-right__contents {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 10px 10px;
+}
+
+.main__top-right__contents__number {
+  font-family: var(--font-montserrat);
+  font-size: 1.4rem;
+}
+
+.main__top-right__contents__scroll {
+  font-family: var(--font-Merriweather);
+  font-size: 1.4rem;
+  animation: main-scroll 1s ease-out infinite alternate;
+}
+
+@keyframes main-scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-70%); }
 }
 
 .main__bottom-left {
@@ -270,8 +302,26 @@ body::-webkit-scrollbar {
   .main__top,
   .main__bottom {
     grid-template-columns: 3fr 7fr;
-  }  
+  }    
 
+  .main__top-right__contents__scroll {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    animation: main-scroll 4s ease-out infinite;
+  }
+  
+  @keyframes main-scroll {
+    0% { 
+      transform: translateY(0);
+      opacity: 1; 
+    }
+    100% { 
+      transform: translateY(var(--main-scroll-y));
+      opacity: 0;
+    }
+  }
+  
   #login,
   #signup {
     width: 30%;

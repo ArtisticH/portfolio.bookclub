@@ -2,7 +2,7 @@ class Index {
   constructor() {
     this.$body = document.querySelector('body');
     this.$main = document.getElementById('main');
-    this.start = this.$body.offsetTop + 200;
+    this.start = this.$body.offsetTop + 400;
     this.end = this.$body.offsetHeight - document.documentElement.clientHeight;
     this.step = (this.end - this.start) / 4;
 
@@ -11,10 +11,14 @@ class Index {
     this.$mainClickSignup = document.querySelector('.main__top-left__click__signup');
     this.$mainTitle1 = document.querySelector('.main__top-right__title1');
     this.$mainTitle2 = document.querySelector('.main__top-right__title2');
+    this.$mainTopNumber = document.querySelector('.main__top-right__current');
+    this.$mainTopScroll = document.querySelector('.main__top-right__contents__scroll');
     this.$mainBottomLeft = document.querySelector('.main__bottom-left');
     this.$cancelBtns = document.querySelectorAll('.cancel');
     this.$formTarget = null;
     this.colorIndex = 0;
+    this.mainTopScrollY = this.$mainTopRight.offsetHeight - this.$mainTopScroll.offsetHeight - 20; // 20은 위아래 여백
+    console.log(this.mainTopScrollY)
 
     this.topright = ["linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #edd649 100%)", 
@@ -37,21 +41,27 @@ class Index {
     this.$cancelBtns.forEach(btn => {
       btn.addEventListener('click', this.cancelBtn);
     });
+
+    document.documentElement.style.setProperty('--main-scroll-y', this.mainTopScrollY + 'px');
   }
 
   scroll() {
     if(window.pageYOffset >= this.start && window.pageYOffset < this.step) {
       this.colorIndex = 0;
       this.changeColor(this.colorIndex);
+      this.changeNumber(this.colorIndex + 1);
     } else if(window.pageYOffset >= this.step && window.pageYOffset < (this.step * 2)) {
       this.colorIndex = 1;
       this.changeColor(this.colorIndex);
+      this.changeNumber(this.colorIndex + 1);
     } else if(window.pageYOffset >= (this.step * 2) && window.pageYOffset < (this.step * 3)) {
       this.colorIndex = 2;
       this.changeColor(this.colorIndex);
+      this.changeNumber(this.colorIndex + 1);
     } else if(window.pageYOffset >= (this.step * 3) && window.pageYOffset < this.end) {
       this.colorIndex = 3;
       this.changeColor(this.colorIndex);
+      this.changeNumber(this.colorIndex + 1);
     }
   }
 
@@ -64,6 +74,10 @@ class Index {
     this.$mainTitle1.textContent = `${this.title[index]}`;
     this.$mainTitle2.textContent = `${this.title[index]}`;
     this.$mainBottomLeft.style.backgroundColor = `${this.bottomleft[index]}`;
+  }
+
+  changeNumber(index) {
+    this.$mainTopNumber.textContent = index;
   }
 
   pointerenter(e) {

@@ -93,9 +93,7 @@ body::-webkit-scrollbar {
   justify-content: space-between;
 }
 
-#member__info__nick,
-#member__info__author,
-#member__info__genre {
+#member__info__nick {
   font-family: var(--font-poppins);
   color: #f1c90c;
   font-size: 1.6rem;
@@ -104,15 +102,35 @@ body::-webkit-scrollbar {
   margin-left: -3px;
 }
 
-.member__info__nick,
-.member__info__author,
-.member__info__genre {
+.member__info__nick {
   font-family: var(--font-notoKR);
   color: black;
   font-size: 1.6rem;
   letter-spacing: -1.5px;
   font-weight: 200;
   font-style: normal;
+}
+
+#member__attendance {
+  font-family: var(--font-poppins);
+  font-size: 2rem;
+  display: flex;
+  align-items: flex-end;
+
+}
+
+.member__attendance {
+  font-family: var(--font-poppins);
+  font-size: 7rem;
+  color: #f1c90c;
+  line-height: 0.7;
+}
+
+.member__attendance__total {
+  font-family: var(--font-poppins);
+  font-size: 4rem;
+  letter-spacing: -4px;
+  line-height: 0.6;
 }
 
 .member-books {
@@ -253,16 +271,12 @@ body::-webkit-scrollbar {
     font-size: 4.5rem;
   }
     
-  #member__info__nick,
-  #member__info__author,
-  #member__info__genre {
+  #member__info__nick {
     font-size: 1.8rem;
     letter-spacing: -1.8px;
   }
   
-  .member__info__nick,
-  .member__info__author,
-  .member__info__genre {
+  .member__info__nick {
     font-size: 1.8rem;
     letter-spacing: -1.8px;
   }

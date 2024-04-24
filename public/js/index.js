@@ -18,7 +18,6 @@ class Index {
     this.$formTarget = null;
     this.colorIndex = 0;
     this.mainTopScrollY = this.$mainTopRight.offsetHeight - this.$mainTopScroll.offsetHeight - 20; // 20은 위아래 여백
-    console.log(this.mainTopScrollY)
 
     this.topright = ["linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #edd649 100%)", 
@@ -40,6 +39,13 @@ class Index {
     this.$mainClickSignup.addEventListener('click', this.showForm);
     this.$cancelBtns.forEach(btn => {
       btn.addEventListener('click', this.cancelBtn);
+    });
+
+    window.addEventListener('load', () => {
+      if(this.$main.dataset.joined) {
+        console.log('5. 회원가입 완료');
+        alert('회원가입이 완료되었습니다!');
+      }
     });
 
     document.documentElement.style.setProperty('--main-scroll-y', this.mainTopScrollY + 'px');
@@ -93,7 +99,7 @@ class Index {
 
   showForm(e) {
     this.$formTarget = document.getElementById(`${e.currentTarget.dataset.type}`);
-    this.$formTarget.classList.add('show');
+    this.$formTarget?.classList.add('show');
   }
 
   cancelBtn(e) {

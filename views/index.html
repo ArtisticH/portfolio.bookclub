@@ -16,12 +16,16 @@
   <meta name="description" content="Seo Hanna Portfolio">
 </head>
 <body>
-  <section id="main">
+  <section id="main" data-joined="{{joined}}">
     <div class="main__top">
       <div class="main__top-left">
         <div class="main__top-left__title">Book Club</div>
         <div class="main__top-left__click">
+          {% if user and user.id %}
+          <a href="/auth/logout" class="main__top-left__click__login" data-type="login">LOGOUT</a>
+          {% else %}
           <div class="main__top-left__click__login" data-type="login">LOG IN</div>
+          {% endif %}
           <div class="main__top-left__click__signup" data-type="signup">SIGN UP</div>
         </div>
       </div>
@@ -38,6 +42,7 @@
           </div>  
         </div>
       </div>
+      {% if not user and not user.id %}
       <div id="login" class="form-target">
         <div id="cancel">
           <div class="cancel">
@@ -45,20 +50,21 @@
             <div class="cancel__right"></div>
           </div>
         </div>
-        <form class="login">
+        <form class="login" method="post" action="/auth/login">
           <div class="login__id">
-            <input class="login__input" type="text" placeholder="e-mail">
+            <input class="login__input" name="email" type="email" placeholder="e-mail">
           </div>
           <div class="login__pwd">
-            <input class="login__input" type="password" placeholder="password">
+            <input class="login__input" name="password" type="password" placeholder="password">
           </div>
           <div class="login__btn">
-            <input class="login__input__button" type="button" value="LOG IN">
+            <input class="login__input__button" type="submit" value="LOG IN">
           </div>
         </form>
         <div class="kakao">KAKAO</div>
         <div class="naver">NAVER</div>  
-      </div>  
+      </div> 
+      {% endif %} 
       <div id="signup" class="form-target">
         <div id="cancel">
           <div class="cancel">
@@ -66,18 +72,18 @@
             <div class="cancel__right"></div>
           </div>
         </div>
-        <form class="signup">
+        <form class="signup" method="post" action="/auth/join">
           <div class="signup__id">
-            <input class="signup__input" type="text" placeholder="e-mail">
+            <input class="signup__input" type="email" name="email" placeholder="e-mail">
           </div>
           <div class="signup__nickname">
-            <input class="signup__input" type="text" placeholder="nickname">
+            <input class="signup__input" type="text" name="nick" placeholder="nickname">
           </div>
           <div class="signup__pwd">
-            <input class="signup__input" type="password" placeholder="password">
+            <input class="signup__input" type="password" name="password" placeholder="password">
           </div>
           <div class="signup__btn">
-            <input class="signup__input__button" type="button" value="SIGN UP">
+            <input class="signup__input__button" type="submit" value="SIGN UP">
           </div>
         </form>
       </div>  

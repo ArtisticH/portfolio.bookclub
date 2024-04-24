@@ -82,6 +82,7 @@ body::-webkit-scrollbar {
 
 .main__top-left__click__login,
 .main__top-left__click__signup {
+  text-decoration: none;
   background-color: #0c3aa5;
   font-family: var(--font-montserrat);
   letter-spacing: -1px;
@@ -192,6 +193,7 @@ body::-webkit-scrollbar {
   padding: 10px;
   background-color: black;
   color: white;
+  cursor: pointer;
 }
 
 .kakao,

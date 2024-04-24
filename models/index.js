@@ -10,15 +10,15 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 db.sequelize = sequelize;
 db.Book = Book;
-// db.Member = Member;
+db.Member = Member;
 // db.Meeting = Meeting;
 
 Book.init(sequelize);
-// Member.init(sequelize);
+Member.init(sequelize);
 // Meeting.init(sequelize);
 
 Book.associate(db);
-// Member.associate(db);
+Member.associate(db);
 // Meeting.associate(db);
 
 module.exports = db;

@@ -5,8 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/public/css/book.css">
-  <script defer src="/public/js/book.js"></script>
+  <link rel="stylesheet" href="/css/book.css">
+  <script defer src="/js/book.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,25 +20,25 @@
     <div class="book-left">
       <div class="book-href">
         <a href="/books" class="book__back">
-          <img class="book__back__arrow" src="/public/img/main/back-arrow-white.png" alt="back-arrow-white">
+          <img class="book__back__arrow" src="/img/main/back-arrow-white.png" alt="back-arrow-white">
         </a>
         <a href="/" class="book__home">Home</a>
       </div>
       <div class="book-itseft">
         <div class="book__text">Book</div>
-        <div class="book__number"><span class="current__book__number">1</span>&nbsp;/&nbsp;12</div>
+        <div class="book__number"><span class="current__book__number">{{book.id}}</span>&nbsp;/&nbsp;12</div>
       </div>
       <div class="book-middle">
         <div class="book-contents">
           <div class="book__img-box">
-            <img class="book__img-box__img" src="/public/img/book/공정하다는 착각.jpeg" alt="BOOK - 공정하다는 착각">
+            <img class="book__img-box__img" src="{{book.img}}" alt="{{book.title}}">
           </div>
           <div class="book-contents-main">
-            <div class="book__title">공정하다는 착각</div>
+            <div class="book__title">{{book.title}}</div>
             <div class="book-contents__not-title">
-              <div class="book__author">마이클 샌델</div>
+              <div class="book__author">{{book.author}}</div>
               <div id="book__recommender">추천이: <span class="book__recommender">카리나</span></div>
-              <div id="book__date">모임 날짜: <span class="book__date">2022-11-09</span></div>        
+              <div id="book__date">모임 날짜: <span class="book__date">{{book.meetingDate}}</span></div>        
             </div>
             <div class="book__rate">
               <div class="book__rate__stars">
@@ -85,10 +85,10 @@
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
-            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+            <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
           </div>
           <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
             <div class="review-box__heart__total">1</div>
           </div>
         </div>
@@ -116,10 +116,10 @@
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
-            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+            <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
           </div>
           <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
             <div class="review-box__heart__total">1</div>
           </div>
         </div>
@@ -147,10 +147,10 @@
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
-            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+            <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
           </div>
           <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
             <div class="review-box__heart__total">1</div>
           </div>
         </div>
@@ -178,10 +178,10 @@
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
-            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+            <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
           </div>
           <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
             <div class="review-box__heart__total">1</div>
           </div>
         </div>
@@ -209,20 +209,20 @@
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
-            <img class="review-box__more__arrow" src="/public/img/book/review-arrow.png" alt="review-arrow">
+            <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
           </div>
           <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/public/img/book/blue-heart.png" alt="blue-heart">
+            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
             <div class="review-box__heart__total">1</div>
           </div>
         </div>
       </div>
       <div class="review-paganation">
         <div class="review-paganation__first">
-          <img class="review-paganation__img" src="/public/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
+          <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
         </div>
         <div class="review-paganation__before">
-          <img class="review-paganation__img" src="/public/img/book/page-left-arrow.png" alt="page-left-arrow">
+          <img class="review-paganation__img" src="/img/book/page-left-arrow.png" alt="page-left-arrow">
         </div>
         <div class="review-paganation__numbers">
           <div class="review-paganation__number">1</div>
@@ -231,14 +231,14 @@
           <div class="review-paganation__number review-last-number">4</div>
         </div>
         <div class="review-paganation__after">
-          <img class="review-paganation__img" src="/public/img/book/page-right-arrow.png" alt="page-right-arrow">
+          <img class="review-paganation__img" src="/img/book/page-right-arrow.png" alt="page-right-arrow">
         </div>
         <div class="review-paganation__last">
-          <img class="review-paganation__img" src="/public/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">
+          <img class="review-paganation__img" src="/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">
         </div>
 
       </div>
-      <form id="review-form" action="/book/review" method="post">
+      <form id="review-form" action="/book/{{book.id}}/review" method="post">
         <div class="review-form-nav">
           <div class="review-form__title">Review</div>
           <div class="review-form__cancel">
@@ -248,11 +248,11 @@
         </div>
         <div class="review-form-middle">
           <div class="review-form__img-box">
-            <img class="review-form__img" src="/public/img/book/공정하다는 착각.jpeg" alt="공정하다는 착각">
+            <img class="review-form__img" src="{{book.img}}" alt="{{book.title}}">
           </div>
           <div class="review-form__info">
-            <div class="review-form__info__title">공정하다는 착각</div>
-            <div class="review-form__info__author">마이클 샌델</div>
+            <div class="review-form__info__title">{{book.title}}</div>
+            <div class="review-form__info__author">{{book.author}}</div>
             <div class="review-form__stars">
               <div class="review-form__star"></div>
               <div class="review-form__star"></div>

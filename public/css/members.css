@@ -59,7 +59,8 @@ body {
   letter-spacing: -1px;
 }
 
-.back__arrow {
+a.back__arrow {
+  display: block;
   width: 150px;
   cursor: pointer;
   margin-top: 40px;
@@ -70,11 +71,8 @@ body {
   width: 100%;
 }
 
-.members-right {
-  /* padding: 20px; */
-}
-
 .members__member {
+  cursor: pointer;
   height: 25%;
   box-sizing: border-box;
   border: 0.5px solid black;

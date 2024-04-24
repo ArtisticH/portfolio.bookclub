@@ -11,10 +11,6 @@ module.exports = class Book extends Sequelize.Model {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      explanation: {
-        type: Sequelize.STRING(500),
-        allowNull: false,
-      },
       img: {
         type: Sequelize.STRING(100),
         allowNull: false,

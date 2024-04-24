@@ -29,11 +29,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-#book {
-  /* display: grid;
-  grid-template-columns: 9fr 1fr; */
-}
-
 .book-left {
   background-color: #0c3aa5;
   box-sizing: border-box;

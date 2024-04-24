@@ -5,7 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/css/fun.css">
+  <link rel="stylesheet" href="/public/css/fun.css">
+  <script defer src="/public/js/fun.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,37 +17,59 @@
 </head>
 <body>
   <section id="fun">
-    <div class="fun-left">
-      <div class="fun-left__main">
-        <div class="fun-left__title">fun</div>
-        <div class="fun-left__sub">Have fun!</div>  
+    <a href="/fun" class="fun__title">Fun</a>
+    <a href="/" class="fun__home">Home</a>
+    
+    <div class="fun-choice-front fun-choice">
+      <div class="fun-choice-front__title-box">
+        <div class="fun-choice-front__title">Choice</div>
       </div>
-      <a href="/" class="back__arrow">
-        <img class="back__arrow__img" src="/img/main/back-arrow-white.png" alt="back-arrow">
-      </a> 
     </div>
-    <div class="fun-right">
-      <div class="fun-right__faker fun-right__project">
-        <div class="fun-right__project__text">Faker 도서</div>
+
+    <div class="fun-choice-back fun-choice">
+      <div class="fun-choice-back__title-box">
+        <div class="fun-choice-back__title">Choice</div>
       </div>
-      <div class="fun-right__rec fun-right__project">
-        <div class="fun-right__project__play">PLAY</div>
-        <div class="fun-right__project__text">당신의 추구미는?</div>
+      <div class="fun-choice-back__text-box">
+        <div class="fun-choice-back__text">이상형 월드컵</div>
+        <div class="fun-choice-back__text">A와 B중에서 선택하기</div>
+        <div class="fun-choice-back__text">사람 고르기</div>
+        <div class="fun-choice-back__text">맘에 드는 노래 고르기</div>
+        <div class="fun-choice-back__text">순위 살펴보기</div>
+        <div class="fun-choice-back__text">이미지 다운로드</div>  
       </div>
-      <div class="fun-right__api fun-right__project">
-        <div class="fun-right__project__text">국립중앙도서관 도서</div>
+    </div>
+
+    <div class="fun-quotes-front fun-quotes">
+      <div class="fun-quotes-front__title-box">
+        <div class="fun-quotes-front__title fun-quotes">Quotes</div>
       </div>
-      <div class="fun-right__diy fun-right__project">
-        <div class="fun-right__project__play">PLAY</div>
-        <div class="fun-right__project__text">DIY</div>
+    </div>
+
+    <div class="fun-quotes-back fun-quotes">
+      <div class="fun-quotes-back__title-box">
+        <div class="fun-quotes-back__title">Quotes</div>
       </div>
-      <div class="fun-right__choice fun-right__project">
-        <div class="fun-right__project__play">PLAY</div>
-        <div class="fun-right__project__text">CHOICE</div>
+      <div class="fun-quotes-back__text-box">
+        <div class="fun-quotes-back__text">인용구 고르기</div>
+        <div class="fun-quotes-back__text">배경 선정하기</div>
+        <div class="fun-quotes-back__text">이미지 다운로드</div>
+        <div class="fun-quotes-back__text">나만의 발췌 이미지 갖기</div>
       </div>
-      <div class="fun-right__pick fun-right__project">
-        <div class="fun-right__project__play">PLAY</div>
-        <div class="fun-right__project__text">PICK 이미지 만들기</div>
+    </div>
+
+    <div class="fun-api-front fun-api">
+      <div class="fun-api-front__title-box">
+        <div class="fun-api-front__title">API</div>
+      </div>
+    </div>
+    <div class="fun-api-back fun-api">
+      <div class="fun-api-back__title-box">
+        <div class="fun-api-back__title">API</div>
+      </div>
+      <div class="fun-api-back__text-box">
+        <div class="fun-api-back__text">국립중앙도서관 API</div>
+        <div class="fun-api-back__text">WISHLIST에 책 추가하기</div>
       </div>
     </div>
   </section>

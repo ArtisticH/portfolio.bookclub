@@ -240,8 +240,42 @@ body::-webkit-scrollbar {
 }
 
 @media all and (min-width: 1200px) {
+  .member__hangul {
+    font-size: 4.5rem;
+  }
+  
+  .member__alphabet {
+    font-size: 3.5rem;
+    letter-spacing: -2px;
+  }
+    
+  .member__info__hi {
+    font-size: 4.5rem;
+  }
+    
+  #member__info__nick,
+  #member__info__author,
+  #member__info__genre {
+    font-size: 1.8rem;
+    letter-spacing: -1.8px;
+  }
+  
+  .member__info__nick,
+  .member__info__author,
+  .member__info__genre {
+    font-size: 1.8rem;
+    letter-spacing: -1.8px;
+  }
+    
   .member-books__blank {
     font-size: 2.5rem;
     color: #f4f16c;
   }  
 }
+
+@media all and (min-width: 1400px) {
+  .member-books__container {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+

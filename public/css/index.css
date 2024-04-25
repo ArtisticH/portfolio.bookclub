@@ -1,18 +1,7 @@
 :root {
   --font-Merriweather: "Merriweather", serif;
-  --font-notoKR:"Noto Sans KR", sans-serif;
-  --font-roboto: "Roboto", sans-serif;
   --font-poppins: "Poppins", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
-  --font-oswald: "Oswald", sans-serif;
-  --font-raleway: "Raleway", sans-serif;
-  --font-inter: "Inter", sans-serif;
-  --font-schoolbell: "Schoolbell", cursive;
-  --font-rubik: "Rubik", sans-serif;
-  --font-rubikScribble: "Rubik Scribble", system-ui;
-  --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
-  --font-rubik-bubbles: "Rubik Bubbles", system-ui;
-  --font-rock: "Rock Salt", cursive;
   --main-scroll-y: 1700%;
 }
 
@@ -39,20 +28,20 @@ body::-webkit-scrollbar {
   left: 0;
 }
 
+/* main__top --------------------------------------------------------------------------------------------------------------------------- */
+
 .main__top {
   height: 70%;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  /* .form-target에 대해 */
   position: relative;
 }
 
-.main__bottom {
-  height: 30%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
+/* main__top-left --------------------------------------------------------------------------------------------------------------------------- */
 
 .main__top-left {
+  /* .main__top-left__click에 대해 */
   position: relative;
 }
 
@@ -74,6 +63,7 @@ body::-webkit-scrollbar {
   display: grid;
   grid-template-columns: 6fr 4fr;
   gap: 10px;
+  /* .main__top-left에 대해 */
   position: absolute;
   width: 100%;
   bottom: 10px;
@@ -82,21 +72,45 @@ body::-webkit-scrollbar {
 
 .main__top-left__click__login,
 .main__top-left__click__signup {
-  text-decoration: none;
   background-color: #0c3aa5;
   font-family: var(--font-montserrat);
   letter-spacing: -1px;
   font-size: 1.2rem;
-  color: #0c3aa5;
+  color: transparent;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   padding-left: 10px;
   cursor: pointer;
   transition: all 0.3s ease-out;
-  border: 0.5px solid black;
 }
 
+.main__top-left__click__login.colored,
+.main__top-left__click__signup.colored {
+  color: white;
+}
+
+.main__top-left__click__logout {
+  cursor: pointer;
+  background-color: #0c3aa5;
+  font-family: var(--font-montserrat);
+  letter-spacing: -1px;
+  font-size: 1.2rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+.main__top-left__click__logout__blank {
+  background-color: black;
+}
+
+/* .form-target --------------------------------------------------------------------------------------------------------------------------- */
+
 .form-target {
+  /* .main__top에 대해 */
   position: absolute;
   background-color: white;
   top: 0;
@@ -109,6 +123,7 @@ body::-webkit-scrollbar {
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s ease-out;
+  border-right: 0.5px solid black;
 }
 
 .form-target.show {
@@ -126,12 +141,14 @@ body::-webkit-scrollbar {
 .cancel {
   width: 25px;
   height: 25px;
+  /* .cancel__left, .cancel__right에 대해 */
   position: relative;
   cursor: pointer;
 }
 
 .cancel__left,
 .cancel__right {
+  /* .cancel에 대해 */
   position: absolute;
   width: 100%;
   height: 2px;
@@ -148,17 +165,13 @@ body::-webkit-scrollbar {
   transform: translateY(-50%) rotate(-45deg);
 }
 
-.login,
-.signup {
-  height: 45%;
+.form-target__center {
+  height: calc(100% - 25px);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: center;
   align-items: center;
-}
-
-.signup {
-  height: 55%;
 }
 
 .login__id,
@@ -172,6 +185,7 @@ body::-webkit-scrollbar {
   margin-bottom: 10px;
   cursor: pointer;
   width: 100%;
+  max-width: 250px;
 }
 
 .login__input,
@@ -199,7 +213,7 @@ body::-webkit-scrollbar {
 .kakao,
 .naver {
   width: 100%;
-  margin-bottom: 10px;
+  max-width: 250px;
   box-sizing: border-box;
   border: 1px solid black;
   font-size: 1.3rem;
@@ -213,6 +227,7 @@ body::-webkit-scrollbar {
 .kakao {
   background-color: #0c3aa5;
   color: white;
+  margin-bottom: 10px;
 }
 
 .naver {
@@ -220,11 +235,14 @@ body::-webkit-scrollbar {
   color: white;
 }
 
+/* .main__top-right --------------------------------------------------------------------------------------------------------------------------- */
+
 .main__top-right {
   overflow: hidden;
   border: 1px solid black;
   background-image: linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%);
   transition: all 0.3s ease-out;
+  /* .main__top-right__contents__scroll에 대해서 */
   position: relative;
 }
 
@@ -238,6 +256,7 @@ body::-webkit-scrollbar {
 
 .main__top-right__title1,
 .main__top-right__title2 {
+  width: fit-content;
   margin-left: -15px;
   font-family: var(--font-Merriweather);
   font-size: 5rem;
@@ -256,11 +275,16 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
   padding-top: 15px;
   width: 100%;
-  cursor: pointer;
 }
 
 .main__top-right__arrow {
   width: 200px;
+  display: block;
+  cursor: pointer;
+}
+
+.main__top-right__arrow__img {
+  width: 100%;
   display: block;
 }
 
@@ -271,7 +295,7 @@ body::-webkit-scrollbar {
   padding: 0 0 10px 10px;
 }
 
-.main__top-right__contents__number {
+#main__top-right__contents__number {
   font-family: var(--font-montserrat);
   font-size: 1.4rem;
 }
@@ -287,11 +311,22 @@ body::-webkit-scrollbar {
   100% { transform: translateY(-70%); }
 }
 
+/* .main__bottom --------------------------------------------------------------------------------------------------------------------------- */
+
+.main__bottom {
+  height: 30%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* .main__bottom-left --------------------------------------------------------------------------------------------------------------------------- */
+
 .main__bottom-left {
   background-color: #0c3aa5;
   border: 1px solid black;
-  transition: all 0.3s ease-out;
 }
+
+/* .main__bottom-right --------------------------------------------------------------------------------------------------------------------------- */
 
 .main__bottom-right__names {
   padding: 20px;
@@ -305,6 +340,8 @@ body::-webkit-scrollbar {
   margin-bottom: 7px;
 }
 
+/* min-width: 650px --------------------------------------------------------------------------------------------------------------------------- */
+
 @media all and (min-width: 650px) {
   .main__top,
   .main__bottom {
@@ -312,6 +349,7 @@ body::-webkit-scrollbar {
   }    
 
   .main__top-right__contents__scroll {
+    /* .main__top-right에 대해서 */
     position: absolute;
     top: 10px;
     right: 0;
@@ -329,26 +367,7 @@ body::-webkit-scrollbar {
     }
   }
   
-  #login,
-  #signup {
+  .form-target {
     width: 30%;
-  }
-
-  .login__id,
-  .login__pwd,
-  .login__btn,
-  .kakao,
-  .naver,
-  .signup__id,
-  .signup__nickname,
-  .signup__pwd,
-  .signup__btn {
-    max-width: 300px;
-    margin-bottom: 15px;
-  }
-
-  .kakao,
-  .naver {
-    margin: 0 auto 15px auto;
   }
 }

@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
   },....
   */
   console.log('/요청:', 'req.session? :', req.session, 'req.user? ', req.user)
-  res.render('index');
+  return res.render('index');
 });
 
 router.get('/books', async (req, res) => {

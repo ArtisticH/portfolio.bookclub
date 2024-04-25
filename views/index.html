@@ -10,10 +10,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rock+Salt&family=Rubik+Bubbles&family=Rubik+Doodle+Shadow&family=Rubik+Scribble&family=Rubik:ital,wght@0,300..900;1,300..900&family=Schoolbell&display=swap" rel="stylesheet">
-  <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon2" sizes="180x180" href="/img/favicon/apple-icon.png">
-  <meta name="description" content="Seo Hanna Portfolio">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
   <section id="main" data-joined="{{joined}}">
@@ -21,12 +19,16 @@
       <div class="main__top-left">
         <div class="main__top-left__title">Book Club</div>
         <div class="main__top-left__click">
+          <!-- 로그인 후라면 LOGOUT 요소와 아무것도 없는 빈 요소를 보여주고 -->
           {% if user and user.id %}
-          <a href="/auth/logout" class="main__top-left__click__login" data-type="login">LOGOUT</a>
-          {% else %}
-          <div class="main__top-left__click__login" data-type="login">LOG IN</div>
+          <div class="main__top-left__click__logout">LOGOUT</div>
+          <div class="main__top-left__click__logout__blank"></div>
           {% endif %}
-          <div class="main__top-left__click__signup" data-type="signup">SIGN UP</div>
+          {% if user === undefined %}
+          <!-- 로그인 전이라면 LOG IN 요소와 SIGN UP 요소를 보여준다 -->
+          <div class="main__top-left__click__login" data-form-type="login">LOG IN</div>
+          <div class="main__top-left__click__signup" data-form-type="signup">SIGN UP</div>
+          {% endif %}
         </div>
       </div>
       <div class="main__top-right">
@@ -35,14 +37,18 @@
           <a href="/books" class="main__top-right__title2">Books.</a>  
         </div>
         <div class="main__top-right__bottom">
-          <img class="main__top-right__arrow" src="/img/main/arrow.png" alt="arrow">
+          <a href="/books" class="main__top-right__arrow">
+            <img class="main__top-right__arrow__img" src="/img/main/arrow.png" alt="arrow">
+          </a>
           <div class="main__top-right__contents">
-            <div class="main__top-right__contents__number"><span class="main__top-right__current">1</span> / 4</div>
+            <div id="main__top-right__contents__number"><span class="main__top-right__currents__number">1</span> / 4</div>
             <div class="main__top-right__contents__scroll">Scroll</div>
           </div>  
         </div>
       </div>
-      {% if not user and not user.id %}
+      {% if user === undefined %}
+      <!-- 로그인한 상태가 아니라면 로그인과 회원가입 폼을 노출한다. -->
+      <!-- id는 data-form-type="login"를 위해서 -->
       <div id="login" class="form-target">
         <div id="cancel">
           <div class="cancel">
@@ -50,21 +56,22 @@
             <div class="cancel__right"></div>
           </div>
         </div>
-        <form class="login" method="post" action="/auth/login">
-          <div class="login__id">
-            <input class="login__input" name="email" type="email" placeholder="e-mail">
-          </div>
-          <div class="login__pwd">
-            <input class="login__input" name="password" type="password" placeholder="password">
-          </div>
-          <div class="login__btn">
-            <input class="login__input__button" type="submit" value="LOG IN">
-          </div>
-        </form>
-        <div class="kakao">KAKAO</div>
-        <div class="naver">NAVER</div>  
+        <div class="form-target__center">
+          <form class="login" method="post" action="/auth/login">
+            <div class="login__id">
+              <input class="login__input" name="email" type="email" placeholder="e-mail">
+            </div>
+            <div class="login__pwd">
+              <input class="login__input" name="password" type="password" placeholder="password">
+            </div>
+            <div class="login__btn">
+              <input class="login__input__button" type="submit" value="LOG IN">
+            </div>
+          </form>
+          <div class="kakao">KAKAO</div>
+          <div class="naver">NAVER</div>    
+        </div>
       </div> 
-      {% endif %} 
       <div id="signup" class="form-target">
         <div id="cancel">
           <div class="cancel">
@@ -72,30 +79,33 @@
             <div class="cancel__right"></div>
           </div>
         </div>
-        <form class="signup" method="post" action="/auth/join">
-          <div class="signup__id">
-            <input class="signup__input" type="email" name="email" placeholder="e-mail">
-          </div>
-          <div class="signup__nickname">
-            <input class="signup__input" type="text" name="nick" placeholder="nickname">
-          </div>
-          <div class="signup__pwd">
-            <input class="signup__input" type="password" name="password" placeholder="password">
-          </div>
-          <div class="signup__btn">
-            <input class="signup__input__button" type="submit" value="SIGN UP">
-          </div>
-        </form>
-      </div>  
+        <div class="form-target__center">
+          <form class="signup" method="post" action="/auth/signup">
+            <div class="signup__id">
+              <input class="signup__input" type="email" name="email" placeholder="e-mail">
+            </div>
+            <div class="signup__nickname">
+              <input class="signup__input" type="text" name="nick" placeholder="nickname">
+            </div>
+            <div class="signup__pwd">
+              <input class="signup__input" type="password" name="password" placeholder="password">
+            </div>
+            <div class="signup__btn">
+              <input class="signup__input__button" type="submit" value="SIGN UP">
+            </div>
+          </form>  
+        </div>
+      </div> 
+      {% endif %}  
     </div>
     <div class="main__bottom">
       <div class="main__bottom-left"></div>
       <div class="main__bottom-right">
         <div class="main__bottom-right__names">
-          <div class="main__name-hanna main__name">Seo Hanna</div>
-          <div class="main__name-yerim main__name">Kang Yerim</div>
-          <div class="main__name-jk main__name">Kim Jungkyung</div>
-          <div class="main__name-hyuna main__name">Kim Hyuna</div>
+          <div class="main__name">Seo Hanna</div>
+          <div class="main__name">Kang Yerim</div>
+          <div class="main__name">Kim Jungkyung</div>
+          <div class="main__name">Kim Hyuna</div>
         </div>
       </div>  
     </div>

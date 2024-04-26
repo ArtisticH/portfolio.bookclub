@@ -31,4 +31,8 @@ router.get('/fun', (req, res) => {
   res.render('fun');
 });
 
+router.post('/review', (req, res) => {
+  console.log(req.body.title, req.body.text, req.body.bookId);
+});
+
 module.exports = router;

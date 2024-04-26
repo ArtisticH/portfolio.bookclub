@@ -143,6 +143,8 @@ body::-webkit-scrollbar {
 
 .book__recommender {
   font-weight: 500;
+  text-decoration: none;
+  color: white;
 }
 
 #book__date {

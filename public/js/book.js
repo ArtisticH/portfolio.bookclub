@@ -6,6 +6,8 @@ class Book {
 
     this.$reviewFormCancelBtn.onclick = this.reviewForm.bind(this);
     this.$reviewWriteBtn.onclick = this.reviewForm.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+    this.$reviewForm.addEventListener('submit', this.submitForm);
   }
 
   reviewForm(e) {
@@ -16,6 +18,18 @@ class Book {
       this.$reviewForm.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
+  }
+
+  async submitForm(e) {
+    e.preventDefault();
+    const title = e.target.title.value;
+    const text = e.target.text.value
+    const bookId = new URL(location.href).pathname.split('/')[2];
+    await axios.post('/review', {
+      title,
+      text,
+      bookId,
+    });
   }
 }
 

@@ -124,6 +124,7 @@ body::-webkit-scrollbar {
   align-items: flex-end;
   font-family: var(--font-poppins);
   font-size: 5rem;
+  letter-spacing: -5px;
   color: #f1c90c;
   line-height: 0.7;
   cursor: pointer;
@@ -209,6 +210,8 @@ body::-webkit-scrollbar {
   display: grid;
   grid-template-rows: min-content min-content auto;
   cursor: pointer;
+  color: black;
+  text-decoration: none;
 }
 
 .member-books__book__title {

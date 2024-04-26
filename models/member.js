@@ -43,6 +43,9 @@ module.exports = class Member extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Member.hasMany(db.Book, { foreignKey: 'order', sourceKey: 'id'});
+    db.Member.hasMany(db.Review, { foreignKey: 'MemberId', sourceKey: 'id'}); // 3. Review의 외래키, 작성자
+    db.Member.belongsToMany(db.Review, { through: 'ReviewLike'}); // 4. Review의 좋아요 한번만 클릭 위해 
+    db.Member.hasMany(db.Meeting, { foreignKey: 'MemberId', sourceKey: 'id'}); // 6. Meeting의 외래키, 작성자
+    db.Member.belongsToMany(db.Meeting, { through: 'MeetingLike'}); // 7. Meeting의 좋아요 한번만 클릭 위해 
   }
 }

@@ -19,6 +19,10 @@ module.exports = class Book extends Sequelize.Model {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
+      MemberId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
     }, {
       sequelize,
       timestamps: false,
@@ -32,6 +36,6 @@ module.exports = class Book extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Book.belongsTo(db.Member, { foreignKey: 'order', targetKey: 'id'});
+    db.Book.hasMany(db.Review, { foreignKey: 'BookId', sourceKey: 'id'}); // 5. Review의 외래키, 어떤 책에 대한 리뷰
   }
 }

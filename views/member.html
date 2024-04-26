@@ -29,17 +29,6 @@
       {% elif member.id === 2 %}
       <div class="member__name">
         <div class="member__hangul">
-          ㄱㅏ
-          <br>
-          ㅇㅖ 
-          <br>
-          ㄹㅣㅁ
-        </div>
-        <div class="member__alphabet">Kang Yerim</div>
-      </div>
-      {% elif member.id === 3 %}
-      <div class="member__name">
-        <div class="member__hangul">
           ㄱㅣㅁ
           <br>
           ㅈㅓㅇ 
@@ -47,6 +36,17 @@
           ㄱㅕㅇ
         </div>
         <div class="member__alphabet">Kim Jungkyung</div>
+      </div>
+      {% elif member.id === 3 %}
+      <div class="member__name">
+        <div class="member__hangul">
+          ㄱㅏ
+          <br>
+          ㅇㅖ 
+          <br>
+          ㄹㅣㅁ
+        </div>
+        <div class="member__alphabet">Kang Yerim</div>
       </div>
       {% elif member.id === 4 %}
       <div class="member__name">
@@ -65,8 +65,8 @@
         <div class="member__info-bottom">
           <div id="member__info__nick">nickname&nbsp;<div class="member__info__nick">{{member.nick}}</div></div>
           <div class="member__info__numbers">
-            <div class="member__info__numbers__books" data-type="books">3<span class="member__info__numbers__books--total">&nbsp;/&nbsp;12</span></div>
-            <div class="member__info__numbers__attendance" data-type="attendance">12<span class="member__info__numbers__attendance--total">&nbsp;/&nbsp;12</span></div>
+            <div class="member__info__numbers__books" data-type="books">{{orderBooks}}<span class="member__info__numbers__books--total">&nbsp;/&nbsp;{{totalBooks}}</span></div>
+            <div class="member__info__numbers__attendance" data-type="attendance">{{attendCount}}<span class="member__info__numbers__attendance--total">&nbsp;/&nbsp;{{totalBooks}}</span></div>
             <div class="tooltip books-tooltip" hidden>
               추천 횟수&nbsp;/&nbsp;총 도서 권수
             </div>
@@ -85,21 +85,13 @@
         <a href="/" class="member-books__nav__home">Home</a>
       </div>
       <div class="member-books__container">
-        <a class="member-books__book">
-          <div class="member-books__book__title">공정하다는 착각</div>
-          <div class="member-books__book__author">마이클 샌델</div>
+        {% for book in books %}
+        <a href="/book/{{book.id}}" class="member-books__book">
+          <div class="member-books__book__title">{{book.title}}</div>
+          <div class="member-books__book__author">{{book.author}}</div>
           <div class="member-books__book__blank"></div>  
         </a>
-        <a class="member-books__book">
-          <div class="member-books__book__title">공정하다는 착각</div>
-          <div class="member-books__book__author">마이클 샌델</div>
-          <div class="member-books__book__blank"></div>  
-        </a>
-        <a class="member-books__book">
-          <div class="member-books__book__title">공정하다는 착각</div>
-          <div class="member-books__book__author">마이클 샌델</div>
-          <div class="member-books__book__blank"></div>  
-        </a>
+        {% endfor %}
         <div class="member-books__blank">
           YOU
           <br>

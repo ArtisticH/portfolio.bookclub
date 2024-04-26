@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = class Meeting extends Sequelize.Model {
+module.exports = class Review extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
       title: {
@@ -16,12 +16,16 @@ module.exports = class Meeting extends Sequelize.Model {
         allowNull: false,
         defaultValue: 0,
       },
+      overText: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
     }, {
       sequelize,
       timestamps: true,
       underscored: false,
-      modelName: 'Meeting',
-      tableName: 'meetings',
+      modelName: 'Review',
+      tableName: 'reviews',
       paranoid: true,
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',
@@ -29,8 +33,8 @@ module.exports = class Meeting extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Meeting.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); // 6. Meeting의 외래키, 작성자
-    db.Meeting.belongsToMany(db.Member, { through: 'MeetingLike'}); // 7. Meeting의 좋아요 한번만 클릭 위해 
-    db.Meeting.hasMany(db.Comment, { foreignKey: 'MeetingId', sourceKey: 'id'}); // 8. 게시글의 댓글, 
+    db.Review.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); // 3. Review의 외래키, 작성자
+    db.Review.belongsToMany(db.Member, { through: 'ReviewLike'}); // 4. Review의 좋아요 한번만 클릭 위해 
+    db.Review.belongsTo(db.Book, { foreignKey: 'BookId', targetKey: 'id'}); // 5. Review의 외래키, 어떤 책에 대한 리뷰
   }
 }

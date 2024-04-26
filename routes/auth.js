@@ -22,8 +22,7 @@ router.post('/signup', isNotLoggedIn, async (req, res) => {
       password: hash,
     });
     console.log('4. 회원가입이 완료되었습니다 alert창 띄우기');
-    res.locals.joined = true;
-    return res.redirect('/');  
+    return res.redirect('/');
   } catch (error) {
     console.log('회원가입 오류', error);
     return next(error);
@@ -33,16 +32,17 @@ router.post('/signup', isNotLoggedIn, async (req, res) => {
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
   console.log('2 로그인 라우터 입성', "passport.authenticate('local'..작동", 'req객체의 이메일과 비번',  req.body.email, req.body.password);
   passport.authenticate('local', (authError, user, info) => {
+    console.log('7 authenticate cb입성:', user);
     if(authError) {
       console.error('authError', authError);
       return next(authError);
     }
     if(!user) {
       console.log('로그인 실패');
-      return res.redirect('/'); // redirect는 라우터
+      return res.redirect('/'); 
     }
     return req.login(user, (loginError) => {
-      console.log('8 req.login 호출,', user);
+      console.log('9 req.login cb호출,', user);
       if(loginError) {
         console.error('loginError', loginError);
         return next(loginError);
@@ -52,27 +52,12 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
   })(req, res, next);
 });
 
-router.route('/logout')
-  .post(isLoggedIn, (req, res, next) => {
-    // req.logout((err) => {
-    // if (err) { return next(err); }
-    // console.log('여기1', req.body.answer);
-    // console.log('로그아웃 완료?', req.user);
-    // res.locals.user = null;
-    // console.log(req.user, res.locals.user); // null
-    // req.session.destroy();
-    // console.log('세션 디스트로이,', req.session, req.sessionID);
-    // return res.json({ dd: 'dd' });
-    // });
-    if(req.body.answer) {
-      console.log('여기1', req.body.answer);
-      req.user = null;
-      console.log('로그아웃 완료?', req.user);
-      console.log(req.user, res.locals.user); // null
-      req.session.destroy();
-      console.log('세션 디스트로이,', req.session, req.sessionID);
-}});
-
-
+router.get('/logout', isLoggedIn, (req, res) => {
+  req.logout((err) => {
+    if (err) { return next(err); }
+    req.session.destroy();
+    return res.redirect('/');
+  });
+});
 
 module.exports = router;

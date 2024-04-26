@@ -2,6 +2,7 @@
   --font-Merriweather: "Merriweather", serif;
   --font-poppins: "Poppins", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
+  --font-korean: "Noto Sans KR", sans-serif;
   --main-scroll-y: 1700%;
 }
 
@@ -324,6 +325,48 @@ body::-webkit-scrollbar {
 .main__bottom-left {
   background-color: #0c3aa5;
   border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.main__bottom-left__hi {
+  font-family: var(--font-poppins);
+  font-size: 1.5rem;
+  font-weight: 200;
+  letter-spacing: -1.5px;
+  color: white;
+}
+
+.main__bottom-left__nick {
+  display: block;
+  font-family: var(--font-korean);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -1.5px;
+  color: white;
+}
+
+.main__bottom-left__nick:hover {
+  color: black;
+}
+
+.main__bottom-left__wishlist {
+  margin-top: 5px;
+  font-family: var(--font-poppins);
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 400;
+  letter-spacing: -1.5px;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+}
+
+.main__bottom-left__wishlist:hover {
+  color: black;
 }
 
 /* .main__bottom-right --------------------------------------------------------------------------------------------------------------------------- */

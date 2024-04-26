@@ -111,28 +111,64 @@ body::-webkit-scrollbar {
   font-style: normal;
 }
 
-#member__attendance {
-  font-family: var(--font-poppins);
-  font-size: 2rem;
+.member__info__numbers {
   display: flex;
   align-items: flex-end;
-
+  justify-content: space-between;
+  position: relative;
 }
 
-.member__attendance {
+.member__info__numbers__books,
+.member__info__numbers__attendance {
+  display: flex;
+  align-items: flex-end;
   font-family: var(--font-poppins);
-  font-size: 7rem;
+  font-size: 5rem;
   color: #f1c90c;
   line-height: 0.7;
+  cursor: pointer;
 }
 
-.member__attendance__total {
+.member__info__numbers__books {
+  justify-content: flex-start;
+}
+
+.member__info__numbers__attendance {
+  justify-content: flex-end;
+}
+
+.member__info__numbers__books--total,
+.member__info__numbers__attendance--total {
   font-family: var(--font-poppins);
-  font-size: 4rem;
-  letter-spacing: -4px;
+  color: black;
+  font-size: 2rem;
+  letter-spacing: -2px;
   line-height: 0.6;
 }
 
+.tooltip {
+  position: absolute;
+  top: 0;
+  transform: translateY(-150%);
+  border: 1px solid red;
+  font-family: var(--font-notoKR);
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: -1px;
+  background-color: white;
+  border: 0.5px solid black;
+  border-radius: 2px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+}
+
+.books-tooltip {
+  left: 0;
+}
+
+.attendance-tooltip {
+  right: 0;
+}
 .member-books {
   border: 0.5px solid black;
 }
@@ -200,9 +236,9 @@ body::-webkit-scrollbar {
   border: 1px solid black;
   aspect-ratio: 1 / 1.5;
   margin-bottom: 20px;
-  font-size: 2rem;
+  font-size: 1.5rem;
   line-height: 1.5;
-  letter-spacing: -2px;
+  letter-spacing: -1.5px;
   font-family: var(--font-rock);
   background-color: black;
   color: #f4f16c;
@@ -280,11 +316,6 @@ body::-webkit-scrollbar {
     font-size: 1.8rem;
     letter-spacing: -1.8px;
   }
-    
-  .member-books__blank {
-    font-size: 2.5rem;
-    color: #f4f16c;
-  }  
 }
 
 @media all and (min-width: 1400px) {

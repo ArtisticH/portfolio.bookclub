@@ -46,6 +46,7 @@ app.use(session({
     httpOnly: true,
     secure: false,
   },
+  name: 'book-club',
 }));
 app.use(passport.initialize());
 app.use(passport.session());

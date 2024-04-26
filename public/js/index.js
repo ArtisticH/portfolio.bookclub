@@ -56,12 +56,9 @@ class Index {
     });    
     /* --------------------------------------------------------------------------------------------------------- */
     /* signUpAlert */
-    this.$main = document.getElementById('main');
-    this.signUpAlert = this.signUpAlert.bind(this);
-    /* --------------------------------------------------------------------------------------------------------- */
-    /* 로그아웃 하시겠습니까? 전송 */
-    this.logoutConfirm = this.logoutConfirm.bind(this);
-    this.$mainClickLogout && this.$mainClickLogout.addEventListener('click', this.logoutConfirm);
+    // this.signUpAlert = this.signUpAlert.bind(this);
+    // this.$signupForm = document.querySelector('.signup');
+    // this.$signupForm.addEventListener('submit', this.signUpAlert);
   }
 
   // 스크롤하면 Books, Members, Meetings, Fun의 화면을 보여주고 색상, 타이틀 변형
@@ -115,19 +112,7 @@ class Index {
     this.$formTarget = e.currentTarget.closest('.form-target');
     this.$formTarget.classList.remove('show');
   }
-
-  signUpAlert() {
-    if(this.$main.dataset.joined) {
-      alert('회원가입이 완료되었습니다!');
-    }
-  }
-
-  async logoutConfirm() {
-    const answer = confirm('로그아웃 하시겠습니까?');
-    await axios.post('/auth/logout', { answer });
-  }
 }
 
 const index = new Index();
 window.addEventListener('scroll', index.scroll);
-window.addEventListener('load', index.signUpAlert);

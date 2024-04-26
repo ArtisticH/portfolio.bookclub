@@ -43,6 +43,6 @@ module.exports = class Member extends Sequelize.Model {
   }
 
   static associate(db) {
-    // db.Member.hasMany(db.Book, { foreignKey: 'recommender', sourceKey: 'id'});
+    db.Member.hasMany(db.Book, { foreignKey: 'order', sourceKey: 'id'});
   }
 }

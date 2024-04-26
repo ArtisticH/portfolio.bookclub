@@ -10,18 +10,18 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="main" data-joined="{{joined}}">
+  <section id="main">
     <div class="main__top">
       <div class="main__top-left">
         <div class="main__top-left__title">Book Club</div>
         <div class="main__top-left__click">
           <!-- 로그인 후라면 LOGOUT 요소와 아무것도 없는 빈 요소를 보여주고 -->
           {% if user and user.id %}
-          <div class="main__top-left__click__logout">LOGOUT</div>
+          <a href="/auth/logout" class="main__top-left__click__logout">LOGOUT</a>
           <div class="main__top-left__click__logout__blank"></div>
           {% endif %}
           {% if user === undefined %}
@@ -99,7 +99,12 @@
       {% endif %}  
     </div>
     <div class="main__bottom">
-      <div class="main__bottom-left"></div>
+      <div class="main__bottom-left">
+        {% if user and user.id %}
+        <div class="main__bottom-left__hi">HELLO! <a href="/member/{{user.id}}" class="main__bottom-left__nick">{{user.nick}}</a></div>
+        <a href="/wishlist/{{user.id}}" class="main__bottom-left__wishlist">WISHLIST</a>  
+        {% endif %} 
+      </div>
       <div class="main__bottom-right">
         <div class="main__bottom-right__names">
           <div class="main__name">Seo Hanna</div>

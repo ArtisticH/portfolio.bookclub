@@ -32,6 +32,6 @@ module.exports = class Book extends Sequelize.Model {
   }
 
   static associate(db) {
-    // db.Book.belongsTo(db.Member, { foreignKey: 'recommender', targetKey: 'id'});
+    db.Book.belongsTo(db.Member, { foreignKey: 'order', targetKey: 'id'});
   }
 }

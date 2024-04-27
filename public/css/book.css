@@ -174,11 +174,24 @@ clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 */
 
 .book__rate__star {
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   background-color: white;
   width: 30px;
   height: 30px;
 }
+
+.book__rate__star.full {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.book__rate__star.half {
+  clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.book__rate__star.empty {
+  opacity: 0.5;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
 
 .book__rate__number {
   font-family: var(--font-montserrat);
@@ -270,6 +283,13 @@ clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   letter-spacing: -1px;
   cursor: pointer;
   color: grey;
+}
+
+.review-box__info__type {
+  font-family: var(--font-poppins);
+  color: #0c3aa5;
+  font-size: 0.8rem;
+  letter-spacing: -1px;
 }
 
 .review-box__text {

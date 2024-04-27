@@ -101,8 +101,10 @@
     <div class="main__bottom">
       <div class="main__bottom-left">
         {% if user and user.id %}
-        <div class="main__bottom-left__hi">HELLO! <a href="/member/{{user.id}}" class="main__bottom-left__nick">{{user.nick}}</a></div>
-        <a href="/wishlist/{{user.id}}" class="main__bottom-left__wishlist">WISHLIST</a>  
+        <div class="main__bottom-left--flex">
+          <a href="/member/{{user.id}}" class="main__bottom-left__nick">{{user.nick}},</a>
+          <a href="/wishlist/{{user.id}}" class="main__bottom-left__wishlist">WISHLIST</a>    
+        </div>
         {% endif %} 
       </div>
       <div class="main__bottom-right">

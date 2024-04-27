@@ -325,17 +325,12 @@ body::-webkit-scrollbar {
 .main__bottom-left {
   background-color: #0c3aa5;
   border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
 }
 
-.main__bottom-left__hi {
-  font-family: var(--font-poppins);
-  font-size: 1.5rem;
-  font-weight: 200;
-  letter-spacing: -1.5px;
-  color: white;
+.main__bottom-left--flex {
+  display: flex;
+  align-items: flex-end;
+  padding: 10px;
 }
 
 .main__bottom-left__nick {
@@ -344,9 +339,11 @@ body::-webkit-scrollbar {
   cursor: pointer;
   text-decoration: none;
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 300;
   letter-spacing: -1.5px;
+  line-height: 1;
   color: white;
+  margin-right: 5px;
 }
 
 .main__bottom-left__nick:hover {
@@ -361,8 +358,8 @@ body::-webkit-scrollbar {
   font-weight: 400;
   letter-spacing: -1.5px;
   cursor: pointer;
-  display: block;
   text-decoration: none;
+  line-height: 0.8;
 }
 
 .main__bottom-left__wishlist:hover {

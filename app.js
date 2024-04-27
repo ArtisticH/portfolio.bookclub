@@ -12,6 +12,7 @@ const pageRouter = require('./routes/page');
 const bookRouter = require('./routes/book');
 const memberRouter = require('./routes/member');
 const authRouter = require('./routes/auth');
+const reviewRouter = require('./routes/review');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -54,6 +55,7 @@ app.use(passport.session());
 app.use('/book', bookRouter);
 app.use('/member', memberRouter);
 app.use('/auth', authRouter);
+app.use('/review', reviewRouter);
 app.use('/', pageRouter);
 
 app.use((req, res, next) => {

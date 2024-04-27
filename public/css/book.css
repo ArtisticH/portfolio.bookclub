@@ -474,6 +474,7 @@ clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   opacity: 0.5;
   width: 25px;
   height: 25px;
+  transition: opacity 0.2s ease-out;
 }
 
 .review-form__input__title {
@@ -489,6 +490,26 @@ clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   font-family: var(--font-notoKR);
 }
 
+#review-form__text__length {
+  width: 100%;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: var(--font-poppins);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+
+.review-form__text__length {
+  color: #0c3aa5;
+}
+
+.review-form__text__length__limit {
+  color: grey;
+}
+
 #review-form__text {
   width: 100%;
   border: 1px solid black;
@@ -497,8 +518,8 @@ clip-path: polygon(50% 0%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   appearance: none;
   padding: 10px;
   box-sizing: border-box;
-  margin: 20px 0;
   font-family: var(--font-notoKR);
+  margin-bottom: 20px;
 }
 
 .review-form__submit {

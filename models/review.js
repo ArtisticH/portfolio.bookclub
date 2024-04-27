@@ -20,6 +20,10 @@ module.exports = class Review extends Sequelize.Model {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },
+      stars: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
     }, {
       sequelize,
       timestamps: true,

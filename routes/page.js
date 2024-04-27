@@ -1,6 +1,7 @@
 const express = require('express');
 const Book = require('../models/book');
 const Member = require('../models/member');
+const Review = require('../models/review');
 
 const router = express.Router();
 
@@ -31,8 +32,17 @@ router.get('/fun', (req, res) => {
   res.render('fun');
 });
 
-router.post('/review', (req, res) => {
-  console.log(req.body.title, req.body.text, req.body.bookId);
-});
+router.route('/review')
+  .post(async (req, res) => {
+    const review = await Review.create({
+      title: req.body.title,
+      text: req.body.text,
+      overText: req.body.overText,
+      stars: req.body.stars,
+      BookId: req.body.bookId,
+      MemberId: req.user.id,
+    });
+    res.status(201).json(review);
+})
 
 module.exports = router;

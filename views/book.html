@@ -252,16 +252,17 @@
             <div class="review-form__info__title">{{book.title}}</div>
             <div class="review-form__info__author">{{book.author}}</div>
             <div class="review-form__stars">
-              <div class="review-form__star"></div>
-              <div class="review-form__star"></div>
-              <div class="review-form__star"></div>
-              <div class="review-form__star"></div>
-              <div class="review-form__star"></div>
+              <div class="review-form__star" data-star="0"></div>
+              <div class="review-form__star" data-star="1"></div>
+              <div class="review-form__star" data-star="2"></div>
+              <div class="review-form__star" data-star="3"></div>
+              <div class="review-form__star" data-star="4"></div>
             </div>
           </div>
         </div>
         <div class="review-form-input">
           <input type="text" name="title" class="review-form__input__title" placeholder="제목을 입력해주세요">
+          <div id="review-form__text__length"><span class="review-form__text__length">0</span>&nbsp;/&nbsp;<span class="review-form__text__length__limit"></span></div>
           <textarea name="text" id="review-form__text" cols="30" rows="10" placeholder="내용을 3000자 이내로 입력해주세요"></textarea>
           <input class="review-form__submit" type="submit" value="등록">  
         </div>

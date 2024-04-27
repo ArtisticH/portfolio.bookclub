@@ -2,8 +2,15 @@ const express = require('express');
 const Book = require('../models/book');
 const Member = require('../models/member');
 const Review = require('../models/review');
+const { dateChange, memberType, calculateRate } = require('../routes/tools');
+
 
 const router = express.Router();
+
+router.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
 
 router.get('/:id', async (req, res) => {
   try {
@@ -27,21 +34,34 @@ router.get('/:id', async (req, res) => {
 
     const starshapes = calculateRate(starSum);
 
-    const reviewBoxes = await Review.findAll({
+    const reviewResults = await Review.findAll({
       include: [{
         model: Book,
         where: { id: req.params.id}
       }, {
         model: Member,
-        where: { id: req.user.id }
       }], 
     });
 
-    console.log(
-      reviewBoxes,
-      reviewBoxes.Books,
-      reviewBoxes.Members,
-    )
+    reviewResults.reverse();
+
+    const reviewBoxes = [];
+
+    reviewResults.forEach(item => {
+      reviewBoxes[reviewBoxes.length] = {
+        title: item.title,
+        text: item.text,
+        like: item.like,
+        overText: item.overText,
+        stars: calculateRate(item.stars),
+        createdAt: dateChange(item.createdAt),
+        MemberId: item.Member.id,
+        nick: item.Member.nick,
+        type: memberType(item.Member.type),
+      }
+    });
+
+    console.log(reviewBoxes);
 
     res.render('book', {
       book,
@@ -49,45 +69,11 @@ router.get('/:id', async (req, res) => {
       member,
       starSum,
       starshapes,
+      reviewBoxes,
     });  
   } catch(err) {
     console.error(err);
   }
 });
-
-function calculateRate(star) {
-  let array = [];
-
-  if(star % 1 === 0) {
-    array = Array.from({ length: 5 }, (_, index) => {
-      if(index + 1 <= star) {
-        return 'full';
-      } else {
-        return 'empty';
-      }  
-    });
-
-  } else {
-    let decimal = star % 1;
-    const essence = Math.floor(star);
-
-    if (decimal < 0.5) {
-      decimal = 0;
-    } else if (0.5 <= decimal) {
-      decimal = 0.5;
-    }
-
-    array = Array.from({ length: 5 }, (_, index) => {
-      if(index + 1 <= essence) {
-        return 'full';
-      } else if(index + 1 === essence + 1 && decimal === 0.5) {
-        return 'half';
-      } else {
-        return 'empty';
-      }  
-    });
-  }
-  return array;
-}
 
 module.exports = router;

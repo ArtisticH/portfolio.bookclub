@@ -41,7 +41,9 @@
             <div class="book__rate">
               <div class="book__rate__stars">
                 {% for starshape in starshapes %}
-                <div class="book__rate__star {{starshape}}"></div>
+                <div class="book__rate__star--relative">
+                  <div class="book__rate__star {{starshape}}"></div>
+                </div>
                 {% endfor %}
               </div>
               <div class="book__rate__number">
@@ -55,24 +57,26 @@
     </div>
     <div class="book-right">
       <div class="review">
-        <div class="review__title">Review&nbsp;(<span class="review-title__total">17</span>)</div>
+        <div class="review__title">Review&nbsp;(<span class="review-title__total">{{reviewBoxes.length}}</span>)</div>
         <div class="review__write">리뷰 작성</div>
       </div>
-      {% for reviewbox in reviewboxs %}
+      {% for reviewbox in reviewBoxes %}
       <div class="review-box">
         <div class="review-box__title">{{reviewbox.title}}</div>
         <div class="review-box__info">
           <div class="review-box__info__stars">
             {% for starshape in reviewbox.stars %}
             <div class="review-box__info__stars__star {{starshape}}"></div>
+            {% endfor %}
           </div>
           <div class="review-box__info__line"></div>
           <div class="review-box__info__type">{{reviewbox.type}}</div>
           <div class="review-box__info__line"></div>
-          <div class="review-box__info__nickname">{{reviewbox.nick}}</div>
+          <a href="/member/{{reviewbox.MemberId}}" class="review-box__info__nickname">{{reviewbox.nick}}</a>
           <div class="review-box__info__line"></div>
           <div class="review-box__info__date">{{reviewbox.createdAt}}</div>
-          {% if user.id === reviewbox.MemberId %}
+          <!-- 현재 로그인한 회원과 작성 회원이 같다면 -->
+          {% if user.id == reviewbox.MemberId %} 
           <div class="review-box__info__line"></div>
           <div class="review-box__info__edit">수정</div>
           <div class="review-box__info__line"></div>
@@ -87,6 +91,8 @@
             <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
           </div>
           {% endif %}
+          <!-- 더보기가 없을때 하트가 오른쪽에 위치하기 위해 필요한 빈 요소 -->
+          <div></div>
           <div class="review-box__heart">
             <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
             <div class="review-box__heart__total">{{reviewbox.like}}</div>

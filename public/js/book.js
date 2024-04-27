@@ -29,6 +29,10 @@ class Book {
       this.$reviewForm.style.display = '';
       document.body.style.overflow = '';
     } else if(e.currentTarget === this.$reviewWriteBtn) {
+      this.reviewFormStar = null;
+      [...this.$reviewFormStars.children].forEach((item) => {
+        item.style.opacity = '';
+      });
       this.$reviewForm.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
@@ -76,6 +80,7 @@ class Book {
         stars: this.reviewFormStar,
         bookId: this.bookId,
       });  
+      this.getReviews();
     } catch (err) {
       console.error(err);
     }
@@ -84,6 +89,12 @@ class Book {
     this.$textLengthElem.textContent = 0;
     this.$reviewForm.style.display = '';
     document.body.style.overflow = '';
+  }
+
+  async getReviews() {
+    const res = await axios.get(`/review/${this.bookId}`);
+    
+    
   }
 }
 

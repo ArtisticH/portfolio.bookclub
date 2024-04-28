@@ -47,12 +47,23 @@ class Index {
     "linear-gradient(to top, #fff1eb 0%, #f3861a 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #de3d1f 100%)"];
     // main__top-right 타이틀
+    // /books, /members, /meetings, /fun 으로 연결, routes/page.js
     this.toprightTitle = ["Books", "Members", "Meetings", "Fun"];
     // main__bottom-left 색상
     this.bottomleftBackgroundColor = ["#0c3aa5", "#f1ca0b", "#f06312", "#ab181b"];
     this.scrollIndex = null;
     // 이벤트 핸들러 this에 인스턴스 할당
     this.funScroll = this.funScroll.bind(this);
+
+    /* --------------------------------------------------------------------------------------------------------- */
+    /* 4. userCard 드래그 앤 드롭 */
+    this.shiftX = null;
+    this.shiftY = null;
+    this.$user = document.getElementById('user');
+    this.funDragDrop = this.funDragDrop.bind(this);
+    this.funPointerMove = this.funPointerMove.bind(this);
+    this.funPointerUp = this.funPointerUp.bind(this);
+    this.$user.addEventListener('pointerdown', this.funDragDrop);
   }
 
   // 1. LOG IN, SIGN UP 폼 등장
@@ -86,7 +97,7 @@ class Index {
       this.funChange(this.scrollIndex);
     }
   }
-
+  // 3. 스크롤 효과
   funChange(index) {
     // main__top-left
     this.$mainClickLogin && (this.$mainClickLogin.style.backgroundColor = `${this.bottomleftBackgroundColor[index]}`);
@@ -102,6 +113,35 @@ class Index {
     this.$mainTopNumber.textContent = index + 1;
     // main__bottom-left
     this.$mainBottomLeft.style.backgroundColor = `${this.bottomleftBackgroundColor[index]}`;
+  }
+
+  // 4. 드래그 앤 드롭
+  funDragDrop(e) {
+    this.shiftX = e.clientX - this.$user.getBoundingClientRect().left;
+    this.shiftY = e.clientY - this.$user.getBoundingClientRect().top;
+    this.$user.style.zIndex = 1000;
+
+    this.funMoveAt(e.clientX, e.clientY);
+    
+    document.addEventListener('pointermove', this.funPointerMove);
+    this.$user.addEventListener('pointerup', this.funPointerUp);
+    this.$user.addEventListener('dragstart', (e) => {
+      e.preventDefault();
+    });
+  }
+  // 4. 드래그 앤 드롭
+  funMoveAt(clientX, clientY) {
+    this.$user.style.left = clientX - this.shiftX + 'px';
+    this.$user.style.top = clientY - this.shiftY + 'px';
+  }
+  // 4. 드래그 앤 드롭
+  funPointerMove(e) {
+    this.funMoveAt(e.clientX, e.clientY);
+  }
+  // 4. 드래그 앤 드롭
+  funPointerUp() {
+    document.removeEventListener('pointermove', this.funPointerMove);
+    this.$user.removeEventListener('pointerup', this.funPointerUp);
   }
 }
 

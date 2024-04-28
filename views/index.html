@@ -20,14 +20,14 @@
         <div class="main__top-left__title">Book Club</div>
         <!-- 로그인 안 한 상태에서 로그인 or 회원가입 버튼 노출 -->
         <!-- main__top-left__btn는 이벤트 위임을 위해 -->
-        {% if user === undefined %}
+        {% if not user %}
         <div class="main__top-left__click">
           <div class="main__top-left__click__login main__top-left__btn" data-form-type="login">LOG IN</div>
           <div class="main__top-left__click__signup main__top-left__btn" data-form-type="signup">SIGN UP</div>
         </div>
         {% endif %}
       </div>
-      {% if user === undefined %}
+      {% if not user %}
       <!-- 로그인한 상태가 아니라면 로그인과 회원가입 폼을 노출한다. -->
       <!-- id는 data-form-type="login"를 위해서 -->
       <div id="login" class="form-target">
@@ -109,7 +109,7 @@
     </div>
     {% if user and user.id %}
     <div id="user">
-      <a href="/member/{{user.id}}" class="user__nick">서망고님</a>
+      <a href="/member/{{user.id}}" class="user__nick">{{user.nick}}</a>
       <div class="user__wishlist-box">
         <div class="user__wishlist__text">CHECK YOUR WISHLIST</div>
         <a href="/wishlist/{{user.id}}" class="user__wishlist">WISHLIST</a>   

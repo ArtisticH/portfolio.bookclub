@@ -60,4 +60,30 @@ router.get('/:bookId', async (req, res) => {
   res.json(reviewBoxes);  
 });
 
+router.get('/:bookid/page/:pagenumber', async (req, res) => {
+  const bookId = req.params.bookid;
+  const pageNumber = req.params.pagenumber;
+  const reviews = await Review.findAll({
+    include: [{
+      model: Book,
+      where: { id: bookId }
+    }, {
+      model: Member,
+    }], 
+  });
+  const offset = reviews.length - 5 * pageNumber;
+  const results = await Review.findAll({
+    include: [{
+      model: Book,
+      where: { id: bookId }
+    }, {
+      model: Member,
+    }], 
+    offset,
+    limit: 5,
+  });
+  results.reverse();
+  res.json({ results });
+});
+
 module.exports = router;

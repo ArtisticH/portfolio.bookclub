@@ -18,6 +18,13 @@ class Book {
     this.textLength = this.textLength.bind(this);
     this.$textarea.addEventListener('input', this.textLength);
 
+    this.$pageNumbers = document.querySelector('.review-paganation__numbers');
+    this.pageNumbers = this.pageNumbers.bind(this);
+    this.$pageNumbers.addEventListener('click', this.pageNumbers);
+
+    // DOM 조작
+
+
     this.$reviewFormCancelBtn.onclick = this.reviewForm.bind(this);
     this.$reviewWriteBtn.onclick = this.reviewForm.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -93,8 +100,25 @@ class Book {
 
   async getReviews() {
     const res = await axios.get(`/review/${this.bookId}`);
-    
-    
+  }
+
+  async pageNumbers(e) {
+    // 페이지네이션, 처음에 1, 2, 3, 4, 5 중에서 2라든가 3이라든가 선택하면 서버에 요청 보내고 받아서 AJAX
+    // /review/{{book.id}}/page/{{pageNumber}}
+    e.preventDefault();
+    const target = e.target;
+    if(!target.closest('.review-paganation__number')) return;
+    const href = target.href;
+    const res = await axios.get(`${href}`);
+    this.pageDOM(res.data.results);
+  }
+
+  // AJAX + DOM 조작
+  pageDOM(data) {
+    console.log(data)
+    for(let i of data) {
+      console.log(i);
+    }
   }
 }
 

@@ -28,9 +28,10 @@ router.get('/:id', async (req, res) => {
       attributes: ['stars'],
     });
 
-    const starSum = [...stars].reduce((acc, cur, index, arr) => {
+    let starSum = [...stars].reduce((acc, cur, index, arr) => {
       return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
     }, 0);
+    starSum = Math.floor(starSum * 10) / 10;
 
     const starshapes = calculateRate(starSum);
 
@@ -44,24 +45,61 @@ router.get('/:id', async (req, res) => {
     });
 
     reviewResults.reverse();
+    const reviewBoxesLength = reviewResults.length;
 
     const reviewBoxes = [];
+    let pageNumbers = [];
 
-    reviewResults.forEach(item => {
-      reviewBoxes[reviewBoxes.length] = {
-        title: item.title,
-        text: item.text,
-        like: item.like,
-        overText: item.overText,
-        stars: calculateRate(item.stars),
-        createdAt: dateChange(item.createdAt),
-        MemberId: item.Member.id,
-        nick: item.Member.nick,
-        type: memberType(item.Member.type),
+    if(reviewResults.length >= 5) {
+      // 리뷰가 5개 이상이면 뒤에서부터 5개만 보내, 한 페이지에 보여지는 리뷰는 5개
+      for(let i = 0; i < 5; i++) {
+        reviewBoxes[reviewBoxes.length] = {
+          title: reviewResults[i].title,
+          text: reviewResults[i].text,
+          like: reviewResults[i].like,
+          overText: reviewResults[i].overText,
+          stars: calculateRate(reviewResults[i].stars),
+          createdAt: dateChange(reviewResults[i].createdAt),
+          MemberId: reviewResults[i].Member.id,
+          nick: reviewResults[i].Member.nick,
+          type: memberType(reviewResults[i].Member.type),
+        }
+      }  
+    } else if(reviewResults.length < 5) {
+      // 리뷰가 5개 이하면 그 갯수만큼 보내, 그리고 페이지는 1만 있을것임. 
+      for(let i = 0; i < reviewResults.length; i++) {
+        reviewBoxes[reviewBoxes.length] = {
+          title: reviewResults[i].title,
+          text: reviewResults[i].text,
+          like: reviewResults[i].like,
+          overText: reviewResults[i].overText,
+          stars: calculateRate(reviewResults[i].stars),
+          createdAt: dateChange(reviewResults[i].createdAt),
+          MemberId: reviewResults[i].Member.id,
+          nick: reviewResults[i].Member.nick,
+          type: memberType(reviewResults[i].Member.type),
+        }
+      }  
+    }
+
+    if(reviewResults.length >= 25) {
+      // 만약 리뷰 갯수가 25개 이상이라면 페이지가 1, 2, 3, 4, 5 다 있을 것이고, 
+      pageNumbers = [1, 2, 3, 4, 5];
+    } else {
+      // 리뷰 갯수가 25개 미만이라면
+      const share = Math.floor(reviewResults.length / 5);
+      if(reviewResults.length % 5 === 0) {
+        // 만약 5의 배수라면 예를 들어 20개라면 1, 2, 3, 4만 있을 것
+        for(let i = 1; i <= share; i++) {
+          pageNumbers[pageNumbers.length] = i;
+        }
+      } else {
+        // 5의 배수가 아니라면, 예를 들어 17개라면 (몫 + 1)의 페이지 갯수인 1, 2, 3, 4가 될 것임.
+        for(let i = 1; i <= (share + 1); i++) {
+          pageNumbers[pageNumbers.length] = i;
+        }
       }
-    });
-
-    console.log(reviewBoxes);
+    }
 
     res.render('book', {
       book,
@@ -70,6 +108,8 @@ router.get('/:id', async (req, res) => {
       starSum,
       starshapes,
       reviewBoxes,
+      reviewBoxesLength,
+      pageNumbers,
     });  
   } catch(err) {
     console.error(err);

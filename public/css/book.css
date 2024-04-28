@@ -404,7 +404,10 @@ body::-webkit-scrollbar {
 }
 
 .review-paganation__number {
-  margin-right: 15px;
+  margin: 0 5px;
+  text-decoration: none;
+  display: block;
+  color: black;
 }
 
 .review-last-number {

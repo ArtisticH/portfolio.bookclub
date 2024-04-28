@@ -3,7 +3,7 @@
   --font-poppins: "Poppins", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
   --font-korean: "Noto Sans KR", sans-serif;
-  --main-scroll-y: 1700%;
+  --downDistance: 1700%;
 }
 
 body {
@@ -22,6 +22,7 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+/* sticky 덕분에 스크롤 효과 구현 */
 #main {
   height: 100vh;
   position: sticky;
@@ -62,7 +63,7 @@ body::-webkit-scrollbar {
   padding: 0 10px;
   height: 35px;
   display: grid;
-  grid-template-columns: 6fr 4fr;
+  grid-template-columns: 4fr 6fr;
   gap: 10px;
   /* .main__top-left에 대해 */
   position: absolute;
@@ -83,29 +84,12 @@ body::-webkit-scrollbar {
   justify-content: flex-start;
   padding-left: 10px;
   cursor: pointer;
-  transition: all 0.3s ease-out;
+  transition: color 0.3s ease-out;
 }
 
-.main__top-left__click__login.colored,
-.main__top-left__click__signup.colored {
+.main__top-left__click__login:hover,
+.main__top-left__click__signup:hover {
   color: white;
-}
-
-.main__top-left__click__logout {
-  cursor: pointer;
-  background-color: #0c3aa5;
-  font-family: var(--font-montserrat);
-  letter-spacing: -1px;
-  font-size: 1.2rem;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 10px;
-}
-
-.main__top-left__click__logout__blank {
-  background-color: black;
 }
 
 /* .form-target --------------------------------------------------------------------------------------------------------------------------- */
@@ -136,7 +120,7 @@ body::-webkit-scrollbar {
 #cancel {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .cancel {
@@ -175,6 +159,15 @@ body::-webkit-scrollbar {
   align-items: center;
 }
 
+.form-target__title {
+  font-family: var(--font-montserrat);
+  font-weight: 400;
+  font-size: 1.7rem;
+  letter-spacing: -1.7px;
+  margin-bottom: 10px;
+}
+
+ /* <input>을 담은 <div>들 */
 .login__id,
 .login__pwd,
 .login__btn,
@@ -226,8 +219,7 @@ body::-webkit-scrollbar {
 }
 
 .kakao {
-  background-color: #0c3aa5;
-  color: white;
+  background-color: #fae100;
   margin-bottom: 10px;
 }
 
@@ -239,12 +231,11 @@ body::-webkit-scrollbar {
 /* .main__top-right --------------------------------------------------------------------------------------------------------------------------- */
 
 .main__top-right {
+  /* 글자가 밖으로 나가는 것에 대해 */
   overflow: hidden;
   border: 1px solid black;
   background-image: linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%);
   transition: all 0.3s ease-out;
-  /* .main__top-right__contents__scroll에 대해서 */
-  position: relative;
 }
 
 .main__top-right__title {
@@ -274,8 +265,8 @@ body::-webkit-scrollbar {
   justify-content: space-between;
   height: 50%;
   box-sizing: border-box;
+  /* 타이틀과 화살표 사이 간격 */
   padding-top: 15px;
-  width: 100%;
 }
 
 .main__top-right__arrow {
@@ -306,7 +297,7 @@ body::-webkit-scrollbar {
   font-size: 1.4rem;
   animation: main-scroll 1s ease-out infinite alternate;
 }
-
+/* 위아래로 살짝 튀어오르는 효과 */
 @keyframes main-scroll {
   0% { transform: translateY(0); }
   100% { transform: translateY(-70%); }
@@ -327,45 +318,6 @@ body::-webkit-scrollbar {
   border: 1px solid black;
 }
 
-.main__bottom-left--flex {
-  display: flex;
-  align-items: flex-end;
-  padding: 10px;
-}
-
-.main__bottom-left__nick {
-  display: block;
-  font-family: var(--font-korean);
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: -1.5px;
-  line-height: 1;
-  color: white;
-  margin-right: 5px;
-}
-
-.main__bottom-left__nick:hover {
-  color: black;
-}
-
-.main__bottom-left__wishlist {
-  margin-top: 5px;
-  font-family: var(--font-poppins);
-  font-size: 1.5rem;
-  color: white;
-  font-weight: 400;
-  letter-spacing: -1.5px;
-  cursor: pointer;
-  text-decoration: none;
-  line-height: 0.8;
-}
-
-.main__bottom-left__wishlist:hover {
-  color: black;
-}
-
 /* .main__bottom-right --------------------------------------------------------------------------------------------------------------------------- */
 
 .main__bottom-right__names {
@@ -380,6 +332,64 @@ body::-webkit-scrollbar {
   margin-bottom: 7px;
 }
 
+/* #user --------------------------------------------------------------------------------------------------------------------------- */
+
+#user {
+  aspect-ratio: 1 / 0.6;
+  width: 300px;
+  border: 1.5px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background-color: white;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.user__nick,
+.user__wishlist,
+.user__logout {
+  text-decoration: none;
+  color: black;
+}
+
+.user__nick {
+  font-family: var(--font-korean);
+  font-size: 1.5rem;
+  font-weight: 100;
+  letter-spacing: -1.5px;
+}
+
+.user__wishlist-box,
+.user__logout-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--font-poppins);
+}
+
+.user__wishlist__text {
+  font-weight: 200;
+  font-size: 1.1rem;
+  letter-spacing: -1.1px;
+}
+
+.user__wishlist {
+  font-size: 1.9rem;
+  letter-spacing: -1.9px;
+  font-weight: 500;
+  line-height: 0.8;
+}
+
+.user__logout  {
+  font-size: 1.3rem;
+  letter-spacing: -1.3px;
+  font-weight: 200;
+}
+
 /* min-width: 650px --------------------------------------------------------------------------------------------------------------------------- */
 
 @media all and (min-width: 650px) {
@@ -388,6 +398,11 @@ body::-webkit-scrollbar {
     grid-template-columns: 3fr 7fr;
   }    
 
+  .main__top-right {
+    /* min-width: 650px, .main__top-right__contents__scroll에 대해서 */
+    position: relative;
+  }
+  
   .main__top-right__contents__scroll {
     /* .main__top-right에 대해서 */
     position: absolute;
@@ -395,14 +410,15 @@ body::-webkit-scrollbar {
     right: 0;
     animation: main-scroll 4s ease-out infinite;
   }
-  
+  /* 스크롤 텍스트가 낙수 효과처럼 내려옴 */
   @keyframes main-scroll {
     0% { 
       transform: translateY(0);
       opacity: 1; 
     }
     100% { 
-      transform: translateY(var(--main-scroll-y));
+      /* 처음에는 그냥 기본값으로 1700% */
+      transform: translateY(var(--downDistance));
       opacity: 0;
     }
   }

@@ -57,7 +57,7 @@
     </div>
     <div class="book-right">
       <div class="review">
-        <div class="review__title">Review&nbsp;(<span class="review-title__total">{{reviewBoxes.length}}</span>)</div>
+        <div class="review__title">Review&nbsp;(<span class="review-title__total">{{reviewBoxesLength}}</span>)</div>
         <div class="review__write">리뷰 작성</div>
       </div>
       {% for reviewbox in reviewBoxes %}
@@ -101,25 +101,27 @@
       </div>
       {% endfor %}
       <div class="review-paganation">
+        {% if reviewBoxesLength > 25 %}
         <div class="review-paganation__first">
           <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
         </div>
+        {% endif %}
         <div class="review-paganation__before">
           <img class="review-paganation__img" src="/img/book/page-left-arrow.png" alt="page-left-arrow">
         </div>
         <div class="review-paganation__numbers">
-          <div class="review-paganation__number">1</div>
-          <div class="review-paganation__number">2</div>
-          <div class="review-paganation__number">3</div>
-          <div class="review-paganation__number review-last-number">4</div>
+          {% for pageNumber in pageNumbers %}
+          <a class="review-paganation__number" href="/review/{{book.id}}/page/{{pageNumber}}">{{pageNumber}}</a>
+          {% endfor %}
         </div>
         <div class="review-paganation__after">
           <img class="review-paganation__img" src="/img/book/page-right-arrow.png" alt="page-right-arrow">
         </div>
+        {% if reviewBoxesLength > 25 %}
         <div class="review-paganation__last">
           <img class="review-paganation__img" src="/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">
         </div>
-
+        {% endif %}
       </div>
       <form id="review-form" action="/review" method="post">
         <div class="review-form-nav">

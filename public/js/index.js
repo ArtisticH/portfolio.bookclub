@@ -63,7 +63,12 @@ class Index {
     this.funDragDrop = this.funDragDrop.bind(this);
     this.funPointerMove = this.funPointerMove.bind(this);
     this.funPointerUp = this.funPointerUp.bind(this);
-    this.$user.addEventListener('pointerdown', this.funDragDrop);
+    this.$user && this.$user.addEventListener('pointerdown', this.funDragDrop);
+
+    /* --------------------------------------------------------------------------------------------------------- */
+    /* 5. 회원가입이나 로그인 오류 시 alert함수 */
+    this.searchParams = new URL(location.href).searchParams;
+    this.funAlert = this.funAlert.bind(this);
   }
 
   // 1. LOG IN, SIGN UP 폼 등장
@@ -143,7 +148,33 @@ class Index {
     document.removeEventListener('pointermove', this.funPointerMove);
     this.$user.removeEventListener('pointerup', this.funPointerUp);
   }
+  // 5. 회원가입이나 로그인 오류 시 alert함수
+  funAlert() {
+    if(this.searchParams.has('signup')) {
+      switch(this.searchParams.get('signup')) {
+        case 'exist':
+          alert('이미 존재하는 이메일입니다.');
+          break;
+        case 'success':
+          alert(`회원가입이 완료되었습니다!
+          로그인을 진행해주세요.`);
+          break;
+      }
+    } else if(this.searchParams.has('login')) {
+      if(this.searchParams.get('login') === 'success') {
+        alert(`로그인 완료!`);
+      } else {
+        alert(`${this.searchParams.get('login')}`);
+      }
+    } else if(this.searchParams.has('logout')) {
+      if(this.searchParams.get('logout') === 'success') {
+        alert(`로그아웃 완료!`);
+      }
+    }
+  }
 }
 
 const index = new Index();
 window.addEventListener('scroll', index.funScroll);
+window.addEventListener('load', index.funAlert);
+

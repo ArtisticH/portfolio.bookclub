@@ -23,4 +23,7 @@
 * document.removeEventListener('pointermove',...를 하는 이유?
 * removeEventListener('pointerup',...를 하는 이유?
 
-
+// 💜 로그인, 회원가입, 로그아웃과 req.user
+// 💚 로그인
+// 💚 회원가입
+// 💚 로그아웃

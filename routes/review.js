@@ -11,8 +11,18 @@ router.use((req, res, next) => {
   next();
 });
 
+router.get('/:bookid', (req, res) => {
+  if(!req.user) {
+    res.json({ loggedIn: false });
+  } else {
+    res.json({ loggedIn: true });
+  }
+});
+
 router.post('/', async (req, res) => {
+  console.log('dyrjdyrj')
   try {
+
     const review = await Review.create({
       title: req.body.title,
       text: req.body.text,

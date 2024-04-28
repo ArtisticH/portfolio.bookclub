@@ -2,7 +2,7 @@ class Book {
   constructor() {
     this.$reviewForm = document.getElementById('review-form');
     this.$reviewWriteBtn = document.querySelector('.review__write');
-    this.$reviewFormCancelBtn = document.querySelector('.review-form__cancel');
+    this.$reviewFormCancelBtns = document.querySelectorAll('.review-form__cancel');
 
     this.bookId = new URL(location.href).pathname.split('/')[2];
     this.reviewFormStar = null;
@@ -25,24 +25,41 @@ class Book {
     // DOM 조작
 
 
-    this.$reviewFormCancelBtn.onclick = this.reviewForm.bind(this);
     this.$reviewWriteBtn.onclick = this.reviewForm.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.$reviewForm.addEventListener('submit', this.submitForm);
-  }
+    this.disappearreviewForm = this.disappearreviewForm.bind(this);
+    [...this.$reviewFormCancelBtns].forEach(btn => {
+      btn.addEventListener('click', this.disappearreviewForm)
+    })
 
-  reviewForm(e) {
-    if(e.currentTarget === this.$reviewFormCancelBtn) {
-      this.$reviewForm.style.display = '';
-      document.body.style.overflow = '';
-    } else if(e.currentTarget === this.$reviewWriteBtn) {
+    /* --------------------------------------------------------------------------------------------------------- */
+}
+
+  async reviewForm(e) {
+    console.log('영ㅇㅇ')
+    console.log(e.currentTarget)
+    // axios후에 e.currentTarget, e.target은 null이다. 
+    const res = await axios.get(`/review/${this.bookId}`);
+    const isloggedIn = res.data.loggedIn;
+    if(!isloggedIn) {
+      alert('로그인 후 이용하세요.');
+    } else if(isloggedIn) {
       this.reviewFormStar = null;
       [...this.$reviewFormStars.children].forEach((item) => {
         item.style.opacity = '';
       });
       this.$reviewForm.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';  
     }
+    console.log('어이')
+
+  }
+
+  disappearreviewForm() {
+    this.$reviewForm.style.display = '';
+    document.body.style.overflow = '';
+
   }
 
   calculateStars(e) {
@@ -120,6 +137,8 @@ class Book {
       console.log(i);
     }
   }
+
 }
 
 const book = new Book();
+

@@ -1,5 +1,5 @@
 :root {
-  --font-notoKR:"Noto Sans KR", sans-serif;
+  --font-korean:"Noto Sans KR", sans-serif;
   --font-poppins: "Poppins", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
 }
@@ -8,6 +8,11 @@ body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
 
 #members {
@@ -48,7 +53,7 @@ body {
   letter-spacing: -1px;
 }
 
-a.back__arrow {
+.back__arrow {
   display: block;
   width: 150px;
   cursor: pointer;
@@ -69,12 +74,10 @@ a.back__arrow {
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  text-decoration: none;
-  color: black;
 }
 
 .member__hangul {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 2.5rem;
   font-weight: 500;
 }

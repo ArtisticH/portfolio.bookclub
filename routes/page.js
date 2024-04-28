@@ -19,8 +19,12 @@ router.get('/books', async (req, res) => {
 });
 
 router.get('/members', async (req, res) => {
-  const members = await Member.findAll({});
-  res.render('members', { memberslength: members.length });
+  const members = await Member.findAll({
+    where: { type: 'member' },
+  });
+  // 멤버인 애들만
+  const total = members.length;
+  res.render('members', { total });
 });
 
 router.get('/meetings', (req, res) => {

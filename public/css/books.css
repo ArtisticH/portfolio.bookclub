@@ -1,18 +1,6 @@
 :root {
-  --font-Merriweather: "Merriweather", serif;
-  --font-notoKR:"Noto Sans KR", sans-serif;
-  --font-roboto: "Roboto", sans-serif;
-  --font-poppins: "Poppins", sans-serif;
+  --font-korean:"Noto Sans KR", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
-  --font-oswald: "Oswald", sans-serif;
-  --font-raleway: "Raleway", sans-serif;
-  --font-inter: "Inter", sans-serif;
-  --font-schoolbell: "Schoolbell", cursive;
-  --font-rubik: "Rubik", sans-serif;
-  --font-rubikScribble: "Rubik Scribble", system-ui;
-  --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
-  --font-rubik-bubbles: "Rubik Bubbles", system-ui;
-  --font-rock: "Rock Salt", cursive;
 }
 
 body {
@@ -72,7 +60,7 @@ body::-webkit-scrollbar {
   letter-spacing: -1px;
 }
 
-a.back__arrow {
+.back__arrow {
   display: block;
   width: 150px;
   cursor: pointer;
@@ -99,38 +87,25 @@ a.back__arrow {
   cursor: pointer;
 }
 
-.books-right__book__title {
+.books-right__book__title,
+.books-right__book__author {
   font-size: 1rem;
-  font-family: var(--font-notoKR);
-  font-weight: 500;
-  margin-bottom: 3px;
+  font-family: var(--font-korean);
   letter-spacing: -1px;
 }
 
+.books-right__book__title {
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
 .books-right__book__author {
-  font-size: 1rem;
-  font-family: var(--font-notoKR);
   font-weight: 300;
   margin-bottom: 5px;
-  letter-spacing: -1px;
 }
 
 .books-right__book__blank {
   background-color: #c8e5f4;
-}
-
-.book-deco__text {
-  font-family: var(--font-oswald);
-  font-size: 2rem;
-  line-height: 1.1;
-  letter-spacing: -1px;
-  padding-left: 10px;
-}
-
-.book-deco__text--bold {
-  font-size: 4.2rem;
-  letter-spacing: -4.5px;
-  font-weight: 500;
 }
 
 @media all and (min-width: 650px) {
@@ -153,42 +128,15 @@ a.back__arrow {
   .books-right {
     grid-template-columns: 1fr 1fr 1fr;
   }
-
-  .book-deco__text {
-    font-size: 1.7rem;
-  }
-  
-  .book-deco__text--bold {
-    font-size: 3.8rem;
-    letter-spacing: -4px;
-  }    
 }
 
 @media all and (min-width: 1000px) {
   .books-right {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
-  
-  .book-deco__text {
-    font-size: 1.5rem;
-  }
-  
-  .book-deco__text--bold {
-    font-size: 3rem;
-    letter-spacing: -4px;
-  }    
 }
 
-@media all and (min-width: 1300px) {  
-  .book-deco__text {
-    font-size: 2rem;
-  }
-  
-  .book-deco__text--bold {
-    font-size: 4.3rem;
-    letter-spacing: -4.5px;
-  }
-  
+@media all and (min-width: 1300px) {    
   .books-right__book__title {
     font-size: 1.2rem;
     margin-bottom: 5px;

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rock+Salt&family=Rubik+Bubbles&family=Rubik+Doodle+Shadow&family=Rubik+Scribble&family=Rubik:ital,wght@0,300..900;1,300..900&family=Schoolbell&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
@@ -24,7 +24,7 @@
       </div>
       <div class="book-itseft">
         <div class="book__text">Book</div>
-        <div class="book__number"><span class="current__book__number">{{book.id}}</span>&nbsp;/&nbsp;{{totalBooks}}</div>
+        <div class="book__number"><span class="current__book__number">{{book.id}}</span>&nbsp;/&nbsp;{{totalBookCount}}</div>
       </div>
       <div class="book-middle">
         <div class="book-contents">
@@ -57,9 +57,14 @@
     </div>
     <div class="book-right">
       <div class="review">
-        <div class="review__title">Review&nbsp;(<span class="review-title__total">{{reviewBoxesLength}}</span>)</div>
+        <div class="review__title">Review&nbsp;(<span class="review-title__total">{{totalReview}}</span>)</div>
         <div class="review__write">리뷰 작성</div>
       </div>
+      {% if totalReview == 0 %}
+      <div class="empty-review">
+        <div class="empty-review__text">리뷰를 작성해주세요.</div>
+      </div>
+      {% endif %}
       {% for reviewbox in reviewBoxes %}
       <div class="review-box">
         <div class="review-box__title">{{reviewbox.title}}</div>
@@ -78,9 +83,9 @@
           <!-- 현재 로그인한 회원과 작성 회원이 같다면 -->
           {% if user.id == reviewbox.MemberId %} 
           <div class="review-box__info__line"></div>
-          <div class="review-box__info__edit">수정</div>
+          <div class="review-box__info__edit" data-review-id="{{reviewbox.id}}" data-review-type="update">수정</div>
           <div class="review-box__info__line"></div>
-          <div class="review-box__info__delete">삭제</div>
+          <div class="review-box__info__delete" data-review-id="{{reviewbox.id}}" data-review-type="delete">삭제</div>
           {% endif %}
         </div>
         <div class="review-box__text">{{reviewbox.text}}</div>
@@ -100,8 +105,9 @@
         </div>
       </div>
       {% endfor %}
+      {% if totalReview > 0 %}
       <div class="review-paganation">
-        {% if reviewBoxesLength > 25 %}
+        {% if totalReview > 25 %}
         <div class="review-paganation__first">
           <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
         </div>
@@ -117,13 +123,14 @@
         <div class="review-paganation__after">
           <img class="review-paganation__img" src="/img/book/page-right-arrow.png" alt="page-right-arrow">
         </div>
-        {% if reviewBoxesLength > 25 %}
+        {% if totalReview > 25 %}
         <div class="review-paganation__last">
           <img class="review-paganation__img" src="/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">
         </div>
         {% endif %}
       </div>
-      <form id="review-form" action="/review" method="post">
+      {% endif %}
+      <form id="review-form" data-user="{{user}}">
         <div class="review-form-nav">
           <div class="review-form__title">Review</div>
           <div class="review-form__cancel">

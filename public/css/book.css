@@ -1,24 +1,17 @@
 :root {
-  --font-Merriweather: "Merriweather", serif;
-  --font-notoKR:"Noto Sans KR", sans-serif;
-  --font-roboto: "Roboto", sans-serif;
-  --font-poppins: "Poppins", sans-serif;
+  --font-korean:"Noto Sans KR", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
-  --font-oswald: "Oswald", sans-serif;
-  --font-raleway: "Raleway", sans-serif;
-  --font-inter: "Inter", sans-serif;
-  --font-schoolbell: "Schoolbell", cursive;
-  --font-rubik: "Rubik", sans-serif;
-  --font-rubikScribble: "Rubik Scribble", system-ui;
-  --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
-  --font-rubik-bubbles: "Rubik Bubbles", system-ui;
-  --font-rock: "Rock Salt", cursive;
 }
 
 body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
 
 body::-webkit-scrollbar {
@@ -42,20 +35,22 @@ body::-webkit-scrollbar {
   justify-content: space-between;
   align-items: flex-start;
   font-family: var(--font-montserrat);
-  color: white;
   height: 5%;
 }
 
-.book__home {
-  color: white;
-  font-family: var(--font-montserrat);
-  text-decoration: none;
-  font-size: 1.2rem;
+.book__back {
+  width: 70px;
 }
 
 .book__back__arrow {
-  width: 70px;
+  width: 100%;
   display: block;
+}
+
+.book__home {
+  font-family: var(--font-montserrat);
+  font-size: 1.2rem;
+  color: white;
 }
 
 .book-itseft {
@@ -89,12 +84,10 @@ body::-webkit-scrollbar {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  height: fit-content;
 }
 
 .book__img-box {
   border: 1px solid black;
-  height: fit-content;
   max-width: 225px;
 }
 
@@ -112,7 +105,7 @@ body::-webkit-scrollbar {
 }
 
 .book__title {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 2rem;
   letter-spacing: -2px;
   font-weight: 600;
@@ -125,7 +118,7 @@ body::-webkit-scrollbar {
 }
 
 .book__author {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -1px;
   text-align: end;
@@ -133,7 +126,7 @@ body::-webkit-scrollbar {
 }
 
 #book__recommender {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -1px;
   text-align: end;
@@ -148,7 +141,7 @@ body::-webkit-scrollbar {
 }
 
 #book__date {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -1px;
   text-align: end;
@@ -162,7 +155,7 @@ body::-webkit-scrollbar {
 
 .book__rate__stars {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   width: fit-content;
   justify-content: flex-end;
   margin-bottom: 3px;
@@ -171,6 +164,7 @@ body::-webkit-scrollbar {
 .book__rate__star--relative {
   width: 30px;
   height: 30px;
+  /* .book__rate__star */
   position: relative;
   background-color: rgba(128, 128, 128, 0.5);
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
@@ -178,8 +172,8 @@ body::-webkit-scrollbar {
 
 .book__rate__star {
   background-color: white;
+  /* .book__rate__star--relative */
   position: absolute;
-  z-index: 10;
   width: 100%;
   height: 100%;
 }
@@ -197,7 +191,6 @@ body::-webkit-scrollbar {
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
-
 .book__rate__number {
   font-family: var(--font-montserrat);
   font-size: 1rem;
@@ -205,7 +198,6 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: flex-end;
   color: white;
-  margin-left: 10px;
 }
 
 .book-right {
@@ -227,17 +219,32 @@ body::-webkit-scrollbar {
 
 .review__write {
   cursor: pointer;
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   background-color: #0c3aa5;
   color: white;
-  height: 30px;
-  width: 80px;
+  height: 35px;
+  width: 85px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  letter-spacing: -0.8px;
-  border-radius: 2px;
+  font-size: 1rem;
+  letter-spacing: -1px;
+  border-radius: 4px;
+}
+
+.empty-review {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 200px 0;
+}
+
+.empty-review__text {
+  font-family: var(--font-korean);
+  font-size: 1.5rem;
+  letter-spacing: -1.5px;
+  font-weight: 200;
 }
 
 .review-box {
@@ -247,7 +254,7 @@ body::-webkit-scrollbar {
 }
 
 .review-box__title {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 1.1rem;
   letter-spacing: -1px;
   font-weight: 500;
@@ -270,13 +277,13 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 15px;
 }
 
 .review-box__info__stars__star {
   width: 15px;
   height: 15px;
   background-color: #0c3aa5;
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
 .review-box__info__stars__star.full {
@@ -286,19 +293,20 @@ body::-webkit-scrollbar {
 .review-box__info__stars__star.empty {
   background-color: grey;
   opacity: 0.5;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
-
 
 .review-box__info__nickname,
 .review-box__info__date,
 .review-box__info__edit,
 .review-box__info__delete {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 0.8rem;
   letter-spacing: -1px;
   color: grey;
   display: block;
   text-decoration: none;
+  height: 15px;
 }
 
 .review-box__info__nickname,
@@ -312,11 +320,15 @@ body::-webkit-scrollbar {
   color: #0c3aa5;
   font-size: 0.8rem;
   letter-spacing: -1px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .review-box__text {
   width: 100%;
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 0.9rem;
   letter-spacing: -0.5px;
   line-height: 1.4;
@@ -337,7 +349,7 @@ body::-webkit-scrollbar {
 }
 
 .review-box__more__text {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 0.8rem;
   letter-spacing: -0.8px;
   color: grey;
@@ -370,8 +382,7 @@ body::-webkit-scrollbar {
 }
 
 .review-paganation {
-  margin: 30px 0 30px 0;
-  padding-top: 30px;
+  padding: 30px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,10 +415,8 @@ body::-webkit-scrollbar {
 }
 
 .review-paganation__number {
-  margin: 0 5px;
-  text-decoration: none;
+  margin: 0 10px;
   display: block;
-  color: black;
 }
 
 .review-last-number {
@@ -473,7 +482,7 @@ body::-webkit-scrollbar {
 .review-form-middle {
   display: grid;
   grid-template-columns: 3fr 7fr;
-  gap: 10px;
+  gap: 20px;
   background-color: #0c3aa5;
   padding: 20px;
   border-radius: 3px;
@@ -492,14 +501,14 @@ body::-webkit-scrollbar {
 }
 
 .review-form__info__title {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 1.3rem;
   font-weight: 500;
   color: white;
 }
 
 .review-form__info__author {
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   font-size: 0.9rem;
   font-weight: 300;
   margin: 7px 0 15px 0;
@@ -519,7 +528,7 @@ body::-webkit-scrollbar {
   opacity: 0.5;
   width: 25px;
   height: 25px;
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.1s ease-in;
 }
 
 .review-form__input__title {
@@ -532,7 +541,7 @@ body::-webkit-scrollbar {
   border-bottom: 1px solid grey;
   padding-bottom: 10px;
   box-sizing: border-box;
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
 }
 
 #review-form__text__length {
@@ -563,7 +572,7 @@ body::-webkit-scrollbar {
   appearance: none;
   padding: 10px;
   box-sizing: border-box;
-  font-family: var(--font-notoKR);
+  font-family: var(--font-korean);
   margin-bottom: 20px;
 }
 
@@ -600,12 +609,20 @@ body::-webkit-scrollbar {
   }  
 
   .book-contents {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }  
 
   .book__img-box {
     margin-bottom: 30px;
   }
+
+  .empty-review {
+    height: calc(100% - 35px);
+    padding: 0;
+  }  
 }
 
 @media all and (min-width: 800px) {

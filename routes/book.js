@@ -2,8 +2,7 @@ const express = require('express');
 const Book = require('../models/book');
 const Member = require('../models/member');
 const Review = require('../models/review');
-const { dateChange, memberType, calculateRate } = require('../routes/tools');
-
+const { funChangeDate, funCalculateRate } = require('../routes/tools');
 
 const router = express.Router();
 
@@ -14,82 +13,78 @@ router.use((req, res, next) => {
 
 router.get('/:id', async (req, res) => {
   try {
-
-    const book = await Book.findOne({ where: {id: req.params.id}});
-    let totalBooks = await Book.findAll({});
-    totalBooks = totalBooks.length;
+    const id = req.params.id;
+    // 예를 들어 /book/1이면 id가 1인 book 정보 찾기
+    // id, title, author, img, meetingDate가 쓰임 
+    const book = await Book.findOne({ where: { id }});
+    const totalBookCount = await Book.findAll({});
+    // 이 책을 추천한 멤버의 id
     const memberId = book.MemberId;
-    const member = await Member.findOne({ where: {id: memberId}});
+    // 추천이: 닉네임으로 /member/1 로 넘어가게
+    const member = await Member.findOne({ 
+      where: { id: memberId },
+      attributes: ['id', 'nick'],
+    });
+    // Book 모델의 id가 현재 id와 일치하는 자료,
+    // 그니까 현재 책에 대한 리뷰
     const stars = await Review.findAll({
       include: [{
         model: Book,
-        where: { id: req.params.id}
+        where: { id },
       }],
       attributes: ['stars'],
     });
-
+    // 이 책에 대한 총 리뷰 갯수
+    const totalReview = stars.length;
+    // 평균 구하기
     let starSum = [...stars].reduce((acc, cur, index, arr) => {
       return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
     }, 0);
+    // 소수점 한 자릿수까지
     starSum = Math.floor(starSum * 10) / 10;
-
-    const starshapes = calculateRate(starSum);
-
+    // 소수점 0.5, 0 단위로 맞춘 별의 모양 배열,
+    const starshapes = funCalculateRate(starSum);
+    // 현재 책에 대한 리뷰들을 고르고
+    // 그 책을 작성한 이에 대한 자료(리뷰 작성 시 req.user.id가 저장되었음),
+    // 리뷰 아이디, 타이틀, 텍스트, 별, like, overText, 작성 날짜
+    // 리뷰 쓴 사람의 id, type, nick, 
+    // 끝에서 5개만 선정 
     const reviewResults = await Review.findAll({
       include: [{
         model: Book,
-        where: { id: req.params.id}
+        where: { id },
       }, {
         model: Member,
-      }], 
+        attributes: ['id', 'type', 'nick'],
+      }],
+      order: [['id', 'DESC']], 
+      limit: 5,
     });
-
-    reviewResults.reverse();
-    const reviewBoxesLength = reviewResults.length;
-
     const reviewBoxes = [];
+    reviewResults.forEach(review => {
+      reviewBoxes[reviewBoxes.length] = {
+        id: review.id,
+        title: review.title,
+        text: review.text,
+        like: review.like,
+        overText: review.overText,
+        // 숫자를 배열로 변환
+        stars: funCalculateRate(review.stars),
+        createdAt: funChangeDate(review.createdAt),
+        MemberId: review.Member.id,
+        type: review.Member.type.toUpperCase(),
+        nick: review.Member.nick,
+      }
+    })
     let pageNumbers = [];
-
-    if(reviewResults.length >= 5) {
-      // 리뷰가 5개 이상이면 뒤에서부터 5개만 보내, 한 페이지에 보여지는 리뷰는 5개
-      for(let i = 0; i < 5; i++) {
-        reviewBoxes[reviewBoxes.length] = {
-          title: reviewResults[i].title,
-          text: reviewResults[i].text,
-          like: reviewResults[i].like,
-          overText: reviewResults[i].overText,
-          stars: calculateRate(reviewResults[i].stars),
-          createdAt: dateChange(reviewResults[i].createdAt),
-          MemberId: reviewResults[i].Member.id,
-          nick: reviewResults[i].Member.nick,
-          type: memberType(reviewResults[i].Member.type),
-        }
-      }  
-    } else if(reviewResults.length < 5) {
-      // 리뷰가 5개 이하면 그 갯수만큼 보내, 그리고 페이지는 1만 있을것임. 
-      for(let i = 0; i < reviewResults.length; i++) {
-        reviewBoxes[reviewBoxes.length] = {
-          title: reviewResults[i].title,
-          text: reviewResults[i].text,
-          like: reviewResults[i].like,
-          overText: reviewResults[i].overText,
-          stars: calculateRate(reviewResults[i].stars),
-          createdAt: dateChange(reviewResults[i].createdAt),
-          MemberId: reviewResults[i].Member.id,
-          nick: reviewResults[i].Member.nick,
-          type: memberType(reviewResults[i].Member.type),
-        }
-      }  
-    }
-
-    if(reviewResults.length >= 25) {
+    if(totalReview >= 25) {
       // 만약 리뷰 갯수가 25개 이상이라면 페이지가 1, 2, 3, 4, 5 다 있을 것이고, 
       pageNumbers = [1, 2, 3, 4, 5];
     } else {
-      // 리뷰 갯수가 25개 미만이라면
-      const share = Math.floor(reviewResults.length / 5);
-      if(reviewResults.length % 5 === 0) {
-        // 만약 5의 배수라면 예를 들어 20개라면 1, 2, 3, 4만 있을 것
+      // 리뷰 갯수가 25개 미만일때
+      const share = Math.floor(totalReview / 5);
+      if(totalReview % 5 === 0) {
+        // 만약 5의 배수라면, 예를 들어 20개라면 1, 2, 3, 4만 있을 것
         for(let i = 1; i <= share; i++) {
           pageNumbers[pageNumbers.length] = i;
         }
@@ -100,15 +95,14 @@ router.get('/:id', async (req, res) => {
         }
       }
     }
-
     res.render('book', {
       book,
-      totalBooks,
+      totalBookCount: totalBookCount.length,
       member,
       starSum,
       starshapes,
       reviewBoxes,
-      reviewBoxesLength,
+      totalReview,
       pageNumbers,
     });  
   } catch(err) {

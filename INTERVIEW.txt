@@ -1,0 +1,26 @@
+// 💜 index.html, index.css, index.js
+
+* JS에서 CSS로 데이터를 넘기는 방법?
+- 변수 설정 말고 또 있다면?
+* CSS에서 JS로 데이터를 넘기는 방법?
+* HTML과 CSS의 데이터를 교환하는 방법?
+- attr()는 꼭 content밖에 못 쓰나?
+
+* 이벤트 위임에 대해서
+* 이벤트 위임에서 closest의 역할
+* 버블링, 캡쳐링
+* 이벤트 위임을 써야 할 때와 쓰면 안 될때
+* JS에서 CSS의 min-width 등을 감지하는 법, CSS보다 잘 작동하는지?
+
+* sticky와 start, end를 정하는 것의 의미, 
+* 왜 end는 document.documentElement.clientHeight를 빼야 하는지?
+* window.pageYOffset는? 대체는?
+
+* 드래그 앤 드롭 과정에 대해서
+* shiftX, shiftY를 왜 설정하는지?
+* this.func = this.func.bind(this)를 하는 경우와 안 하는 경우
+* dragstart의 e.preventDefault();를 하는 이유?
+* document.removeEventListener('pointermove',...를 하는 이유?
+* removeEventListener('pointerup',...를 하는 이유?
+
+

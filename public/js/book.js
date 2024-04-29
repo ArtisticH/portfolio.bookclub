@@ -1,3 +1,4 @@
+
 class Book {
   constructor() {
     /* --------------------------------------------------------------------------------------------------------- */
@@ -44,6 +45,11 @@ class Book {
     // 7. 더보기
     /* --------------------------------------------------------------------------------------------------------- */
     // 8. 공감
+    this.$heartBtns = document.querySelectorAll('.review-box__heart');
+    this.fucHeartBtn = this.fucHeartBtn.bind(this);
+    [...this.$heartBtns].forEach(btn => {
+      btn.addEventListener('click', this.fucHeartBtn);
+    })
     /* --------------------------------------------------------------------------------------------------------- */
     // 9. 리뷰 작성시 별점 매기기, 텍스트 입력, 타이틀 입력 모두 해야 전송되게끔
 }
@@ -176,8 +182,38 @@ class Book {
     if(!obj.overText) {
       c.querySelector('.review-box__more').remove();
     } 
+    c.querySelector('.review-box__heart').dataset.reviewId = obj.id;
     c.querySelector('.review-box__heart__total').textContent = obj.like;
     return c;
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 8. 공감
+  async fucHeartBtn(e) {
+    // 로그인 안했으면 접근 금지
+    if(!this.user) {
+      alert('로그인 후 이용해주세요');
+      return;
+    }
+    const target = e.currentTarget;
+    const id = target.dataset.reviewId;
+    // 위로 올라가는 하트
+    const $img = target.querySelector('.review-box__heart__img');
+    const $like = target.querySelector('.review-box__heart__total');
+    const res = await axios.post(`/review/like/${id}`);
+    // 서버에서 보내온 클릭해도 되는지 안되는지 여부
+    const clickAllowed = res.data.clickAllowed;
+    if(clickAllowed) {
+      // 클릭이 처음이라면
+      const like = res.data.like;
+      $like.textContent = like;
+      $img.classList.add('back');
+    } else {
+      // 좋아요 한거 취소
+      const res = await axios.post(`/review/like/cancel/${id}`);
+      const like = res.data.like;
+      $like.textContent = like;
+      $img.classList.remove('back');
+    }
   }
 }
 

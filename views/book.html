@@ -100,8 +100,11 @@
           {% endif %}
           <!-- 더보기가 없을때 하트가 오른쪽에 위치하기 위해 필요한 빈 요소 -->
           <div></div>
-          <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
+          <div class="review-box__heart" data-review-id="{{reviewbox.id}}">
+            <div class="review-box__heart-box">
+              <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
+              <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
+            </div>
             <div class="review-box__heart__total">{{reviewbox.like}}</div>
           </div>
         </div>

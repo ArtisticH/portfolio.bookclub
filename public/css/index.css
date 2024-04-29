@@ -342,8 +342,8 @@ body::-webkit-scrollbar {
   flex-direction: column;
   justify-content: space-between;
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  bottom: 20%;
+  left: 50px;
   background-color: white;
   box-sizing: border-box;
   padding: 10px;

@@ -376,17 +376,38 @@ body::-webkit-scrollbar {
   cursor: pointer;
 }
 
-.review-box__heart__img {
+.review-box__heart-box {
+  position: relative;
   width: 15px;
+  height: 15px;
+}
+
+.review-box__heart__img {
+  width: 100%;
   display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.review-box__heart__img.back {
+  transition: all 1s ease-out;
+  transform: translateY(-200%);
+  opacity: 0;
 }
 
 .review-box__heart__total {
-  margin: 0px 5px;
+  margin: 0px 2px;
   font-family: var(--font-montserrat);
   font-weight: 500;
   color: #0c3aa5;
   font-size: 0.8rem;
+  letter-spacing: -0.8px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .review-paganation {

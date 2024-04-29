@@ -5,6 +5,7 @@ class Book {
     // 1. 리뷰 폼 클릭 시 로그인 상태라면 보여주고 아니라면 alert함수
     this.$reviewForm = document.getElementById('review-form');
     this.reviewFormStar = null;
+    this.reviewFormStarClicked = null;
     this.user = this.$reviewForm.dataset.user;
     this.$reviewFormStars = document.querySelector('.review-form__stars');
     this.$reviewWriteBtn = document.querySelector('.review__write');
@@ -33,7 +34,6 @@ class Book {
     // 현재 책 id
     this.bookId = new URL(location.href).pathname.split('/')[2];
     this.funSubmitForm = this.funSubmitForm.bind(this);
-    this.$reviewForm.addEventListener('submit', this.funSubmitForm);
     /* --------------------------------------------------------------------------------------------------------- */
     // 5 - 1. 등록 후 가장 최신의 1가지 긁어오고 DOM 변경
     this.$totalReviewCount = document.querySelector('.review-title__total');
@@ -56,6 +56,15 @@ class Book {
     })
     /* --------------------------------------------------------------------------------------------------------- */
     // 9. 리뷰 작성시 별점 매기기, 텍스트 입력, 타이틀 입력 모두 해야 전송되게끔
+    this.$submitBtn = document.querySelector('.review-form__submit');
+    this.titleLength = null;
+    this.textLength = null;
+    this.funBannedSubmit = this.funBannedSubmit.bind(this);
+    this.$reviewForm.onsubmit = this.funBannedSubmit;
+    this.fucTitleLength = this.fucTitleLength.bind(this);
+    this.$reviewTitle.addEventListener('input', this.fucTitleLength);
+    this.fucUnlockSubmit = this.fucUnlockSubmit.bind(this);
+    this.$reviewForm.addEventListener('input', this.fucUnlockSubmit);
 }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -75,7 +84,15 @@ class Book {
       this.$reviewTitle.value = '';
       // 리뷰 폼 등장
       this.$reviewForm.style.display = 'flex';
-      document.body.style.overflow = 'hidden';  
+      document.body.style.overflow = 'hidden';
+      // 평점 선택전에는 null 값이여서 꼭 평점을 선택하도록
+      // funSubmitForm과 funShowFormStars에서 쓰임.
+      this.reviewFormStarClicked = null;  
+      this.titleLength = null;
+      this.textLength = null;  
+      // 등록 버튼 비활성화
+      this.$submitBtn.style.opacity = '0.5';
+      this.$submitBtn.style.cursor = 'auto';  
     } else {
       alert('로그인 후 이용하세요.');
     }
@@ -91,6 +108,8 @@ class Book {
   funShowFormStars(e) {
     const target = e.target;
     if(target.className !== 'review-form__star') return;
+    // 평점 안 매기고 리뷰 전송하는 일 없게끔
+    this.reviewFormStarClicked = true;
     // 0, 1, 2, 3, 4 중 하나
     const rate = +target.dataset.star;
     [...this.$reviewFormStars.children].forEach((item, index) => {
@@ -102,11 +121,26 @@ class Book {
     });
     // 최종 선택 별점 1, 2, 3, 4, 5중 하나
     this.reviewFormStar = rate + 1;
+    // fucUnlockSubmit와 연관, 별점은 이미 선택되어 있으니 나머지 두개만 신경써
+    if(this.textLength && this.reviewFormStar) {
+      this.$submitBtn.style.opacity = '';
+      this.$submitBtn.style.cursor = '';  
+      this.$reviewForm.onsubmit = this.funSubmitForm;
+    } else {
+      this.$submitBtn.style.opacity = '0.5';
+      this.$submitBtn.style.cursor = 'auto';  
+      this.$reviewForm.onsubmit = this.funBannedSubmit;
+    }
   }
   /* --------------------------------------------------------------------------------------------------------- */
   // 4. 몇 글자 입력했는지 보여주기
   funTextLength(e) {
     // 바로 글자 수 화면에 보여지게
+    if(e.target.value.length > 0) {
+      this.textLength = true;
+    } else if (e.target.value.length === 0) {
+      this.textLength = null;
+    }
     this.$textLengthElem.textContent = e.target.value.length;
     // 글자 수 일정 기준 넘으면 경고
     if(e.target.value.length > this.TEXT_LIMIT) {
@@ -254,6 +288,34 @@ class Book {
       const like = res.data.like;
       $like.textContent = like;
       $img.classList.remove('back');
+    }
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 9. 리뷰 작성시 별점 매기기, 텍스트 입력, 타이틀 입력 모두 해야 전송되게끔
+  funBannedSubmit(e) {
+    e.preventDefault();
+  }
+  // text는 funTextLength에서
+  // title은 따로 만들어
+  fucTitleLength(e) {
+    if(e.target.value.length > 0) {
+      this.titleLength = true;
+    } else if (e.target.value.length === 0) {
+      this.titleLength = null;
+    }
+  }
+  fucUnlockSubmit(e) {
+    // 별점 먼저 => 텍스트 fucUnlockSubmit, 이미 별점이 클릭된 경우
+    // 텍스트 먼저 => 별점 funShowFormStars
+    // 텍스트 입력했다가 지우는 경우, 셋 중에 하나라도 0이면 안됌
+    if(this.titleLength && this.textLength && this.reviewFormStar) {
+      this.$submitBtn.style.opacity = '';
+      this.$submitBtn.style.cursor = '';  
+      this.$reviewForm.onsubmit = this.funSubmitForm;
+    } else {
+      this.$submitBtn.style.opacity = '0.5';
+      this.$submitBtn.style.cursor = 'auto';  
+      this.$reviewForm.onsubmit = this.funBannedSubmit;
     }
   }
 }

@@ -90,7 +90,12 @@
           </div>
           {% endif %}
         </div>
-        <div class="review-box__text">{{reviewbox.text}}</div>
+        {% if not reviewbox.text.slice %}
+        <div class="review-box__text">{{reviewbox.text.original}}</div>
+        {% else %}
+        <div class="review-box__text">{{reviewbox.text.slice}}...</div>
+        <div class="review-box__text" hidden>{{reviewbox.text.original}}</div>
+        {% endif %}
         <div class="review-box__bottom">
           {% if reviewbox.overText %}
           <div class="review-box__more">
@@ -134,6 +139,7 @@
           </div>
         </div>
         <div class="review-box__text"></div>
+        <div class="review-box__text" hidden></div>
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
@@ -141,7 +147,10 @@
           </div>
           <div></div>
           <div class="review-box__heart">
-            <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
+            <div class="review-box__heart-box">
+              <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
+              <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
+            </div>  
             <div class="review-box__heart__total"></div>
           </div>
         </div>

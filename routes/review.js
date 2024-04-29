@@ -34,10 +34,22 @@ router.post('/', async (req, res) => {
       order: [['id', 'DESC']], 
       limit: 1,
     });
+    let text;
+    if(result.text.length > 200) {
+      text = {
+        slice: result.text.slice(0, 200),
+        original: result.text,
+      };
+    } else {
+      text = {
+        slice: null,
+        original: result.text,
+      };
+    }
     const review = {
       id: result.id,
       title: result.title,
-      text: result.text,
+      text,
       like: result.like,
       overText: result.overText,
       // 숫자를 배열로 변환

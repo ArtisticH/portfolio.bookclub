@@ -29,7 +29,7 @@ class Book {
     this.$textarea.addEventListener('input', this.funTextLength);
     /* --------------------------------------------------------------------------------------------------------- */
     // 5. 리뷰 DB에 등록
-    this.OVERTEXT_LIMIT = 1000;
+    this.OVERTEXT_LIMIT = 200;
     // 현재 책 id
     this.bookId = new URL(location.href).pathname.split('/')[2];
     this.funSubmitForm = this.funSubmitForm.bind(this);
@@ -43,6 +43,10 @@ class Book {
     // 6. pagenation
     /* --------------------------------------------------------------------------------------------------------- */
     // 7. 더보기
+    this.$moreBtns = document.querySelectorAll('.review-box__more');
+    [...this.$moreBtns].forEach(btn => {
+      btn.addEventListener('click', this.fucClickMoreBtn);
+    });
     /* --------------------------------------------------------------------------------------------------------- */
     // 8. 공감
     this.$heartBtns = document.querySelectorAll('.review-box__heart');
@@ -178,13 +182,50 @@ class Book {
     } else {
       c.querySelector('.review-box__is-user').remove();
     }
-    c.querySelector('.review-box__text').textContent = obj.text;
+    // 만약 text.slice가 null이라면 1000자를 안 넘는다는 뜻이고 그럼 그대로 original 보여준다.
+    // 만약 1000자를 넘으면 보여지는건 slice버전, original은 숨겨뒀다가 더보기버튼을 누르면 바꾸기
+    // querySelectorAll은 hidden까지 카운트한다. 
+    if(!obj.text.slice) {
+      // original 보여준다.
+      c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
+      c.querySelectorAll('.review-box__text')[1].remove();
+    } else {
+      // 200자를 넘어서 slice를 보여준다.
+      c.querySelectorAll('.review-box__text')[0].textContent = `${obj.text.slice}...`;
+      c.querySelectorAll('.review-box__text')[1].textContent = obj.text.original;
+    }
     if(!obj.overText) {
       c.querySelector('.review-box__more').remove();
     } 
+    // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
+    c.querySelector('.review-box__more').onclick = this.fucClickMoreBtn;
     c.querySelector('.review-box__heart').dataset.reviewId = obj.id;
+    // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
+    c.querySelector('.review-box__heart').onclick = this.fucHeartBtn;
     c.querySelector('.review-box__heart__total').textContent = obj.like;
     return c;
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 7. 더보기
+  fucClickMoreBtn(e) {
+    const $box = e.target.closest('.review-box');
+    // 더보기가 클릭이 됐다는 건 텍스트가 한도를 넘었다는 뜻, 
+    // 그럼 .review-box__text가 slice버전과 original버전 두개임
+    const $texts = [...$box.querySelectorAll('.review-box__text')];
+    const $arrow = $box.querySelector('.review-box__more__arrow');
+    // 두번째 요소가 닫혀있는게 기본값
+    if($texts[1].hidden) {
+      // 더보기 보여줘
+      // original 텍스트를 보여준다.
+      $texts[0].hidden = true;
+      $texts[1].hidden = false;
+      $arrow.style.transform = 'rotate(180deg)';
+    } else {
+      // 더보기 닫아줘
+      $texts[0].hidden = false;
+      $texts[1].hidden = true;
+      $arrow.style.transform = '';
+    }
   }
   /* --------------------------------------------------------------------------------------------------------- */
   // 8. 공감

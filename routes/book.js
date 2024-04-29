@@ -62,10 +62,18 @@ router.get('/:id', async (req, res) => {
     });
     const reviewBoxes = [];
     reviewResults.forEach(review => {
+      const text = {};
+      if(review.text.length > 200) {
+        text.slice = review.text.slice(0, 200);
+        text.original = review.text;
+      } else {
+        text.slice = null;
+        text.original = review.text;
+      }
       reviewBoxes[reviewBoxes.length] = {
         id: review.id,
         title: review.title,
-        text: review.text,
+        text,
         like: review.like,
         overText: review.overText,
         // 숫자를 배열로 변환

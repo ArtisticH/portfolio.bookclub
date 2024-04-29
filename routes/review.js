@@ -14,7 +14,7 @@ router.use((req, res, next) => {
 // MemberId는 req.user.id 이용
 router.post('/', async (req, res) => {
   try {
-    const review = await Review.create({
+    const createdReview = await Review.create({
       title: req.body.title,
       text: req.body.text,
       overText: req.body.overText,
@@ -22,69 +22,34 @@ router.post('/', async (req, res) => {
       BookId: req.body.bookId,
       MemberId: req.user.id,
     });
-    res.json(review);  
+    const result = await Review.findOne({
+      include: [{
+        model: Book,
+        where: { id: createdReview.BookId },
+      }, {
+        model: Member,
+        attributes: ['id', 'type', 'nick'],
+      }],
+      order: [['id', 'DESC']], 
+      limit: 1,
+    });
+    const review = {
+      id: result.id,
+      title: result.title,
+      text: result.text,
+      like: result.like,
+      overText: result.overText,
+      // 숫자를 배열로 변환
+      stars: funCalculateRate(result.stars),
+      createdAt: funChangeDate(result.createdAt),
+      MemberId: result.MemberId,
+      type: result.Member.type.toUpperCase(),
+      nick: result.Member.nick,
+    };
+    res.json({ review });
   } catch(err) {
     console.error(err);
   }
 });
-
-// router.get('/:bookId', async (req, res) => {
-//   const bookid = req.params.bookId;
-
-//   const reviewResults = await Review.findAll({
-//     include: [{
-//       model: Book,
-//       where: { id: bookid }
-//     }, {
-//       model: Member,
-//     }], 
-//   });
-
-//   reviewResults.reverse();
-
-//   const reviewBoxes = [];
-
-//   reviewResults.forEach(item => {
-//     reviewBoxes[reviewBoxes.length] = {
-//       title: item.title,
-//       text: item.text,
-//       like: item.like,
-//       overText: item.overText,
-//       stars: calculateRate(item.stars),
-//       createdAt: dateChange(item.createdAt),
-//       MemberId: item.Member.id,
-//       nick: item.Member.nick,
-//       type: item.Member.type.toUpperCase(),
-//     }
-//   });
-
-//   res.json(reviewBoxes);  
-// });
-
-// router.get('/:bookid/page/:pagenumber', async (req, res) => {
-//   const bookId = req.params.bookid;
-//   const pageNumber = req.params.pagenumber;
-//   const reviews = await Review.findAll({
-//     include: [{
-//       model: Book,
-//       where: { id: bookId }
-//     }, {
-//       model: Member,
-//     }], 
-//   });
-//   const offset = reviews.length - 5 * pageNumber;
-//   const results = await Review.findAll({
-//     include: [{
-//       model: Book,
-//       where: { id: bookId }
-//     }, {
-//       model: Member,
-//     }], 
-//     offset,
-//     limit: 5,
-//   });
-//   results.reverse();
-//   res.json({ results });
-// });
 
 module.exports = router;

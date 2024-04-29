@@ -75,7 +75,7 @@ router.get('/:id', async (req, res) => {
         type: review.Member.type.toUpperCase(),
         nick: review.Member.nick,
       }
-    })
+    });
     let pageNumbers = [];
     if(totalReview >= 25) {
       // 만약 리뷰 갯수가 25개 이상이라면 페이지가 1, 2, 3, 4, 5 다 있을 것이고, 

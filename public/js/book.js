@@ -4,8 +4,12 @@ class Book {
     // 1. 리뷰 폼 클릭 시 로그인 상태라면 보여주고 아니라면 alert함수
     this.$reviewForm = document.getElementById('review-form');
     this.reviewFormStar = null;
+    this.user = this.$reviewForm.dataset.user;
     this.$reviewFormStars = document.querySelector('.review-form__stars');
     this.$reviewWriteBtn = document.querySelector('.review__write');
+    this.$textLengthElem = document.querySelector('.review-form__text__length');
+    this.$textarea = document.getElementById('review-form__text');
+    this.$reviewTitle = document.querySelector('.review-form__input__title');
     this.$reviewWriteBtn.onclick = this.funReviewForm.bind(this);
     /* --------------------------------------------------------------------------------------------------------- */
     // 2. 취소 버튼 누르면 리뷰 폼 사라지기
@@ -20,38 +24,34 @@ class Book {
     this.TEXT_LIMIT = 3000;
     this.$textLimit = document.querySelector('.review-form__text__length__limit');
     this.$textLimit.textContent = this.TEXT_LIMIT;
-    this.$textLengthElem = document.querySelector('.review-form__text__length');
-    this.$textarea = document.getElementById('review-form__text');
     this.funTextLength = this.funTextLength.bind(this);
     this.$textarea.addEventListener('input', this.funTextLength);
     /* --------------------------------------------------------------------------------------------------------- */
     // 5. 리뷰 DB에 등록
     this.OVERTEXT_LIMIT = 1000;
-
-
-
-
-
     // 현재 책 id
     this.bookId = new URL(location.href).pathname.split('/')[2];
-
-    this.$pageNumbers = document.querySelector('.review-paganation__numbers');
-    this.pageNumbers = this.pageNumbers.bind(this);
-    // this.$pageNumbers.addEventListener('click', this.pageNumbers);
-
-    // DOM 조작
-
-
-    this.submitForm = this.submitForm.bind(this);
-    this.$reviewForm.addEventListener('submit', this.submitForm);
-
+    this.funSubmitForm = this.funSubmitForm.bind(this);
+    this.$reviewForm.addEventListener('submit', this.funSubmitForm);
     /* --------------------------------------------------------------------------------------------------------- */
+    // 5 - 1. 등록 후 가장 최신의 1가지 긁어오고 DOM 변경
+    this.$totalReviewCount = document.querySelector('.review-title__total');
+    this.totalReviewCount = this.$totalReviewCount.textContent;
+    this.$reviewClone = document.querySelector('.review-box.review-box-for-clone').cloneNode(true);
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 6. pagenation
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 7. 더보기
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 8. 공감
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 9. 리뷰 작성시 별점 매기기, 텍스트 입력, 타이틀 입력 모두 해야 전송되게끔
 }
 
   /* --------------------------------------------------------------------------------------------------------- */
   // 1. 리뷰 폼 클릭 시 로그인 상태라면 보여주고 아니라면 alert함수
   funReviewForm(e) {
-    if(!!this.$reviewForm.dataset.user) {
+    if(!!this.user) {
       // 로그인한 상태라면
       // 리뷰 전의 선택들 초기화
       this.reviewFormStar = null;
@@ -59,6 +59,10 @@ class Book {
         // opacity: 0.5로 
         item.style.opacity = '';
       });
+      // 텍스트, 타이틀, 글자 수 초기화
+      this.$textLengthElem.textContent = 0;
+      this.$textarea.value = '';
+      this.$reviewTitle.value = '';
       // 리뷰 폼 등장
       this.$reviewForm.style.display = 'flex';
       document.body.style.overflow = 'hidden';  
@@ -68,7 +72,7 @@ class Book {
   }
   /* --------------------------------------------------------------------------------------------------------- */
   // 2. 취소 버튼 누르면 리뷰 폼 사라지기
-  funDisappearForm() {
+  funDisappearForm(e) {
     this.$reviewForm.style.display = '';
     document.body.style.overflow = '';
   }
@@ -104,15 +108,17 @@ class Book {
   }
   /* --------------------------------------------------------------------------------------------------------- */
   // 5. 리뷰 DB에 등록
-
-  async submitForm(e) {
-    e.preventDefault();
-    // 제목, 내용, 별점, 책 id, 작성자 id 등 보내기
-    const title = e.target.title.value;
-    const text = e.target.text.value;
-    const overText = (e.target.text.value.length > this.OVERTEXT_LIMIT) ? true : false;
+  async funSubmitForm(e) {
     try {
-      await axios.post('/review', {
+      e.preventDefault();
+      // 제목, 내용, 별점, 책 id, 작성자 id 등 보내기
+      const title = e.target.title.value;
+      const text = e.target.text.value;
+      const overText = (e.target.text.value.length > this.OVERTEXT_LIMIT) ? true : false;
+      // hidden = true인 것까지 센다.
+      const $reviewBoxes = document.querySelectorAll('.review-box');
+      // 서버에서 DB에 등록
+      const res = await axios.post('/review', {
         title,
         text,
         overText,
@@ -120,42 +126,59 @@ class Book {
         // MemberId는 서버에서 입력, req.user.id로
         bookId: this.bookId,
       });  
-      // ajax로 업데이트 반영
-      this.getReviews();
+      const review = res.data.review;
+      // 리뷰 폼 사라지기
+      this.$reviewForm.style.display = '';
+      document.body.style.overflow = '';  
+      // 5 - 1. 등록 후 등록한 거 다시 가져와,
+      // 서버에서 create 후에 findOne으로 찾아와야 한다. 
+      // 그래야 외래키 정보가 다 담기기 때문. 
+      // 리뷰 total 수정
+      this.totalReviewCount++;
+      this.$totalReviewCount.textContent = this.totalReviewCount;
+      // 만약 리뷰 총 개수가 5개 미만이면 하나씩 맨 앞에 추가하고
+      // 그렇지 않다면 가장 위에 리뷰 추가하고
+      // 가장 아래의 리뷰 삭제
+      $reviewBoxes[0].before(this.funMakeReviewDOM(this.$reviewClone, review));
+      if(this.totalReviewCount >= 5) {
+        // 가장 아래것 삭제
+        // 왜 $reviewBoxes[$reviewBoxes.length - 1]을 안하냐면
+        // document.querySelectorAll('.review-box');은 hidden = true;인 것도 포함한다. 
+        // 그래서 마지막 녀석을 삭제하면 hidden = true인 애를 삭제하게 되고
+        // 보이는 마지막 요소는 그대로 남아 6개가 된다. 
+        $reviewBoxes[4].remove();
+      } 
     } catch (err) {
       console.error(err);
     }
-    e.target.title.value = '';
-    e.target.text.value = '';
-    this.$textLengthElem.textContent = 0;
-    // 리뷰 폼 사라지기
-    this.$reviewForm.style.display = '';
-    document.body.style.overflow = '';
   }
-
-  async getReviews() {
-    const res = await axios.get(`/review/${this.bookId}`);
-  }
-
-  async pageNumbers(e) {
-    // 페이지네이션, 처음에 1, 2, 3, 4, 5 중에서 2라든가 3이라든가 선택하면 서버에 요청 보내고 받아서 AJAX
-    // /review/{{book.id}}/page/{{pageNumber}}
-    e.preventDefault();
-    const target = e.target;
-    if(!target.closest('.review-paganation__number')) return;
-    const href = target.href;
-    const res = await axios.get(`${href}`);
-    this.pageDOM(res.data.results);
-  }
-
-  // AJAX + DOM 조작
-  pageDOM(data) {
-    console.log(data)
-    for(let i of data) {
-      console.log(i);
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 5 - 1. 기존의 hidden인 노드를 복사해서 서버에서 가져온 자료에 맞게 변형
+  funMakeReviewDOM (c, obj) {
+    c.className = 'review-box';
+    c.hidden = false;
+    c.querySelector('.review-box__title').textContent = obj.title;
+    [...c.querySelectorAll('.review-box__info__stars__star')].forEach((item, index) => {
+      item.classList.add(`${obj.stars[index]}`);
+    });
+    c.querySelector('.review-box__info__type').textContent = obj.type.toUpperCase();
+    c.querySelector('.review-box__info__nickname').textContent = obj.nick;
+    c.querySelector('.review-box__info__nickname').href = `/member/${obj.MemberId}`;
+    c.querySelector('.review-box__info__date').textContent = obj.createdAt;
+    // 유저가 로그인 상태고, 유저의 아이디와 작성자의 아이디가 같다면 수정 + 삭제란 노출
+    if(this.user && this.user.id === obj.MemberId) {
+      c.querySelector('.review-box__info__edit').dataset.reviewId = obj.id;
+      c.querySelector('.review-box__info__delete').dataset.reviewId = obj.id;
+    } else {
+      c.querySelector('.review-box__is-user').remove();
     }
+    c.querySelector('.review-box__text').textContent = obj.text;
+    if(!obj.overText) {
+      c.querySelector('.review-box__more').remove();
+    } 
+    c.querySelector('.review-box__heart__total').textContent = obj.like;
+    return c;
   }
-
 }
 
 const book = new Book();

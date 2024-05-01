@@ -73,6 +73,14 @@ class Book {
       btn.addEventListener('click', this.funEdit);
     });
     this.editElem = null;
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 11. 삭제
+    this.$deleteBtns = document.querySelectorAll('.review-box__info__delete');
+    this.funDelete = this.funDelete.bind(this);
+    [...this.$deleteBtns].forEach(btn => {
+      btn.addEventListener('click', this.funDelete);
+    });
+    this.deleteElem = null;
 }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -170,23 +178,21 @@ class Book {
       const title = e.target.title.value;
       const text = e.target.text.value;
       const overText = (e.target.text.value.length > this.OVERTEXT_LIMIT) ? true : false;
-      // hidden = true인 것까지 센다.
-      const $reviewBoxes = document.querySelectorAll('.review-box');
-      // 서버에서 DB에 등록
-      const res = await axios.post('/review', {
-        id, 
-        title,
-        text,
-        overText,
-        stars: this.reviewFormStar,
-        // MemberId는 서버에서 입력, req.user.id로
-        bookId: this.bookId,
-      });  
-      const review = res.data.review;
       // 리뷰 폼 사라지기
       this.$reviewForm.style.display = '';
       document.body.style.overflow = '';        
       if(!id) {
+        const res = await axios.post('/review', {
+          title,
+          text,
+          overText,
+          stars: this.reviewFormStar,
+          // MemberId는 서버에서 입력, req.user.id로
+          bookId: this.bookId,
+        }); 
+        const review = res.data.review;   
+        // hidden = true인 것까지 센다.
+        const $reviewBoxes = document.querySelectorAll('.review-box');
         // 새로 추가
         // 5 - 1. 등록 후 등록한 거 다시 가져와,
         // 서버에서 create 후에 findOne으로 찾아와야 한다. 
@@ -208,6 +214,16 @@ class Book {
         } 
       } else {
         // 업데이트
+        const res = await axios.patch(`/review/${id}`, {
+          id, 
+          title,
+          text,
+          overText,
+          stars: this.reviewFormStar,
+          // MemberId는 서버에서 입력, req.user.id로
+          bookId: this.bookId,
+        }); 
+        const review = res.data.review;   
         this.funEditElem(this.editElem, review);
       }
     } catch (err) {
@@ -230,10 +246,11 @@ class Book {
     c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
     // 유저가 로그인 상태고, 유저의 아이디와 작성자의 아이디가 같다면 수정 + 삭제란 노출
     if(this.user && this.user.id === obj.MemberId) {
+      c.querySelector('.review-box__is-user').hidden = false;
       c.querySelector('.review-box__info__edit').dataset.reviewId = obj.id;
       c.querySelector('.review-box__info__delete').dataset.reviewId = obj.id;
     } else {
-      c.querySelector('.review-box__is-user').remove();
+      c.querySelector('.review-box__is-user').hidden = true;
     }
     // 만약 text.slice가 null이라면 1000자를 안 넘는다는 뜻이고 그럼 그대로 original 보여준다.
     // 만약 1000자를 넘으면 보여지는건 slice버전, original은 숨겨뒀다가 더보기버튼을 누르면 바꾸기
@@ -396,6 +413,23 @@ class Book {
     } else {
       c.querySelector('.review-box__more').hidden = false;
     }
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 11. 삭제
+  async funDelete(e) {
+    const target = e.target.closest('.review-box__info__delete');
+    if(!target) return;
+    const id = target.dataset.reviewId;
+    // 삭제
+    const res = await axios.delete(`/review/${id}/${this.bookId}`);
+    const review = res.data.review;   
+    this.deleteElem = target.closest('.review-box');
+    this.deleteElem.remove();
+    // 맨 마지막에 추가
+    this.totalReviewCount--;
+    this.$totalReviewCount.textContent = this.totalReviewCount;
+    const $reviewBoxes = document.querySelectorAll('.review-box');
+    $reviewBoxes[$reviewBoxes.length - 1].after(this.funMakeReviewDOM(this.$reviewClone, review));
   }
 }
 

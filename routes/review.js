@@ -219,6 +219,25 @@ router.delete('/:reviewid/:bookid', async (req, res) => {
   res.json({ review });  
 });
 
-
+// Pagenation
+router.get('/:bookid/page/:pagenumber', async (req, res) => {
+  const bookId = req.params.bookid;
+  const pageNumber = req.params.pagenumber;
+  // 만약 페이지 4를 클릭하면 15개를 건너뛰고 그 다음 5개를 가져와야 한다. 
+  // 만약 페이지 5를 클릭하면 20개를 건너뛰고 그 다음 5개를 가져와야 한다. 
+  const offset = 5 * (pageNumber - 1);
+  const reviews = await Review.findAll({
+    include: [{
+      model: Book,
+      where: { id: bookId },
+    }, {
+      model: Member,
+      attributes: ['id', 'type', 'nick'],
+    }],
+    offset,
+    limit: 5,
+  });
+  res.json({ reviews });
+});
 
 module.exports = router;

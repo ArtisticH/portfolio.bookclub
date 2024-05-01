@@ -166,17 +166,21 @@
           <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
         </div>
         {% endif %}
+        {% if totalReview > 5 %}
         <div class="review-paganation__before">
           <img class="review-paganation__img" src="/img/book/page-left-arrow.png" alt="page-left-arrow">
         </div>
+        {% endif %}
         <div class="review-paganation__numbers">
           {% for pageNumber in pageNumbers %}
-          <a class="review-paganation__number" href="/review/{{book.id}}/page/{{pageNumber}}">{{pageNumber}}</a>
+          <div class="review-paganation__number">{{pageNumber}}</div>
           {% endfor %}
         </div>
+        {% if totalReview > 5 %}
         <div class="review-paganation__after">
           <img class="review-paganation__img" src="/img/book/page-right-arrow.png" alt="page-right-arrow">
         </div>
+        {% endif %}
         {% if totalReview > 25 %}
         <div class="review-paganation__last">
           <img class="review-paganation__img" src="/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">

@@ -41,6 +41,24 @@ class Book {
     this.$reviewClone = document.querySelector('.review-box.review-box-for-clone').cloneNode(true);
     /* --------------------------------------------------------------------------------------------------------- */
     // 6. pagenation
+    this.$numberBtns = document.querySelectorAll('.review-paganation__number');
+    this.funPagenation = this.funPagenation.bind(this);
+    this.currentPage = 1;
+    this.nextPage = null;
+    // 가장 처음에 1에 클릭된 표시
+    [...this.$numberBtns].length !== 0 && [...this.$numberBtns][this.currentPage - 1].classList.add('clicked');
+    [...this.$numberBtns].forEach(btn => {
+      btn.addEventListener('click', this.funPagenation);
+    });
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 6 - 1. 첫 리뷰 등록 후 페이지 관련 활성화
+    this.$pagenation = document.querySelector('.review-paganation');
+    this.$firstPageIcon = document.querySelector('.review-paganation__first');
+    this.$lastPageIcon = document.querySelector('.review-paganation__last');
+    this.$beforePageIcon = document.querySelector('.review-paganation__before');
+    this.$afterPageIcon = document.querySelector('.review-paganation__after');
+    this.funAfterFirstReview();
+
     /* --------------------------------------------------------------------------------------------------------- */
     // 7. 더보기
     this.$moreBtns = document.querySelectorAll('.review-box__more');
@@ -212,6 +230,9 @@ class Book {
           // 보이는 마지막 요소는 그대로 남아 6개가 된다. 
           $reviewBoxes[4].remove();
         } 
+        // 아예 처음에 글을 등록하는 경우
+        // 글이 생겼으니 '리뷰를 작성해주세요' 없애고 페이지넘버들도 활성화
+        this.funAfterFirstReview();
       } else {
         // 업데이트
         const res = await axios.patch(`/review/${id}`, {
@@ -277,6 +298,37 @@ class Book {
     c.querySelector('.review-box__heart__total').textContent = obj.like;
     return c;
   }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 6. pagenation
+  async funPagenation(e) {
+    e.preventDefault();
+    const target = e.target.closest('.review-paganation__number');
+    if(!target) return;
+    // 1, 2, 3, 4, 5안에서 클릭했을때
+    if(!this.nextPage) {
+      // 처음에 클릭할때
+      // this.currentPage는 1의 값
+      this.nextPage = target.textContent;
+    } else {
+      // 두번째로 클릭할때
+      // 현재의 nextPage를 currentPage에 할당하고
+      // 새로 클릭하는 놈을 nextPage로 
+      this.currentPage = this.nextPage;
+      this.nextPage = target.textContent;
+    }
+    // 과거는 지우고
+    [...this.$numberBtns][this.currentPage - 1].classList.remove('clicked');
+    // 현재 업데이트
+    [...this.$numberBtns][this.nextPage - 1].classList.add('clicked');
+    const res = await axios.get(`/review/${this.bookId}/page/${this.nextPage}`);
+    console.log(res.data.reviews);
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 6 - 1. 첫 리뷰 등록 후 페이지 관련 활성화
+  funAfterFirstReview() {
+    console.log(this.$firstPageIcon);
+  }
+
   /* --------------------------------------------------------------------------------------------------------- */
   // 7. 더보기
   fucClickMoreBtn(e) {

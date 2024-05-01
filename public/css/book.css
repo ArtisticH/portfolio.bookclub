@@ -420,24 +420,29 @@ body::-webkit-scrollbar {
 }
 
 .review-paganation__img {
-  height: 15px;
+  width: 100%;
   display: block;
+  height: 100%;
+  transform: scale(0.5);
 }
 
 .review-paganation__first,
 .review-paganation__last {
   cursor: pointer;
+  width: 25px;
+  height: 25px;
 }
 
 .review-paganation__before,
 .review-paganation__after {
-  margin: 0px 15px;
   cursor: pointer;
+  width: 25px;
+  height: 25px;
 }
 
 .review-paganation__numbers {
   font-family: var(--font-montserrat);
-  font-size: 1.3rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -445,12 +450,20 @@ body::-webkit-scrollbar {
 }
 
 .review-paganation__number {
-  margin: 0 10px;
   display: block;
+  width: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  margin: 0 5px;
 }
 
-.review-last-number {
-  margin-right: 0px;
+
+.review-paganation__number.clicked {
+  border-radius: 50%;
+  background-color: #0c3aa5;
+  color: white;
 }
 
 #review-form {

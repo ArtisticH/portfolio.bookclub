@@ -459,7 +459,6 @@ body::-webkit-scrollbar {
   margin: 0 5px;
 }
 
-
 .review-paganation__number.clicked {
   border-radius: 50%;
   background-color: #0c3aa5;

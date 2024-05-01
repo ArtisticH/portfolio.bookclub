@@ -226,7 +226,7 @@ router.get('/:bookid/page/:pagenumber', async (req, res) => {
   // 만약 페이지 4를 클릭하면 15개를 건너뛰고 그 다음 5개를 가져와야 한다. 
   // 만약 페이지 5를 클릭하면 20개를 건너뛰고 그 다음 5개를 가져와야 한다. 
   const offset = 5 * (pageNumber - 1);
-  const reviews = await Review.findAll({
+  const results = await Review.findAll({
     include: [{
       model: Book,
       where: { id: bookId },
@@ -236,6 +236,35 @@ router.get('/:bookid/page/:pagenumber', async (req, res) => {
     }],
     offset,
     limit: 5,
+    order: [['id', 'DESC']],
+  });
+  const reviews = [];
+  results.forEach(item => {
+    let text;
+    if(item.text.length > 200) {
+      text = {
+        slice: item.text.slice(0, 200),
+        original: item.text,
+      };
+    } else {
+      text = {
+        slice: null,
+        original: item.text,
+      };
+    }  
+    reviews[reviews.length] = {
+      id: item.id,
+      title: item.title,
+      text,
+      like: item.like,
+      overText: item.overText,
+      stars: funCalculateRate(item.stars),
+      createdAt: funChangeDate(item.createdAt),
+      updatedAt: funChangeDate(item.updatedAt),
+      MemberId: item.MemberId,
+      type: item.Member.type.toUpperCase(),
+      nick: item.Member.nick,  
+    }
   });
   res.json({ reviews });
 });

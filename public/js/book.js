@@ -46,7 +46,7 @@ class Book {
     this.currentPage = 1;
     this.nextPage = null;
     // 가장 처음에 1에 클릭된 표시
-    [...this.$numberBtns].length !== 0 && [...this.$numberBtns][this.currentPage - 1].classList.add('clicked');
+    [...this.$numberBtns][this.currentPage - 1].classList.add('clicked');
     [...this.$numberBtns].forEach(btn => {
       btn.addEventListener('click', this.funPagenation);
     });
@@ -57,7 +57,10 @@ class Book {
     this.$lastPageIcon = document.querySelector('.review-paganation__last');
     this.$beforePageIcon = document.querySelector('.review-paganation__before');
     this.$afterPageIcon = document.querySelector('.review-paganation__after');
-    this.funAfterFirstReview();
+    this.$emptyReviewElem = document.querySelector('.empty-review');
+    this.pageNumber = 1;
+    this.$reivewContainer = null;
+    this.$afterPageIcon.onclick = this.funLastPage.bind(this);
 
     /* --------------------------------------------------------------------------------------------------------- */
     // 7. 더보기
@@ -232,7 +235,7 @@ class Book {
         } 
         // 아예 처음에 글을 등록하는 경우
         // 글이 생겼으니 '리뷰를 작성해주세요' 없애고 페이지넘버들도 활성화
-        this.funAfterFirstReview();
+        this.funPageElems();
       } else {
         // 업데이트
         const res = await axios.patch(`/review/${id}`, {
@@ -321,14 +324,97 @@ class Book {
     // 현재 업데이트
     [...this.$numberBtns][this.nextPage - 1].classList.add('clicked');
     const res = await axios.get(`/review/${this.bookId}/page/${this.nextPage}`);
-    console.log(res.data.reviews);
+    const reviews = res.data.reviews;
+    this.$reivewContainer = document.querySelector('.review-container');
+    for(let box of Array.from(this.$reivewContainer.children)) {
+      box.remove();
+    }
+    reviews.forEach(item => {
+      this.$reivewContainer.append(this.funChangeReviewDOM(document.querySelector('.review-box.review-box-for-clone').cloneNode(true), item));
+    });
   }
   /* --------------------------------------------------------------------------------------------------------- */
-  // 6 - 1. 첫 리뷰 등록 후 페이지 관련 활성화
-  funAfterFirstReview() {
-    console.log(this.$firstPageIcon);
+  // 6 - 1. 페이지 관련 요소들 표시/비표시
+  funPageElems() {
+    if(this.totalReviewCount > 0) {
+      // '리뷰 작성해주세요' 사라지고 페이지 넘버 등장
+      this.$emptyReviewElem.hidden = true;
+      this.$pagenation.hidden = false;
+    } 
+    if(this.totalReviewCount <= 25) {
+      const pageNumber = (this.totalReviewCount % 5) === 0 ? this.totalReviewCount / 5 : Math.floor(this.totalReviewCount / 5) + 1;
+      // 5개에서 6개로(1 -> 2), 10개에서 11개(2 -> 3)로 리뷰가 늘어나서
+      // 페이지 넘버가 하나가 생겨야 할때만
+      if(pageNumber !== this.pageNumber) {
+        [...this.$numberBtns].forEach((item, index, arr) => {
+          if(index + 1 <= pageNumber) {
+            item.hidden = false;
+            item.textContent = index + 1;
+          } else {
+            item.hidden = true;
+          }
+          // 마지막에 페이지 넘버 추가된거 반영
+          if(index === arr.length - 1) this.pageNumber++;
+        });    
+      }
+    } else if(this.totalReviewCount > 25) {
+      [...this.$numberBtns].forEach((item, index) => {
+        item.hidden = false;
+        item.textContent = index + 1;
+      });  
+    }
+  }  
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 6 - 2. 요소 내용 바꾸기
+  funChangeReviewDOM (c, obj) {
+    c.className = 'review-box';
+    c.hidden = false;
+    c.querySelector('.review-box__title').textContent = obj.title;
+    [...c.querySelectorAll('.review-box__info__stars__star')].forEach((item, index) => {
+      item.classList.add(`${obj.stars[index]}`);
+    });
+    c.querySelector('.review-box__info__type').textContent = obj.type.toUpperCase();
+    c.querySelector('.review-box__info__nickname').textContent = obj.nick;
+    c.querySelector('.review-box__info__nickname').href = `/member/${obj.MemberId}`;
+    c.querySelector('.review-box__info__date').textContent = obj.createdAt;
+    c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
+    // 유저가 로그인 상태고, 유저의 아이디와 작성자의 아이디가 같다면 수정 + 삭제란 노출
+    if(this.user && this.user.id === obj.MemberId) {
+      c.querySelector('.review-box__is-user').hidden = false;
+      c.querySelector('.review-box__info__edit').dataset.reviewId = obj.id;
+      c.querySelector('.review-box__info__delete').dataset.reviewId = obj.id;
+    } else {
+      c.querySelector('.review-box__is-user').hidden = true;
+    }
+    // 만약 text.slice가 null이라면 1000자를 안 넘는다는 뜻이고 그럼 그대로 original 보여준다.
+    // 만약 1000자를 넘으면 보여지는건 slice버전, original은 숨겨뒀다가 더보기버튼을 누르면 바꾸기
+    // querySelectorAll은 hidden까지 카운트한다. 
+    if(!obj.text.slice) {
+      // original 보여준다.
+      c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
+      c.querySelectorAll('.review-box__text')[1].hidden = true;
+    } else {
+      // 200자를 넘어서 slice를 보여준다.
+      c.querySelectorAll('.review-box__text')[0].textContent = `${obj.text.slice}...`;
+      c.querySelectorAll('.review-box__text')[1].textContent = obj.text.original;
+    }
+    if(!obj.overText) {
+      c.querySelector('.review-box__more').hidden = true;
+    } else {
+      c.querySelector('.review-box__more').hidden = false;
+    }
+    // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
+    c.querySelector('.review-box__more').onclick = this.fucClickMoreBtn;
+    c.querySelector('.review-box__heart').dataset.reviewId = obj.id;
+    // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
+    c.querySelector('.review-box__heart').onclick = this.fucHeartBtn;
+    c.querySelector('.review-box__heart__total').textContent = obj.like;
+    return c;
   }
-
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 6 - 3. 맨 마지막 페이지 클릭
+  funLastPage(e) {
+  }
   /* --------------------------------------------------------------------------------------------------------- */
   // 7. 더보기
   fucClickMoreBtn(e) {
@@ -486,4 +572,6 @@ class Book {
 }
 
 const book = new Book();
+book.funPageElems();
+
 

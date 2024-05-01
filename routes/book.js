@@ -85,25 +85,6 @@ router.get('/:id', async (req, res) => {
         nick: review.Member.nick,
       }
     });
-    let pageNumbers = [];
-    if(totalReview >= 25) {
-      // 만약 리뷰 갯수가 25개 이상이라면 페이지가 1, 2, 3, 4, 5 다 있을 것이고, 
-      pageNumbers = [1, 2, 3, 4, 5];
-    } else {
-      // 리뷰 갯수가 25개 미만일때
-      const share = Math.floor(totalReview / 5);
-      if(totalReview % 5 === 0) {
-        // 만약 5의 배수라면, 예를 들어 20개라면 1, 2, 3, 4만 있을 것
-        for(let i = 1; i <= share; i++) {
-          pageNumbers[pageNumbers.length] = i;
-        }
-      } else {
-        // 5의 배수가 아니라면, 예를 들어 17개라면 (몫 + 1)의 페이지 갯수인 1, 2, 3, 4가 될 것임.
-        for(let i = 1; i <= (share + 1); i++) {
-          pageNumbers[pageNumbers.length] = i;
-        }
-      }
-    }
     res.render('book', {
       book,
       totalBookCount: totalBookCount.length,
@@ -112,7 +93,6 @@ router.get('/:id', async (req, res) => {
       starshapes,
       reviewBoxes,
       totalReview,
-      pageNumbers,
     });  
   } catch(err) {
     console.error(err);

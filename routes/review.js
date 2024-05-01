@@ -13,53 +13,97 @@ router.use((req, res, next) => {
 });
 // 클라이언트에서 전송한 리뷰 정보 DB에 저장
 // MemberId는 req.user.id 이용
+// 그냥 새로 글을 쓰는 것과 리뷰를 업데이트 하는 것을 구분해야 한다. 
 router.post('/', async (req, res) => {
   try {
-    const createdReview = await Review.create({
-      title: req.body.title,
-      text: req.body.text,
-      overText: req.body.overText,
-      stars: req.body.stars,
-      BookId: req.body.bookId,
-      MemberId: req.user.id,
-    });
-    const result = await Review.findOne({
-      include: [{
-        model: Book,
-        where: { id: createdReview.BookId },
-      }, {
-        model: Member,
-        attributes: ['id', 'type', 'nick'],
-      }],
-      order: [['id', 'DESC']], 
-      limit: 1,
-    });
-    let text;
-    if(result.text.length > 200) {
-      text = {
-        slice: result.text.slice(0, 200),
-        original: result.text,
+    const id = req.body.id;
+    // id값이 있다면 업데이트, 아니라면 새로 생성
+    if(!id) {
+      // id가 null이라면, 즉 새로 생성이라면
+      const createdReview = await Review.create({
+        title: req.body.title,
+        text: req.body.text,
+        overText: req.body.overText,
+        stars: req.body.stars,
+        BookId: req.body.bookId,
+        MemberId: req.user.id,
+      });
+      const result = await Review.findOne({
+        include: [{
+          model: Book,
+          where: { id: createdReview.BookId },
+        }, {
+          model: Member,
+          attributes: ['id', 'type', 'nick'],
+        }],
+        order: [['id', 'DESC']], 
+        limit: 1,
+      });
+      let text;
+      if(result.text.length > 200) {
+        text = {
+          slice: result.text.slice(0, 200),
+          original: result.text,
+        };
+      } else {
+        text = {
+          slice: null,
+          original: result.text,
+        };
+      }
+      const review = {
+        id: result.id,
+        title: result.title,
+        text,
+        like: result.like,
+        overText: result.overText,
+        // 숫자를 배열로 변환
+        stars: funCalculateRate(result.stars),
+        createdAt: funChangeDate(result.createdAt),
+        updatedAt: funChangeDate(result.updatedAt),
+        MemberId: result.MemberId,
+        type: result.Member.type.toUpperCase(),
+        nick: result.Member.nick,
       };
+      res.json({ review });  
     } else {
-      text = {
-        slice: null,
-        original: result.text,
+      // 업데이트 하고
+      console.log('별점', req.body.stars)
+      await Review.update({
+        title: req.body.title,
+        text: req.body.text,
+        overText: req.body.overText,
+        stars: req.body.stars,
+      }, {
+        where: { id },
+      });
+      const result = await Review.findOne({
+        where: { id },
+      });
+      // 더보기
+      let text;
+      if(result.text.length > 200) {
+        text = {
+          slice: result.text.slice(0, 200),
+          original: result.text,
+        };
+      } else {
+        text = {
+          slice: null,
+          original: result.text,
+        };
+      }
+      const review = {
+        title: result.title,
+        text,
+        overText: result.overText,
+        // 숫자를 배열로 변환
+        stars: funCalculateRate(result.stars),
+        updatedAt: funChangeDate(result.updatedAt),
       };
+      console.log('리뷰 별점', review.stars);
+      res.json({ review });  
     }
-    const review = {
-      id: result.id,
-      title: result.title,
-      text,
-      like: result.like,
-      overText: result.overText,
-      // 숫자를 배열로 변환
-      stars: funCalculateRate(result.stars),
-      createdAt: funChangeDate(result.createdAt),
-      MemberId: result.MemberId,
-      type: result.Member.type.toUpperCase(),
-      nick: result.Member.nick,
-    };
-    res.json({ review });
   } catch(err) {
     console.error(err);
   }
@@ -120,5 +164,18 @@ router.post('/like/cancel/:reviewid', async (req, res) => {
   });
   res.json({ like: result.like });
 });
+// 클라이언트에서 수정 버튼 누르면 그 리뷰 데이터를 보내줘야 한다. 
+router.get('/:reviewid', async(req, res) => {
+  const id = req.params.reviewid;
+  const review = await Review.findOne({
+    where: { id },
+  });
+  res.json({ review });
+});
+// 리뷰 삭제
+router.get('/delete/:reviewid', async(req, res) => {
+});
+
+
 
 module.exports = router;

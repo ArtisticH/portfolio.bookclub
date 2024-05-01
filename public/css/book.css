@@ -306,6 +306,7 @@ body::-webkit-scrollbar {
 
 .review-box__info__nickname,
 .review-box__info__date,
+.review-box__info__updatedDate,
 .review-box__info__edit,
 .review-box__info__delete {
   font-family: var(--font-korean);

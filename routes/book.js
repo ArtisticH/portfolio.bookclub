@@ -79,6 +79,7 @@ router.get('/:id', async (req, res) => {
         // 숫자를 배열로 변환
         stars: funCalculateRate(review.stars),
         createdAt: funChangeDate(review.createdAt),
+        updatedAt: funChangeDate(review.updatedAt),
         MemberId: review.Member.id,
         type: review.Member.type.toUpperCase(),
         nick: review.Member.nick,

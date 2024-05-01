@@ -80,6 +80,8 @@
           <a href="/member/{{reviewbox.MemberId}}" class="review-box__info__nickname">{{reviewbox.nick}}</a>
           <div class="review-box__info__line"></div>
           <div class="review-box__info__date">{{reviewbox.createdAt}}</div>
+          <div class="review-box__info__line"></div>
+          <div class="review-box__info__updatedDate">{{reviewbox.updatedAt}}</div>
           <!-- 현재 로그인한 회원과 작성 회원이 같다면 -->
           {% if user.id == reviewbox.MemberId %} 
           <div class="review-box__is-user">
@@ -180,7 +182,7 @@
         {% endif %}
       </div>
       {% endif %}
-      <form id="review-form" data-user="{{user}}">
+      <form id="review-form" data-user="{{user}}" data-id="">
         <div class="review-form-nav">
           <div class="review-form__title">Review</div>
           <div class="review-form__cancel">

@@ -65,6 +65,14 @@ class Book {
     this.$reviewTitle.addEventListener('input', this.fucTitleLength);
     this.fucUnlockSubmit = this.fucUnlockSubmit.bind(this);
     this.$reviewForm.addEventListener('input', this.fucUnlockSubmit);
+    /* --------------------------------------------------------------------------------------------------------- */
+    // 10. 수정
+    this.$editBtns = document.querySelectorAll('.review-box__info__edit');
+    this.funEdit = this.funEdit.bind(this);
+    [...this.$editBtns].forEach(btn => {
+      btn.addEventListener('click', this.funEdit);
+    });
+    this.editElem = null;
 }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -156,6 +164,9 @@ class Book {
     try {
       e.preventDefault();
       // 제목, 내용, 별점, 책 id, 작성자 id 등 보내기
+      // 만약 업데이트라면 id가 있을 것이고 새로 추가하는 거라면 id가 서버에서 생성될 터
+      // 서버에서 id값을 보고 update인지 create인지 구분.
+      const id = this.$reviewForm.dataset.id ? this.$reviewForm.dataset.id : null;
       const title = e.target.title.value;
       const text = e.target.text.value;
       const overText = (e.target.text.value.length > this.OVERTEXT_LIMIT) ? true : false;
@@ -163,6 +174,7 @@ class Book {
       const $reviewBoxes = document.querySelectorAll('.review-box');
       // 서버에서 DB에 등록
       const res = await axios.post('/review', {
+        id, 
         title,
         text,
         overText,
@@ -173,25 +185,31 @@ class Book {
       const review = res.data.review;
       // 리뷰 폼 사라지기
       this.$reviewForm.style.display = '';
-      document.body.style.overflow = '';  
-      // 5 - 1. 등록 후 등록한 거 다시 가져와,
-      // 서버에서 create 후에 findOne으로 찾아와야 한다. 
-      // 그래야 외래키 정보가 다 담기기 때문. 
-      // 리뷰 total 수정
-      this.totalReviewCount++;
-      this.$totalReviewCount.textContent = this.totalReviewCount;
-      // 만약 리뷰 총 개수가 5개 미만이면 하나씩 맨 앞에 추가하고
-      // 그렇지 않다면 가장 위에 리뷰 추가하고
-      // 가장 아래의 리뷰 삭제
-      $reviewBoxes[0].before(this.funMakeReviewDOM(this.$reviewClone, review));
-      if(this.totalReviewCount >= 5) {
-        // 가장 아래것 삭제
-        // 왜 $reviewBoxes[$reviewBoxes.length - 1]을 안하냐면
-        // document.querySelectorAll('.review-box');은 hidden = true;인 것도 포함한다. 
-        // 그래서 마지막 녀석을 삭제하면 hidden = true인 애를 삭제하게 되고
-        // 보이는 마지막 요소는 그대로 남아 6개가 된다. 
-        $reviewBoxes[4].remove();
-      } 
+      document.body.style.overflow = '';        
+      if(!id) {
+        // 새로 추가
+        // 5 - 1. 등록 후 등록한 거 다시 가져와,
+        // 서버에서 create 후에 findOne으로 찾아와야 한다. 
+        // 그래야 외래키 정보가 다 담기기 때문. 
+        // 리뷰 total 수정
+        this.totalReviewCount++;
+        this.$totalReviewCount.textContent = this.totalReviewCount;
+        // 만약 리뷰 총 개수가 5개 미만이면 하나씩 맨 앞에 추가하고
+        // 그렇지 않다면 가장 위에 리뷰 추가하고
+        // 가장 아래의 리뷰 삭제
+        $reviewBoxes[0].before(this.funMakeReviewDOM(this.$reviewClone, review));
+        if(this.totalReviewCount >= 5) {
+          // 가장 아래것 삭제
+          // 왜 $reviewBoxes[$reviewBoxes.length - 1]을 안하냐면
+          // document.querySelectorAll('.review-box');은 hidden = true;인 것도 포함한다. 
+          // 그래서 마지막 녀석을 삭제하면 hidden = true인 애를 삭제하게 되고
+          // 보이는 마지막 요소는 그대로 남아 6개가 된다. 
+          $reviewBoxes[4].remove();
+        } 
+      } else {
+        // 업데이트
+        this.funEditElem(this.editElem, review);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -209,6 +227,7 @@ class Book {
     c.querySelector('.review-box__info__nickname').textContent = obj.nick;
     c.querySelector('.review-box__info__nickname').href = `/member/${obj.MemberId}`;
     c.querySelector('.review-box__info__date').textContent = obj.createdAt;
+    c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
     // 유저가 로그인 상태고, 유저의 아이디와 작성자의 아이디가 같다면 수정 + 삭제란 노출
     if(this.user && this.user.id === obj.MemberId) {
       c.querySelector('.review-box__info__edit').dataset.reviewId = obj.id;
@@ -222,15 +241,17 @@ class Book {
     if(!obj.text.slice) {
       // original 보여준다.
       c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
-      c.querySelectorAll('.review-box__text')[1].remove();
+      c.querySelectorAll('.review-box__text')[1].hidden = true;
     } else {
       // 200자를 넘어서 slice를 보여준다.
       c.querySelectorAll('.review-box__text')[0].textContent = `${obj.text.slice}...`;
       c.querySelectorAll('.review-box__text')[1].textContent = obj.text.original;
     }
     if(!obj.overText) {
-      c.querySelector('.review-box__more').remove();
-    } 
+      c.querySelector('.review-box__more').hidden = true;
+    } else {
+      c.querySelector('.review-box__more').hidden = false;
+    }
     // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
     c.querySelector('.review-box__more').onclick = this.fucClickMoreBtn;
     c.querySelector('.review-box__heart').dataset.reviewId = obj.id;
@@ -316,6 +337,64 @@ class Book {
       this.$submitBtn.style.opacity = '0.5';
       this.$submitBtn.style.cursor = 'auto';  
       this.$reviewForm.onsubmit = this.funBannedSubmit;
+    }
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 10. 수정
+  // 수정 버튼 클릭하면 다시 입력 폼이 나오고, 
+  // 그 입력 폼 버튼 클릭하면 전송됌
+  async funEdit(e) {
+    const target = e.target.closest('.review-box__info__edit');
+    if(!target) return;
+    const id = target.dataset.reviewId;
+    this.$reviewForm.dataset.id = id;
+    this.editElem = target.closest('.review-box');
+    // 데이터가 그대로 들어있는 입력 폼 등장, 
+    // 일단 데이터를 서버에서 가져와야 한다. 
+    const res = await axios.get(`/review/${id}`);
+    const review = res.data.review;
+    // 그 데이터를 리뷰 폼에 입력한 상태로 리뷰 폼 보여주기
+    this.$reviewForm.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    this.$reviewTitle.value = review.title;
+    this.$textarea.value = review.text;
+    // 텍스트 현재 글자 수 노출
+    this.$textLengthElem.textContent = review.text.length;
+    // 현재 평점 노출
+    [...this.$reviewFormStars.children].forEach((item, index) => {
+      if(index + 1 <= review.stars) {
+        item.style.opacity = '1';
+      } else if(index + 1 > review.stars) {
+        item.style.opacity = '';
+      }
+    });
+  }
+  /* --------------------------------------------------------------------------------------------------------- */
+  // 10 - 1. 수정을 요소에 반영
+  funEditElem(c, obj) {
+    // 제목, 텍스트, overText, stars, updatedAt수정
+    c.querySelector('.review-box__title').textContent = obj.title;
+    // 기존의 class를 review-box__info__stars__star만 남기고 추가해야
+    [...c.querySelectorAll('.review-box__info__stars__star')].forEach((item, index) => {
+      item.className = 'review-box__info__stars__star';
+      item.classList.add(`${obj.stars[index]}`);
+    });
+    c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
+    if(!obj.text.slice) {
+      // original 보여준다.
+      c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
+      c.querySelectorAll('.review-box__text')[1].hidden = true;
+    } else {
+      // 200자를 넘어서 slice를 보여준다.
+      c.querySelectorAll('.review-box__text')[0].textContent = `${obj.text.slice}...`;
+      c.querySelectorAll('.review-box__text')[1].hidden = false;
+      c.querySelectorAll('.review-box__text')[1].textContent = obj.text.original;
+      c.querySelectorAll('.review-box__text')[1].hidden = true;
+    }
+    if(!obj.overText) {
+      c.querySelector('.review-box__more').hidden = true;
+    } else {
+      c.querySelector('.review-box__more').hidden = false;
     }
   }
 }

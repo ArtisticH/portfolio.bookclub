@@ -65,7 +65,7 @@
       </div>
       <div class="review-container">
         {% for reviewbox in reviewBoxes %}
-        <div class="review-box">
+        <div class="review-box" data-review-id="{{reviewbox.id}}">
           <div class="review-box__title">{{reviewbox.title}}</div>
           <div class="review-box__info">
             <div class="review-box__info__stars">
@@ -85,15 +85,18 @@
             {% if user.id == reviewbox.MemberId %} 
             <div class="review-box__is-user" >
               <div class="review-box__info__line"></div>
-              <div class="review-box__info__edit" data-review-id="{{reviewbox.id}}" data-review-type="update">수정</div>
+              <div class="review-box__info__edit">수정</div>
               <div class="review-box__info__line"></div>
-              <div class="review-box__info__delete" data-review-id="{{reviewbox.id}}" data-review-type="delete">삭제</div>  
+              <div class="review-box__info__delete">삭제</div>  
             </div>
             {% endif %}
           </div>
+          <!-- slice가 null이라면 -->
           {% if not reviewbox.text.slice %}
           <div class="review-box__text">{{reviewbox.text.original}}</div>
+          <div class="review-box__text" hidden></div>
           {% else %}
+          <!-- slice가 null이 아니라면 -->
           <div class="review-box__text">{{reviewbox.text.slice}}...</div>
           <div class="review-box__text" hidden>{{reviewbox.text.original}}</div>
           {% endif %}
@@ -106,7 +109,7 @@
             {% endif %}
             <!-- 더보기가 없을때 하트가 오른쪽에 위치하기 위해 필요한 빈 요소 -->
             <div></div>
-            <div class="review-box__heart" data-review-id="{{reviewbox.id}}">
+            <div class="review-box__heart">
               <div class="review-box__heart-box">
                 <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
                 <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
@@ -137,13 +140,17 @@
           <div class="review-box__info__updatedDate"></div>
           <div class="review-box__is-user">
             <div class="review-box__info__line"></div>
-            <div class="review-box__info__edit" data-review-id="{{reviewbox.id}}" data-review-type="update">수정</div>
+            <div class="review-box__info__edit">수정</div>
             <div class="review-box__info__line"></div>
-            <div class="review-box__info__delete" data-review-id="{{reviewbox.id}}" data-review-type="delete">삭제</div>  
+            <div class="review-box__info__delete">삭제</div>  
           </div>
         </div>
+        <!-- slice와 original 두 가지 버전 -->
         <div class="review-box__text"></div>
         <div class="review-box__text" hidden></div>
+        <!-- 아래 요소는 어차피 기본 hidden임, 
+        왜냐면 slice버전 보여줄때는 더보기 누르기 전까지 숨겨야 하고
+        original 버전만 보여줄때는 그냥 숨겨야 함. -->
         <div class="review-box__bottom">
           <div class="review-box__more">
             <div class="review-box__more__text">더보기</div>
@@ -159,35 +166,6 @@
           </div>
         </div>
       </div>
-      <!-- {% if totalReview > 0 %}
-      <div class="review-paganation">
-        {% if totalReview > 25 %}
-        <div class="review-paganation__first">
-          <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
-        </div>
-        {% endif %}
-        {% if totalReview > 5 %}
-        <div class="review-paganation__before">
-          <img class="review-paganation__img" src="/img/book/page-left-arrow.png" alt="page-left-arrow">
-        </div>
-        {% endif %}
-        <div class="review-paganation__numbers">
-          {% for pageNumber in pageNumbers %}
-          <div class="review-paganation__number">{{pageNumber}}</div>
-          {% endfor %}
-        </div>
-        {% if totalReview > 5 %}
-        <div class="review-paganation__after">
-          <img class="review-paganation__img" src="/img/book/page-right-arrow.png" alt="page-right-arrow">
-        </div>
-        {% endif %}
-        {% if totalReview > 25 %}
-        <div class="review-paganation__last">
-          <img class="review-paganation__img" src="/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">
-        </div>
-        {% endif %}
-      </div>
-      {% endif %} -->
       <div class="review-paganation" hidden>
         <div class="review-paganation__first">
           <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">

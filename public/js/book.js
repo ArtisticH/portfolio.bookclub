@@ -4,7 +4,7 @@ class Book {
     /* --------------------------------------------------------------------------------------------------------- */
     // 1. 리뷰 폼 클릭 시 로그인 상태라면 보여주고 아니라면 alert함수
     this.$reviewForm = document.getElementById('review-form');
-    this.user = this.$reviewForm.dataset.user;
+    this.userId = this.$reviewForm.dataset.userId;
     this.$reviewFormStars = document.querySelector('.review-form__stars');
     this.$reviewTitle = document.querySelector('.review-form__input__title');
     this.$textLengthElem = document.querySelector('.review-form__text__length');
@@ -78,6 +78,7 @@ class Book {
     /* --------------------------------------------------------------------------------------------------------- */
     // 10. 삭제
     this.$deleteBtns = document.querySelectorAll('.review-box__info__delete');
+    this.$reivewContainer = document.querySelector('.review-container');
     this.funDelete = this.funDelete.bind(this);
     [...this.$deleteBtns].forEach(btn => {
       btn.addEventListener('click', this.funDelete);
@@ -89,27 +90,28 @@ class Book {
     this.$pagenation = document.querySelector('.review-paganation');
     this.lastPage = 1;
     this.$numberBtns = document.querySelectorAll('.review-paganation__number');
-    this.currentPage = 1;
+    this.$currentPageElem = [...this.$numberBtns][0];
     // 버튼 1 활성화시키기.
-    [...this.$numberBtns][this.currentPage - 1].classList.add('clicked');
+    this.$currentPageElem.classList.add('clicked');
     /* --------------------------------------------------------------------------------------------------------- */
     // 12. 페이지 버튼 클릭 시
     this.funPagenation = this.funPagenation.bind(this);
-    this.nextPage = null;
+    this.$nextPageElem = null;
     [...this.$numberBtns].forEach(btn => {
       btn.addEventListener('click', this.funPagenation);
     });
-    this.$reivewContainer = document.querySelector('.review-container');
+    this.$nextPageIcon = document.querySelector('.review-paganation__after');
+    this.$beforePageIcon = document.querySelector('.review-paganation__before');
+    this.$nextPageIcon.onclick = this.funNextPage.bind(this);
+    this.$beforePageIcon.onclick = this.funBeforePage.bind(this);
 
     this.$firstPageIcon = document.querySelector('.review-paganation__first');
     this.$lastPageIcon = document.querySelector('.review-paganation__last');
-    this.$beforePageIcon = document.querySelector('.review-paganation__before');
-    this.$afterPageIcon = document.querySelector('.review-paganation__after');
 }
   /* --------------------------------------------------------------------------------------------------------- */
   // 1. 리뷰 폼 클릭 시 로그인 상태라면 보여주고 아니라면 alert함수
   funReviewForm(e) {
-    if(!!this.user) {
+    if(this.userId) {
       // 로그인한 상태라면
       // 평점들 다 없애기
       [...this.$reviewFormStars.children].forEach((item) => {
@@ -274,7 +276,7 @@ class Book {
     c.querySelector('.review-box__info__date').textContent = obj.createdAt;
     c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
     // 유저의 아이디와 작성자의 아이디가 다르다면 수정/삭제 비활성화
-    if(this.user.id === obj.MemberId) {
+    if(this.userId == obj.MemberId) {
       c.querySelector('.review-box__is-user').hidden = false;
     } else {
       c.querySelector('.review-box__is-user').hidden = true;
@@ -282,6 +284,9 @@ class Book {
     // 만약 text.slice가 null이라면 1000자를 안 넘는다는 뜻이고 그럼 그대로 original 보여준다.
     // 만약 1000자를 넘으면 보여지는건 slice버전, original은 숨겨뒀다가 더보기버튼을 누르면 바꾸기
     // querySelectorAll은 hidden까지 카운트한다. 
+    // 아래 두가지는 삭제, 수정 시 과거 저장한 요소를 바꾸기 위해 필요
+    c.querySelectorAll('.review-box__text')[0].hidden = false;
+    c.querySelectorAll('.review-box__text')[1].hidden = true;
     if(!obj.text.slice) {
       // original 보여준다.
       c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
@@ -296,6 +301,8 @@ class Book {
       c.querySelector('.review-box__more').hidden = false;
     }
     // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
+    c.querySelector('.review-box__info__edit').onclick = this.funEdit;
+    c.querySelector('.review-box__info__delete').onclick = this.funDelete;
     c.querySelector('.review-box__more').onclick = this.fucClickMoreBtn;
     c.querySelector('.review-box__heart').onclick = this.fucHeartBtn;
     c.querySelector('.review-box__heart__total').textContent = obj.like;
@@ -331,7 +338,7 @@ class Book {
   // 7. 공감
   async fucHeartBtn(e) {
     // 로그인 안했으면 접근 금지
-    if(!this.user) {
+    if(!this.userId) {
       alert('로그인 후 이용해주세요');
       return;
     }
@@ -423,7 +430,6 @@ class Book {
   // 9 - 1. 수정을 요소에 반영
   // c는 해당 review-box
   funEditElem(c, obj) {
-    console.log(c);
     // 제목, 텍스트, overText, stars, updatedAt수정
     c.querySelector('.review-box__title').textContent = obj.title;
     // 기존의 class를 review-box__info__stars__star만 남기고 추가해야
@@ -433,7 +439,7 @@ class Book {
     });
     c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
     c.querySelectorAll('.review-box__text')[0].hidden = false;
-    c.querySelectorAll('.review-box__text')[1].hidden = false;
+    c.querySelectorAll('.review-box__text')[1].hidden = true;
     if(!obj.text.slice) {
       // original 보여준다.
       c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
@@ -453,19 +459,20 @@ class Book {
   async funDelete(e) {
     const target = e.currentTarget;
     const box = target.closest('.review-box');
-    const reviewId = box.dataset.reviewId;
-    // this.bookId는 삭제 후 비어있는 공간을 채우기 위해 해당 책과 관련된 리뷰를 불러들어오기 위해 필요
-    const res = await axios.delete(`/review/${reviewId}/${this.bookId}`);
-    const review = res.data.review;   
     box.remove();
-    // totalReviewCount가 5개 이상이면 하나를 추가해야 하지만
-    // 5개 미만이면 하나 추가하지 않는다. 
-    if(this.totalReviewCount > 5) {
-      const $reviewBoxes = document.querySelectorAll('.review-box');
-      $reviewBoxes[$reviewBoxes.length - 1].after(this.funReviewDOM(this.$reviewClone.cloneNode(true), review));
-    }
+    const reviewId = box.dataset.reviewId;
+    // 삭제
+    await axios.delete(`/review/${reviewId}`);
     this.totalReviewCount--;
     this.$totalReviewCount.textContent = this.totalReviewCount;
+    // totalReviewCount가 5개 이상이면 하나를 추가해야 하지만
+    // 5개 미만이면 하나 추가하지 않는다. 
+    if(this.totalReviewCount >= 5) {
+      const res = await axios.get(`/review/delete/${this.bookId}`);
+      const review = res.data.review;   
+      this.$reivewContainer.append(this.funReviewDOM(this.$reviewClone.cloneNode(true), review));
+    }
+    this.funPageElems();
   }
   /* --------------------------------------------------------------------------------------------------------- */
   // 11. 첫 리뷰 등록 후 보이는 화면
@@ -474,7 +481,10 @@ class Book {
       // '리뷰 작성해주세요' 사라지고 페이지 넘버 등장
       this.$emptyReviewElem.hidden = true;
       this.$pagenation.hidden = false;
-    } 
+    } else {
+      this.$emptyReviewElem.hidden = false;
+      this.$pagenation.hidden = true;
+    }
     if(this.totalReviewCount < 25) {
       // 5의 배수, 예를 들어 15개, 20개, 25개라면... => 3, 4, 5까지 페이지가 존재. 
       // 그게 아니라면 (몫 + 1)만큼 페이지가 존재. 
@@ -509,80 +519,81 @@ class Book {
   /* --------------------------------------------------------------------------------------------------------- */
   // 12. 페이지 버튼 클릭 시
   async funPagenation(e) {
-    e.preventDefault();
     const target = e.currentTarget;
     // 1, 2, 3, 4, 5안에서 클릭했을때
-    if(!this.nextPage) {
+    if(!this.$nextPageElem) {
       // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
       // 만약 2를 클릭했다? this.nextPage는 2가 된다.
-      this.nextPage = target.textContent;
+      this.$nextPageElem = target;
     } else {
       // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
       // 이번엔 2에서 4를 클릭한다고 해보자.
       // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
-      this.currentPage = this.nextPage;
-      this.nextPage = target.textContent;
+      this.$currentPageElem = this.$nextPageElem;
+      this.$nextPageElem = target;
     }
     // 과거는 지우고, currentPage
-    [...this.$numberBtns][this.currentPage - 1].classList.remove('clicked');
+    this.$currentPageElem.classList.remove('clicked');
     // 현재 업데이트, nextPage
-    [...this.$numberBtns][this.nextPage - 1].classList.add('clicked');
+    this.$nextPageElem.classList.add('clicked');
     // nextPage에 맞는 리뷰 5개 가져오기. 
-    const res = await axios.get(`/review/${this.bookId}/page/${this.nextPage}`);
+    const res = await axios.get(`/review/${this.bookId}/page/${this.$nextPageElem.textContent}`);
     const reviews = res.data.reviews;
-    this.$reivewBoxes = this.$reivewContainer.children;
-    reviews.forEach((item, index) => {
-      [...this.$reivews][index] && [...this.$reivewBoxes][index].remove();
-      this.$reivewContainer.append(this.funChangeReviewDOM(this.$reviewClone.cloneNode(true), item));
+    [...this.$reivewContainer.children].forEach(item => {
+      item.remove();
+    });
+    [...reviews].forEach(item => {
+      this.$reivewContainer.append(this.funReviewDOM(this.$reviewClone.cloneNode(true), item));
     });
   }
-  // 11 - 2. 요소 내용 바꾸기
-  funChangeReviewDOM (c, obj) {
-    c.className = 'review-box';
-    c.hidden = false;
-    c.querySelector('.review-box__title').textContent = obj.title;
-    [...c.querySelectorAll('.review-box__info__stars__star')].forEach((item, index) => {
-      item.classList.add(`${obj.stars[index]}`);
+
+  async funNextPage() {
+    if(!this.$nextPageElem) {
+      // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
+      // 만약 2를 클릭했다? this.nextPage는 2가 된다.
+      this.$nextPageElem = this.$currentPageElem.nextElementSibling;
+    } else {
+      // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
+      // 이번엔 2에서 4를 클릭한다고 해보자.
+      // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
+      this.$currentPageElem = this.$nextPageElem;
+      this.$nextPageElem = this.$currentPageElem.nextElementSibling;
+    }
+    this.$currentPageElem.classList.remove('clicked');
+    this.$nextPageElem.classList.add('clicked');
+    const res = await axios.get(`/review/${this.bookId}/page/${this.$nextPageElem.textContent}`);
+    const reviews = res.data.reviews;
+    [...this.$reivewContainer.children].forEach(item => {
+      item.remove();
     });
-    c.querySelector('.review-box__info__type').textContent = obj.type.toUpperCase();
-    c.querySelector('.review-box__info__nickname').textContent = obj.nick;
-    c.querySelector('.review-box__info__nickname').href = `/member/${obj.MemberId}`;
-    c.querySelector('.review-box__info__date').textContent = obj.createdAt;
-    c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
-    // 유저가 로그인 상태고, 유저의 아이디와 작성자의 아이디가 같다면 수정 + 삭제란 노출
-    if(this.user && this.user.id === obj.MemberId) {
-      c.querySelector('.review-box__is-user').hidden = false;
-      c.querySelector('.review-box__info__edit').dataset.reviewId = obj.id;
-      c.querySelector('.review-box__info__delete').dataset.reviewId = obj.id;
+    [...reviews].forEach(item => {
+      this.$reivewContainer.append(this.funReviewDOM(this.$reviewClone.cloneNode(true), item));
+    });
+  }
+
+  async funBeforePage() {
+    if(!this.$nextPageElem) {
+      return;
     } else {
-      c.querySelector('.review-box__is-user').hidden = true;
+      // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
+      // 이번엔 2에서 4를 클릭한다고 해보자.
+      // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
+      this.$currentPageElem = this.$nextPageElem;
+      this.$nextPageElem = this.$currentPageElem.previousElementSibling;
     }
-    // 만약 text.slice가 null이라면 1000자를 안 넘는다는 뜻이고 그럼 그대로 original 보여준다.
-    // 만약 1000자를 넘으면 보여지는건 slice버전, original은 숨겨뒀다가 더보기버튼을 누르면 바꾸기
-    // querySelectorAll은 hidden까지 카운트한다. 
-    if(!obj.text.slice) {
-      // original 보여준다.
-      c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
-      c.querySelectorAll('.review-box__text')[1].hidden = true;
-    } else {
-      // 200자를 넘어서 slice를 보여준다.
-      c.querySelectorAll('.review-box__text')[0].textContent = `${obj.text.slice}...`;
-      c.querySelectorAll('.review-box__text')[1].textContent = obj.text.original;
-    }
-    if(!obj.overText) {
-      c.querySelector('.review-box__more').hidden = true;
-    } else {
-      c.querySelector('.review-box__more').hidden = false;
-    }
-    // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
-    c.querySelector('.review-box__more').onclick = this.fucClickMoreBtn;
-    c.querySelector('.review-box__heart').dataset.reviewId = obj.id;
-    // 새로 추가되는 요소에도 이벤트를 추가해야 한다.
-    c.querySelector('.review-box__heart').onclick = this.fucHeartBtn;
-    c.querySelector('.review-box__heart__total').textContent = obj.like;
-    return c;
+    this.$currentPageElem.classList.remove('clicked');
+    this.$nextPageElem.classList.add('clicked');
+    const res = await axios.get(`/review/${this.bookId}/page/${this.$nextPageElem.textContent}`);
+    const reviews = res.data.reviews;
+    [...this.$reivewContainer.children].forEach(item => {
+      item.remove();
+    });
+    [...reviews].forEach(item => {
+      this.$reivewContainer.append(this.funReviewDOM(this.$reviewClone.cloneNode(true), item));
+    });
   }
 }
+
 
 const book = new Book();
 book.funPageElems();

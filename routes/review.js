@@ -138,7 +138,52 @@ router.get('/:reviewid', async(req, res) => {
   const review = await Review.findOne({
     where: { id },
   });
-  res.json({ review });
+  res.json({ review });  
+});
+
+// 삭제 후 새로 추가할 요소를 원할때
+router.get('/delete/:bookid', async(req, res) => {
+  const id = req.params.bookid;
+  const result = await Review.findOne({
+    include: [{
+      model: Book,
+      where: { id },
+    }, {
+      model: Member,
+      attributes: ['id', 'type', 'nick'],
+    }],
+    order: [['id', 'DESC']], 
+    limit: 1,
+    // 우선은 가장 최신글 5개 중에 삭제한다고 보고, offset: 4,
+    // 만약 페이지네이션이 진행되면 offset에도 변수가 와야한다. 
+    offset: 4,
+  });
+  let text;
+  if(result.text.length > 200) {
+    text = {
+      slice: result.text.slice(0, 200),
+      original: result.text,
+    };
+  } else {
+    text = {
+      slice: null,
+      original: result.text,
+    };
+  }
+  const review = {
+    id: result.id,
+    title: result.title,
+    text,
+    like: result.like,
+    overText: result.overText,
+    stars: funCalculateRate(result.stars),
+    createdAt: funChangeDate(result.createdAt),
+    updatedAt: funChangeDate(result.updatedAt),
+    MemberId: result.MemberId,
+    type: result.Member.type.toUpperCase(),
+    nick: result.Member.nick,
+  };  
+  res.json({ review });      
 });
 
 // 업데이트
@@ -183,54 +228,13 @@ router.patch('/', async (req, res) => {
 });
 
 // 리뷰 삭제
-router.delete('/:reviewid/:bookid', async (req, res) => {
+router.delete('/:reviewid', async (req, res) => {
   const id = req.params.reviewid;
   const bookId = req.params.bookid;
   await Review.destroy({
     where: { id },
   });
-  // 삭제 후 비어있는 공간 하나를 채우기 위해
-  const result = await Review.findOne({
-    include: [{
-      model: Book,
-      where: { id: bookId },
-    }, {
-      model: Member,
-      attributes: ['id', 'type', 'nick'],
-    }],
-    order: [['id', 'DESC']], 
-    limit: 1,
-    // 우선은 가장 최신글 5개 중에 삭제한다고 보고, offset: 4,
-    // 만약 페이지네이션이 진행되면 offset에도 변수가 와야한다. 
-    offset: 4,
-  });
-  console.log(result)
-  let text;
-  if(result.text.length > 200) {
-    text = {
-      slice: result.text.slice(0, 200),
-      original: result.text,
-    };
-  } else {
-    text = {
-      slice: null,
-      original: result.text,
-    };
-  }
-  const review = {
-    id: result.id,
-    title: result.title,
-    text,
-    like: result.like,
-    overText: result.overText,
-    stars: funCalculateRate(result.stars),
-    createdAt: funChangeDate(result.createdAt),
-    updatedAt: funChangeDate(result.updatedAt),
-    MemberId: result.MemberId,
-    type: result.Member.type.toUpperCase(),
-    nick: result.Member.nick,
-  };
-  res.json({ review });  
+  res.json();
 });
 
 // 페이지 버튼 클릭 시
@@ -253,6 +257,10 @@ router.get('/:bookid/page/:pagenumber', async (req, res) => {
     order: [['id', 'DESC']],
   });
   const reviews = [];
+  for(let i of results) {
+    console.log(i.title)
+  }
+  console.log(results.length);
   results.forEach(item => {
     let text;
     if(item.text.length > 200) {

@@ -88,25 +88,22 @@ class Book {
     // 첫 리뷰글을 등록하면 $emptyReviewElem 사라지고 $pagenation활성화된다. 
     this.$emptyReviewElem = document.querySelector('.empty-review');
     this.$pagenation = document.querySelector('.review-paganation');
-    this.lastPage = 1;
+    this.lastPage = (this.totalReviewCount % 5) === 0 ? this.totalReviewCount / 5 : Math.floor(this.totalReviewCount / 5) + 1;
+    this.$numbersBtn = document.querySelector('.review-paganation__numbers');
     this.$numberBtns = document.querySelectorAll('.review-paganation__number');
+    // 가장 처음에 버튼 1이 현재 페이지
     this.$currentPageElem = [...this.$numberBtns][0];
     // 버튼 1 활성화시키기.
     this.$currentPageElem.classList.add('clicked');
     /* --------------------------------------------------------------------------------------------------------- */
     // 12. 페이지 버튼 클릭 시
-    this.funPagenation = this.funPagenation.bind(this);
     this.$nextPageElem = null;
-    [...this.$numberBtns].forEach(btn => {
-      btn.addEventListener('click', this.funPagenation);
-    });
     this.$nextPageIcon = document.querySelector('.review-paganation__after');
     this.$beforePageIcon = document.querySelector('.review-paganation__before');
-    this.$nextPageIcon.onclick = this.funNextPage.bind(this);
-    this.$beforePageIcon.onclick = this.funBeforePage.bind(this);
-
     this.$firstPageIcon = document.querySelector('.review-paganation__first');
     this.$lastPageIcon = document.querySelector('.review-paganation__last');
+    // 이벤트 위임
+    this.$pagenation.onclick = this.funPagenation.bind(this);
 }
   /* --------------------------------------------------------------------------------------------------------- */
   // 1. 리뷰 폼 클릭 시 로그인 상태라면 보여주고 아니라면 alert함수
@@ -480,12 +477,23 @@ class Book {
     if(this.totalReviewCount > 0) {
       // '리뷰 작성해주세요' 사라지고 페이지 넘버 등장
       this.$emptyReviewElem.hidden = true;
-      this.$pagenation.hidden = false;
+      this.$numbersBtn.hidden = false;
     } else {
       this.$emptyReviewElem.hidden = false;
-      this.$pagenation.hidden = true;
+      this.$numbersBtn.hidden = true;
     }
-    if(this.totalReviewCount < 25) {
+    if(this.totalReviewCount > 5) {
+      // 페이지 버튼이 최소 1, 2 두가지 일때
+      this.$beforePageIcon.hidden = false;
+      this.$nextPageIcon.hidden = false;
+    } else {
+      // 페이지 버튼이 1밖에 없을때
+      this.$beforePageIcon.hidden = true;
+      this.$nextPageIcon.hidden = true;
+    }
+    if(this.totalReviewCount <= 25) {
+      this.$lastPageIcon.hidden = true;
+      this.$firstPageIcon.hidden = true;
       // 5의 배수, 예를 들어 15개, 20개, 25개라면... => 3, 4, 5까지 페이지가 존재. 
       // 그게 아니라면 (몫 + 1)만큼 페이지가 존재. 
       const lastPage = (this.totalReviewCount % 5) === 0 ? this.totalReviewCount / 5 : Math.floor(this.totalReviewCount / 5) + 1;
@@ -508,81 +516,149 @@ class Book {
         // 이제 lastPage === this.lastPage
         this.lastPage++;    
       }
-    } else if(this.totalReviewCount >= 25) {
+    } else if(this.totalReviewCount > 25) {
+      this.$lastPageIcon.hidden = false;
+      this.$firstPageIcon.hidden = false;
       // 25개 이상이면 항상 1, 2, 3, 4, 5가 보여야 한다. 
       [...this.$numberBtns].forEach((item, index) => {
         item.hidden = false;
         item.textContent = index + 1;
       });  
     }
+    // 아예 처음 렌더링(this.$nextPageElem이 null)할때 <와 << 없애기
+    // 가장 아래에 둠으로써 우선순위 높게
+    if(!this.$nextPageElem) {
+      this.$beforePageIcon.hidden = true;
+      this.$firstPageIcon.hidden = true;
+    }     
   }  
   /* --------------------------------------------------------------------------------------------------------- */
   // 12. 페이지 버튼 클릭 시
   async funPagenation(e) {
-    const target = e.currentTarget;
-    // 1, 2, 3, 4, 5안에서 클릭했을때
-    if(!this.$nextPageElem) {
-      // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
-      // 만약 2를 클릭했다? this.nextPage는 2가 된다.
-      this.$nextPageElem = target;
-    } else {
-      // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
-      // 이번엔 2에서 4를 클릭한다고 해보자.
-      // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
+    // 아이콘의 경우 img가 되니까 그 위의 div로 잡아주기
+    const target = e.target.closest('div');
+    if(target.className === 'review-paganation__number') {
+      // 1, 2, 3, 4, 5안에서 클릭했을때
+      if(!this.$nextPageElem) {
+        // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
+        // 만약 2를 클릭했다? this.nextPage는 2가 된다.
+        this.$nextPageElem = target;
+      } else {
+        // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
+        // 이번엔 2에서 4를 클릭한다고 해보자.
+        // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
+        this.$currentPageElem = this.$nextPageElem;
+        this.$nextPageElem = target;
+      }
+    } else if(target.className === 'review-paganation__after') {
+      if(!this.$nextPageElem) {
+        // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
+        // 만약 2를 클릭했다? this.nextPage는 2가 된다.
+        this.$nextPageElem = this.$currentPageElem.nextElementSibling;
+      } else {
+        // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
+        // 이번엔 2에서 4를 클릭한다고 해보자.
+        // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
+        this.$currentPageElem = this.$nextPageElem;
+        this.$nextPageElem = this.$currentPageElem.nextElementSibling && this.$currentPageElem.nextElementSibling;
+      }
+      // 현재 페이지 넘버가 5의 배수이고, 5나 10이나 15나...
+      // 현재 페이지를 넘는 페이지가 존재할때는 다음 화면들을 보여주고
+      if(this.$currentPageElem.textContent % 5 == 0 && this.$currentPageElem.textContent < this.lastPage) {
+        // 페이지 넘버들 다시 보여줘
+        let start = Number(this.$currentPageElem.textContent) + 1;
+        const end = this.lastPage;
+        [...this.$numberBtns].forEach((item, index) => {
+          if(start % 5 == index + 1 && start <= end) {
+            item.hidden = false;
+            item.textContent = start;
+          } else if(start > end) {
+            item.hidden = true;
+          }
+          start++;
+        });
+        this.$nextPageElem = [...this.$numberBtns][0];
+      }
+    } else if(target.className === 'review-paganation__before') {
+      if(!this.$nextPageElem) {
+        return;
+      } else {
+        // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
+        // 이번엔 2에서 4를 클릭한다고 해보자.
+        // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
+        this.$currentPageElem = this.$nextPageElem;
+        this.$nextPageElem = this.$currentPageElem.previousElementSibling && this.$currentPageElem.previousElementSibling;
+      }
+      // 현재 페이지 넘버가 1, 6, 11, 16처럼 % 5가 1이고
+      // 가장 처음 페이지가 아닐때
+      if(this.$currentPageElem.textContent % 5 == 1 && this.$currentPageElem.textContent != 1) {
+        // 페이지 넘버들 다시 보여줘
+        let start = this.$currentPageElem.textContent - 5;
+        [...this.$numberBtns].forEach((item, index) => {
+          item.hidden = false;
+          item.textContent = start;
+          start++;
+        });
+        this.$nextPageElem = [...this.$numberBtns][4];
+      }
+    } else if(target.className === 'review-paganation__last') {
+      const end = this.lastPage;
+      // 만약 마지막 페이지가 14라면, end % 5는 4다. 
+      // 이건, 처음의 요소로부터 3칸 떨어져있다는 뜻으로 
+      // end에서 - (end % 5) + 1를 하면 처음의 요소 페이지를 구할 수 있다. 
+      let start = end - (end % 5) + 1;
+      [...this.$numberBtns].forEach((item, index) => {
+        if(start % 5 == index + 1 && start <= end) {
+          item.hidden = false;
+          item.textContent = start;
+        } else if(start > end) {
+          item.hidden = true;
+        }
+        start++;
+      });
+      if(this.$nextPageElem) {
+        this.$currentPageElem = this.$nextPageElem;
+      }
+      this.$nextPageElem = [...this.$numberBtns][end % 5 - 1];
+    } else if(target.className === 'review-paganation__first') {
+      [...this.$numberBtns].forEach((item, index) => {
+        item.hidden = false;
+        item.textContent = index + 1;
+      });
       this.$currentPageElem = this.$nextPageElem;
-      this.$nextPageElem = target;
+      this.$nextPageElem = [...this.$numberBtns][0];
+    }
+
+    // 마지막 버튼 클릭 시
+    if(this.$nextPageElem.textContent == this.lastPage) {
+      this.$nextPageIcon.hidden = true;
+      this.$lastPageIcon.hidden = true;
+    } else {
+      this.$nextPageIcon.hidden = false;
+      this.$lastPageIcon.hidden = false;
+    }
+    // 맨 처음 버튼 클릭 시
+    if(this.$nextPageElem.textContent == 1) {
+      this.$firstPageIcon.hidden = true;
+      this.$beforePageIcon.hidden = true;
+    } else {
+      this.$firstPageIcon.hidden = false;
+      this.$beforePageIcon.hidden = false;
+    }
+    // 현재 1에 활성화가 되어있다면
+    // <와 << 없애기
+    if(this.$nextPageElem.textContent == 1) {
+      this.$beforePageIcon.hidden = true;
+      this.$firstPageIcon.hidden = true;
+    } else {
+      this.$beforePageIcon.hidden = false;
+      this.$firstPageIcon.hidden = false;
     }
     // 과거는 지우고, currentPage
-    this.$currentPageElem.classList.remove('clicked');
+    this.$currentPageElem && this.$currentPageElem.classList.remove('clicked');
     // 현재 업데이트, nextPage
     this.$nextPageElem.classList.add('clicked');
     // nextPage에 맞는 리뷰 5개 가져오기. 
-    const res = await axios.get(`/review/${this.bookId}/page/${this.$nextPageElem.textContent}`);
-    const reviews = res.data.reviews;
-    [...this.$reivewContainer.children].forEach(item => {
-      item.remove();
-    });
-    [...reviews].forEach(item => {
-      this.$reivewContainer.append(this.funReviewDOM(this.$reviewClone.cloneNode(true), item));
-    });
-  }
-
-  async funNextPage() {
-    if(!this.$nextPageElem) {
-      // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
-      // 만약 2를 클릭했다? this.nextPage는 2가 된다.
-      this.$nextPageElem = this.$currentPageElem.nextElementSibling;
-    } else {
-      // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
-      // 이번엔 2에서 4를 클릭한다고 해보자.
-      // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
-      this.$currentPageElem = this.$nextPageElem;
-      this.$nextPageElem = this.$currentPageElem.nextElementSibling;
-    }
-    this.$currentPageElem.classList.remove('clicked');
-    this.$nextPageElem.classList.add('clicked');
-    const res = await axios.get(`/review/${this.bookId}/page/${this.$nextPageElem.textContent}`);
-    const reviews = res.data.reviews;
-    [...this.$reivewContainer.children].forEach(item => {
-      item.remove();
-    });
-    [...reviews].forEach(item => {
-      this.$reivewContainer.append(this.funReviewDOM(this.$reviewClone.cloneNode(true), item));
-    });
-  }
-
-  async funBeforePage() {
-    if(!this.$nextPageElem) {
-      return;
-    } else {
-      // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
-      // 이번엔 2에서 4를 클릭한다고 해보자.
-      // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
-      this.$currentPageElem = this.$nextPageElem;
-      this.$nextPageElem = this.$currentPageElem.previousElementSibling;
-    }
-    this.$currentPageElem.classList.remove('clicked');
-    this.$nextPageElem.classList.add('clicked');
     const res = await axios.get(`/review/${this.bookId}/page/${this.$nextPageElem.textContent}`);
     const reviews = res.data.reviews;
     [...this.$reivewContainer.children].forEach(item => {

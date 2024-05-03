@@ -71,21 +71,24 @@ a {
   overflow: hidden;
 }
 
-.member__info__hi {
-  font-family: var(--font-poppins);
-  font-size: 4rem;
-  color: #f1c90c;
-  font-weight: 600;
-  letter-spacing: -4px;
-  height: 50%;
-}
-
-.member__info-bottom {
-  box-sizing: border-box;
-  height: 50%;
+.member__info-contents {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
+  overflow: hidden;
+}
+
+#member__info__wishlist {
+  font-family: var(--font-poppins);
+  font-size: 4rem;
+  letter-spacing: -4px;
+  font-weight: 100;
+  line-height: 0.7;
+}
+
+#member__info__wishlist:hover {
+  text-decoration: line-through;
 }
 
 #member__info__nick {
@@ -93,7 +96,6 @@ a {
   color: #f1c90c;
   font-size: 1.6rem;
   letter-spacing: -1.5px;
-  font-style: italic;
   margin-left: -3px;
 }
 
@@ -171,28 +173,24 @@ a {
   border: 0.5px solid black;
 }
 
-.member-books__container {
-  box-sizing: border-box;
-  width: 50vw;
-}
-
-.member-books__nav {
+.member__nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  height: 25px;
 }
 
-.member-books__nav__back {
+.member__nav__back {
   width: 80px;
 }
 
-.member-books__nav__back__img {
+.member__nav__back__img {
   width: 100%;
   display: block;
 }
 
-.member-books__nav__home {
+.member__nav__home {
   font-family: var(--font-montserrat);
   font-size: 1.4rem;
   letter-spacing: -1.4px;
@@ -201,7 +199,9 @@ a {
 }
 
 .member-books__container {
-  padding: 30px 10px 0px 10px;
+  box-sizing: border-box;
+  width: 50vw;
+  padding: 20px 10px 0px 10px;
 }
 
 .member-books__book {
@@ -255,17 +255,8 @@ a {
     grid-template-columns: 3fr 7fr;
   }
 
-  .member-books__nav__back {
-    width: 100px;
-  }
-    
-  .member-books__nav__home {
-    font-size: 1.8rem;
-    letter-spacing: -1.8px;
-  }  
-
   .member-books__container {
-    padding: 50px 20px 20px 20px;
+    padding: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -278,20 +269,9 @@ a {
   }
 }
 
-@media all and (min-width: 800px) {
-  .member-books__nav__back {
-    width: 150px;
-  }
-    
-  .member-books__nav__home {
-    font-size: 2.2rem;
-    letter-spacing: -2.2px;
-  }  
-}
-
 @media all and (min-width: 900px) {
   .member-books__container {
-    padding: 50px 30px 30px 30px;
+    padding: 30px;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 30px;
   }
@@ -329,6 +309,12 @@ a {
 }
 
 @media all and (min-width: 1400px) {
+  #member__info__wishlist {
+    font-size: 5rem;
+    letter-spacing: -5px;
+    line-height: 0.7;
+  }
+  
   .member-books__container {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }

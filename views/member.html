@@ -61,8 +61,8 @@
       </div>
       {% endif %}
       <div class="member__info">
-        <div class="member__info__hi">Hi,<br>it's me.</div>
-        <div class="member__info-bottom">
+        <div class="member__info-contents">
+          <a href="/wishlist/{{member.id}}" id="member__info__wishlist">WISHLIST</a>
           <div id="member__info__nick">nickname<div class="member__info__nick">{{member.nick}}</div></div>
           <div class="member__info__numbers">
             <div class="member__info__numbers__books tooltip-elem" data-type="books">{{recommendedBookCount}}<span class="member__info__numbers__books--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
@@ -78,12 +78,12 @@
       </div>
     </div>
     <div class="member-books">
-      <div class="member-books__nav">
-        <a href="/members" class="member-books__nav__back">
-          <img class="member-books__nav__back__img" src="/img/main/back-arrow.png" alt="back-arrow">
+      <div class="member__nav">
+        <a href="/members" class="member__nav__back">
+          <img class="member__nav__back__img" src="/img/main/back-arrow.png" alt="back-arrow">
         </a>
-        <a href="/" class="member-books__nav__home">Home</a>
-      </div>
+        <a href="/" class="member__nav__home">Home</a>
+      </div>  
       <div class="member-books__container">
         {% for book in recommendedBook %}
         <a href="/book/{{book.id}}" class="member-books__book">

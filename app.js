@@ -13,6 +13,7 @@ const bookRouter = require('./routes/book');
 const memberRouter = require('./routes/member');
 const authRouter = require('./routes/auth');
 const reviewRouter = require('./routes/review');
+const wishlistRouter = require('./routes/wishlist');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -52,11 +53,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/', pageRouter);
 app.use('/book', bookRouter);
 app.use('/member', memberRouter);
 app.use('/auth', authRouter);
 app.use('/review', reviewRouter);
-app.use('/', pageRouter);
+app.use('/wishlist', wishlistRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다`);

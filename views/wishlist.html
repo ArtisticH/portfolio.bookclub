@@ -17,38 +17,21 @@
   <section id="wishlist">
     <div class="wishlist">
       <a href="/" class="wishlist__home">Home</a>
-      <a href="/member/{{}}" class="wishlist__nick">서망고</a>  
+      <a href="/member/{{member.id}}" class="wishlist__nick">{{member.nick}}</a>  
     </div>
     <div class="wishlist-contents">
-      <div class="wishlist-folder">
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count">14</div>
+      {% if folderBoxes.length == 0 %}
+      {% else %}
+      {% for folderBox in folderBoxes %}
+        <div class="wishlist-folder" data-folder-id="{{folderBox.id}}" data-public="{{folderBox.public}}" data-createdAt="{{folderBox.createdAt}}" data-updatedAt="{{folderBox.updatedAt}}">
+          <div class="wishlist-folder__img-box">
+            <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
+            <div class="wishlist-folder__count">{{folderBox.count}}</div>
+          </div>
+          <div class="wishlist-folder__title">{{folderBox.title}}</div>
         </div>
-        <div class="wishlist-folder__title">programming</div>
-      </div>
-      <div class="wishlist-folder">
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count">14</div>
-        </div>
-        <div class="wishlist-folder__title">programming</div>
-      </div>
-      <div class="wishlist-folder">
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count">14</div>
-        </div>
-        <div class="wishlist-folder__title">programming</div>
-      </div>
-      <div class="wishlist-folder">
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count">14</div>
-        </div>
-        <div class="wishlist-folder__title">programming</div>
-      </div>
-    </div>
+      {% endfor %}
+      {% endif %}
     <div id="folder-menu" hidden>
       <a class="folder-menu" data-menu="open">열기</a>
       <div class="folder-menu" data-menu="name">이름 변경</div>

@@ -1,5 +1,6 @@
 class Wishlist {
   constructor() {
+    this.memberId = new URL(location.href).pathname.split('/')[2];
     this.$wishlist = document.getElementById('wishlist');
     this.$wishlistArea = document.querySelector('.wishlist-contents');
     this.$wishlistArea.oncontextmenu = this.funContextmenu.bind(this);
@@ -9,6 +10,11 @@ class Wishlist {
     this.$sortMenu = document.getElementById('sort-menu');
     this.$sortElem = document.querySelector('[data-menu="sort"]')
     this.$sortElem.onpointerenter = this.fucSort.bind(this);
+    this.$folders = document.querySelectorAll('.wishlist-folder');
+    this.funDblclick = this.funDblclick.bind(this);
+    [...this.$folders].forEach(item => {
+      item.addEventListener('dblclick', this.funDblclick);
+    })
   }
 
   funContextmenu(e) {
@@ -38,7 +44,7 @@ class Wishlist {
     const target = e.target;
     const type = target.dataset.menu;
     if(type === 'open') {
-      console.log('열기');
+      this.funDblclick();
     } else if(type === 'name') {
       console.log('이름 변경');
     } else if(type === 'delete') {
@@ -62,6 +68,10 @@ class Wishlist {
     e.currentTarget.onpointerleave = () => {
       this.$sortMenu.hidden = true;
     }
+  }
+
+  funDblclick(e) {
+    // 더블클릭 시 href효과
   }
 }
 

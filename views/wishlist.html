@@ -5,16 +5,67 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/css/wishlist.css">
-  <script defer src="/js/wishlist.js"></script>
+  <link rel="stylesheet" href="/public/css/wishlist.css">
+  <script defer src="/public/js/wishlist.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
   <section id="wishlist">
+    <div class="wishlist">
+      <a href="/" class="wishlist__home">Home</a>
+      <a href="/member/{{}}" class="wishlist__nick">서망고</a>  
+    </div>
+    <div class="wishlist-contents">
+      <div class="wishlist-folder">
+        <div class="wishlist-folder__img-box">
+          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
+          <div class="wishlist-folder__count">14</div>
+        </div>
+        <div class="wishlist-folder__title">programming</div>
+      </div>
+      <div class="wishlist-folder">
+        <div class="wishlist-folder__img-box">
+          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
+          <div class="wishlist-folder__count">14</div>
+        </div>
+        <div class="wishlist-folder__title">programming</div>
+      </div>
+      <div class="wishlist-folder">
+        <div class="wishlist-folder__img-box">
+          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
+          <div class="wishlist-folder__count">14</div>
+        </div>
+        <div class="wishlist-folder__title">programming</div>
+      </div>
+      <div class="wishlist-folder">
+        <div class="wishlist-folder__img-box">
+          <img class="wishlist__img" src="/public/img/wishlist/green-folder.png" alt="folder">
+          <div class="wishlist-folder__count">14</div>
+        </div>
+        <div class="wishlist-folder__title">programming</div>
+      </div>
+    </div>
+    <div id="folder-menu" hidden>
+      <a class="folder-menu" data-menu="open">열기</a>
+      <div class="folder-menu" data-menu="name">이름 변경</div>
+      <div class="folder-menu" data-menu="delete">삭제</div>
+    </div>
+    <div id="area-menu" hidden>
+      <div class="area-menu" data-menu="add">새로운 폴더</div>
+      <div class="area-menu" data-menu="sort">
+        <div>다음으로 정렬</div>
+        <img class="area-menu__arrow" src="/public/img/wishlist/right-arrow.png" alt="arrow">
+        <div id="sort-menu" hidden>
+          <div class="area-menu" data-menu="sort-name">이름</div>
+          <div class="area-menu" data-menu="sort-updated">수정일</div>  
+          <div class="area-menu" data-menu="sort-created">생성일</div>  
+        </div>  
+      </div>
+    </div>
   </section>
 </body>
 </html>

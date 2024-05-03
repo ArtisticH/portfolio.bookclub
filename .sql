@@ -52,3 +52,9 @@ INSERT INTO attend (BookId, MemberId) VALUES (13, 1);
 INSERT INTO attend (BookId, MemberId) VALUES (13, 2);
 INSERT INTO attend (BookId, MemberId) VALUES (13, 3);
 INSERT INTO attend (BookId, MemberId) VALUES (13, 4);
+
+
+INSERT INTO doneFolders (MemberId) VALUES (1);
+INSERT INTO doneFolders (MemberId) VALUES (2);
+INSERT INTO doneFolders (MemberId) VALUES (3);
+INSERT INTO doneFolders (MemberId) VALUES (4);

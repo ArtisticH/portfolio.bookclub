@@ -89,6 +89,13 @@
               <div class="review-box__info__line"></div>
               <div class="review-box__info__delete">삭제</div>  
             </div>
+            {% else %}
+            <div class="review-box__is-user" hidden>
+              <div class="review-box__info__line"></div>
+              <div class="review-box__info__edit">수정</div>
+              <div class="review-box__info__line"></div>
+              <div class="review-box__info__delete">삭제</div>  
+            </div>
             {% endif %}
           </div>
           <!-- slice가 null이라면 -->
@@ -101,8 +108,14 @@
           <div class="review-box__text" hidden>{{reviewbox.text.original}}</div>
           {% endif %}
           <div class="review-box__bottom">
+            <!-- 나중에 리뷰 등록, 업데이트, 삭제 시 2가지 경우를 고려해야 되기 때문에 똑같은 요소 두개 만들어놓고 사용 -->
             {% if reviewbox.overText %}
             <div class="review-box__more">
+              <div class="review-box__more__text">더보기</div>
+              <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
+            </div>
+            {% else %}
+            <div class="review-box__more" hidden>
               <div class="review-box__more__text">더보기</div>
               <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
             </div>

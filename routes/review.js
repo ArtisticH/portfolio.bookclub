@@ -233,7 +233,7 @@ router.delete('/:reviewid/:bookid', async (req, res) => {
   res.json({ review });  
 });
 
-// Pagenation
+// 페이지 버튼 클릭 시
 router.get('/:bookid/page/:pagenumber', async (req, res) => {
   const bookId = req.params.bookid;
   const pageNumber = req.params.pagenumber;

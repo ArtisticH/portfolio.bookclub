@@ -2,7 +2,7 @@ class Memebr {
   constructor() {
     /* --------------------------------------------------------------------------------------------------------- */
     // 1. tooltip
-    this.$numbersElem = document.querySelector('.member__info__numbers');
+    this.$numbersElem = document.querySelector('.member__numbers');
     this.$tooltip = null;
     this.funShowTooltip = this.funShowTooltip.bind(this);
     this.$numbersElem.addEventListener('pointerover', this.funShowTooltip);

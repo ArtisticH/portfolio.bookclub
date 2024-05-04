@@ -31,7 +31,7 @@ router.get('/:memberid', async (req, res) => {
   });
   const doneFolder = await DoneFolder.findOne({
     where: { MemberId: id },
-    attributes: ['count'],
+    attributes: ['count', 'public'],
   });
   res.render('wishlist', {
     folderBoxes,
@@ -59,6 +59,7 @@ router.post('/folder', async (req, res) => {
   };
   const doneFolder = await DoneFolder.findOne({
     where: { MemberId },
+    attributes: ['count', 'public'],
   });
   res.json({
     folder,
@@ -92,6 +93,26 @@ router.delete('/:folderid', async (req, res) => {
     where: { id },
   });
   res.json({});
+});
+
+// 폴더 공개 / 비공개 변경
+router.patch('/public', async (req, res) => {
+  const id = req.body.id;
+  const isPublic = req.body.isPublic;
+  await Folder.update({
+    isPublic,
+  }, {
+    where: { id },
+  });
+  const result = await Folder.findOne({
+    where: { id },
+    attributes: ['public', 'updatedAt'],
+  });
+  const folder = {
+    public: result.public,
+    updatedAt: result.updatedAt,
+  };
+  res.json({ folder });
 });
 
 

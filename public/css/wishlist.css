@@ -77,6 +77,10 @@
   width: var(--folder-width);
 }
 
+.wishlist-folder[data-public="false"] .wishlist-folder__count {
+  background-color: black;
+}
+
 .wishlist-folder__img-box {
   width: var(--folder-img-width);
   position: relative;

@@ -54,10 +54,10 @@ INSERT INTO attend (BookId, MemberId) VALUES (13, 3);
 INSERT INTO attend (BookId, MemberId) VALUES (13, 4);
 
 
-INSERT INTO doneFolders (MemberId) VALUES (1);
-INSERT INTO doneFolders (MemberId) VALUES (2);
-INSERT INTO doneFolders (MemberId) VALUES (3);
-INSERT INTO doneFolders (MemberId) VALUES (4);
+INSERT INTO doneFolders (MemberId, public) VALUES (1, true);
+INSERT INTO doneFolders (MemberId, public) VALUES (2, true);
+INSERT INTO doneFolders (MemberId, public) VALUES (3, true);
+INSERT INTO doneFolders (MemberId, public) VALUES (4, true);
 
 UPDATE members SET type = 'member' WHERE id = 1;
 UPDATE members SET type = 'member' WHERE id = 2;

@@ -8,6 +8,10 @@ module.exports = class DoneFolder extends Sequelize.Model {
         allowNull: false,
         defaultValue: 0,
       },
+      public: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
       MemberId: {
         type: Sequelize.INTEGER,
         allowNull: false,

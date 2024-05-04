@@ -11,10 +11,11 @@ module.exports = class List extends Sequelize.Model {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      explanation: {
-        type: Sequelize.TEXT,
+      img: {
+        type: Sequelize.STRING(500),
         allowNull: false,
-      },
+        defaultValue: '',
+      }
     }, {
       sequelize,
       timestamps: true,

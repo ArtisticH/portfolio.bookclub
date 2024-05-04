@@ -11,10 +11,6 @@ module.exports = class DoneList extends Sequelize.Model {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      explanation: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
     }, {
       sequelize,
       timestamps: true,

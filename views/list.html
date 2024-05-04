@@ -10,11 +10,166 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
   <section id="list">
+    <div class="list-head">
+      <div class="list-nav">
+        <a href="/wishlist/1" class="list-nav__arrow">
+          <img class="list-img" src="/public/img/main/back-arrow.png" alt="back-arrow">
+        </a>
+        <a class="list-nav__home" href="/">HOME</a>
+      </div>
+      <div class="list-title">
+        <span class="list-folder">프로그래밍</span>&nbsp;/&nbsp;<a href="/member/1" class="list-nick">서망고</a>
+      </div>  
+    </div>
+    <div class="list-contents-btns">
+      <div class="list-add list-btn">리스트 추가</div>
+      <div class="list-move list-btn">폴더 이동</div>
+    </div>
+    <!-- <div class="list-contents">      
+      <div class="list-empty">원하는 도서를 추가해보세요.</div>
+    </div> -->
+    <div class="list-contents grid">   
+      <div class="list">
+        <div class="list-img-box">
+          <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+        </div>
+        <div class="list-info">
+          <div class="list-info-nav">
+            <div class="list-cancel">
+              <div class="list-cancel__left"></div>
+              <div class="list-cancel__right"></div>
+            </div>
+          </div>
+          <div class="list-info-middle">
+            <div class="list-info-middle-book">
+              <div class="list-info-title">기본값</div>
+              <div class="list-info-author">쌩땍쥐베리</div>    
+            </div>
+            <div class="list-info-read">읽었으면 클릭하세용</div>
+          </div>
+        </div>
+        <div class="list-bookmark" hidden>
+          <img class="list-img" src="/public/img/list/bookmark.png" alt="bookmark">
+        </div>
+      </div>
+      <div class="list">
+        <div class="list-img-box">
+          <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+        </div>
+        <div class="list-info">
+          <div class="list-info-nav">
+            <div class="list-cancel">
+              <div class="list-cancel__left"></div>
+              <div class="list-cancel__right"></div>
+            </div>
+          </div>
+          <div class="list-info-middle">
+            <div class="list-info-middle-book">
+              <div class="list-info-title">기본값</div>
+              <div class="list-info-author">쌩땍쥐베리</div>    
+            </div>
+            <div class="list-info-read">읽었으면 클릭하세용</div>
+          </div>
+        </div>
+        <div class="list-bookmark">
+          <img class="list-img" src="/public/img/list/bookmark.png" alt="bookmark">
+        </div>
+      </div>
+      <div class="list">
+        <div class="list-img-box">
+          <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+        </div>
+        <div class="list-info">
+          <div class="list-info-nav">
+            <div class="list-cancel">
+              <div class="list-cancel__left"></div>
+              <div class="list-cancel__right"></div>
+            </div>
+          </div>
+          <div class="list-info-middle">
+            <div class="list-info-middle-book">
+              <div class="list-info-title">기본값</div>
+              <div class="list-info-author">쌩땍쥐베리</div>    
+            </div>
+            <div class="list-info-read">읽었으면 클릭하세용</div>
+          </div>
+        </div>
+        <div class="list-bookmark">
+          <img class="list-img" src="/public/img/list/bookmark.png" alt="bookmark">
+        </div>
+      </div>
+      <div class="list">
+        <div class="list-img-box">
+          <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+        </div>
+        <div class="list-info">
+          <div class="list-info-nav">
+            <div class="list-cancel">
+              <div class="list-cancel__left"></div>
+              <div class="list-cancel__right"></div>
+            </div>
+          </div>
+          <div class="list-info-middle">
+            <div class="list-info-middle-book">
+              <div class="list-info-title">기본값</div>
+              <div class="list-info-author">쌩땍쥐베리</div>    
+            </div>
+            <div class="list-info-read">읽었으면 클릭하세용</div>
+          </div>
+        </div>
+        <div class="list-bookmark">
+          <img class="list-img" src="/public/img/list/bookmark.png" alt="bookmark">
+        </div>
+      </div>
+      <div class="list">
+        <div class="list-img-box">
+          <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+        </div>
+        <div class="list-info">
+          <div class="list-info-nav">
+            <div class="list-cancel">
+              <div class="list-cancel__left"></div>
+              <div class="list-cancel__right"></div>
+            </div>
+          </div>
+          <div class="list-info-middle">
+            <div class="list-info-middle-book">
+              <div class="list-info-title">기본값</div>
+              <div class="list-info-author">쌩땍쥐베리</div>    
+            </div>
+            <div class="list-info-read">읽었으면 클릭하세용</div>
+          </div>
+        </div>
+        <div class="list-bookmark">
+          <img class="list-img" src="/public/img/list/bookmark.png" alt="bookmark">
+        </div>
+      </div>
+      <div class="list">
+        <div class="list-img-box">
+          <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+        </div>
+        <div class="list-info">
+          <div class="list-info-nav">
+            <div class="list-cancel">
+              <div class="list-cancel__left"></div>
+              <div class="list-cancel__right"></div>
+            </div>
+          </div>
+          <div class="list-info-middle">
+            <div class="list-info-middle-book">
+              <div class="list-info-title">기본값</div>
+              <div class="list-info-author">쌩땍쥐베리</div>    
+            </div>
+            <div class="list-info-read">읽었으면 클릭하세용</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </body>
 </html>

@@ -1,23 +1,22 @@
 const Sequelize = require('sequelize');
 
-module.exports = class DoneFolder extends Sequelize.Model {
+module.exports = class RecordChoice extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
-      count: {
-        type: Sequelize.INTEGER,
+      main: {
+        type: Sequelize.STRING(500),
         allowNull: false,
-        defaultValue: 0,
       },
-      MemberId: {
-        type: Sequelize.INTEGER,
+      sub: {
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
     }, {
       sequelize,
-      timestamps: false,
+      timestamps: true,
       underscored: false,
-      modelName: 'DoneFolder',
-      tableName: 'doneFolders',
+      modelName: 'RecordChoice',
+      tableName: 'recordChoice',
       paranoid: false,
       charset: 'utf8',
       collate: 'utf8_general_ci',

@@ -58,3 +58,8 @@ INSERT INTO doneFolders (MemberId) VALUES (1);
 INSERT INTO doneFolders (MemberId) VALUES (2);
 INSERT INTO doneFolders (MemberId) VALUES (3);
 INSERT INTO doneFolders (MemberId) VALUES (4);
+
+UPDATE members SET type = 'member' WHERE id = 1;
+UPDATE members SET type = 'member' WHERE id = 2;
+UPDATE members SET type = 'member' WHERE id = 3;
+UPDATE members SET type = 'member' WHERE id = 4;

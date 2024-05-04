@@ -54,6 +54,16 @@
   row-gap: 35px;
 }
 
+.wishlist-empty {
+  font-family: var(--font-korean);
+  font-size: 1.2rem;
+  letter-spacing: -1.2px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .wishlist-folder {
   height: fit-content;
   display: flex;

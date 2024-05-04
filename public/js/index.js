@@ -44,13 +44,14 @@ class Index {
     this.toprightBackgroundColor = [
     "linear-gradient(to top, #fff1eb 0%, #3fa7f3 100%)", 
     "linear-gradient(to top, #fff1eb 0%, #edd649 100%)", 
-    "linear-gradient(to top, #fff1eb 0%, #f3861a 100%)", 
-    "linear-gradient(to top, #fff1eb 0%, #de3d1f 100%)"];
+    "linear-gradient(to top, #fff1eb 0%, #99d1a2 100%)", 
+    "linear-gradient(to top, #fff1eb 0%, #dd504b 100%)",
+  ];
     // main__top-right 타이틀
     // /books, /members, /meetings, /fun 으로 연결, routes/page.js
-    this.toprightTitle = ["Books", "Members", "Meetings", "Fun"];
+    this.toprightTitle = ["Books", "Members", "WISHLIST", "Fun"];
     // main__bottom-left 색상
-    this.bottomleftBackgroundColor = ["#0c3aa5", "#f1ca0b", "#f06312", "#ab181b"];
+    this.bottomleftBackgroundColor = ["#0c3aa5", "#f1ca0b", "#039754", "#ab181b"];
     this.scrollIndex = null;
     // 이벤트 핸들러 this에 인스턴스 할당
     this.funScroll = this.funScroll.bind(this);

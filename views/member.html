@@ -15,75 +15,65 @@
 <body>
   <section id="member">
     <div class="member-left">
-      {% if member.id === 1 %}
-      <div class="member__name">
-        <div class="member__hangul">
-          ㅅㅓ
-          <br>
-          ㅎㅏㄴ 
-          <br>
-          ㄴㅏ
-        </div>
-        <div class="member__alphabet">Seo Hanna</div>
-      </div>
-      {% elif member.id === 2 %}
-      <div class="member__name">
-        <div class="member__hangul">
-          ㄱㅣㅁ
-          <br>
-          ㅈㅓㅇ 
-          <br>
-          ㄱㅕㅇ
-        </div>
-        <div class="member__alphabet">Kim Jungkyung</div>
-      </div>
-      {% elif member.id === 3 %}
-      <div class="member__name">
-        <div class="member__hangul">
-          ㄱㅏ
-          <br>
-          ㅇㅖ 
-          <br>
-          ㄹㅣㅁ
-        </div>
-        <div class="member__alphabet">Kang Yerim</div>
-      </div>
-      {% elif member.id === 4 %}
-      <div class="member__name">
-        <div class="member__hangul">
-          ㄱㅣㅁ
-          <br>
-          ㅎㅕㄴ 
-          <br>
-          ㅇㅏ
-        </div>
-        <div class="member__alphabet">Kim Hyuna</div>
-      </div>
-      {% endif %}
-      <div class="member__info">
-        <div class="member__info-contents">
-          <a href="/wishlist/{{member.id}}" id="member__info__wishlist">WISHLIST</a>
-          <div id="member__info__nick">nickname<div class="member__info__nick">{{member.nick}}</div></div>
-          <div class="member__info__numbers">
-            <div class="member__info__numbers__books tooltip-elem" data-type="books">{{recommendedBookCount}}<span class="member__info__numbers__books--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
-            <div class="member__info__numbers__attendance tooltip-elem" data-type="attendance">{{attendCount}}<span class="member__info__numbers__attendance--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
-            <div class="tooltip books-tooltip" hidden>
-              추천 횟수&nbsp;/&nbsp;총 도서 권수
-            </div>
-            <div class="tooltip attendance-tooltip" hidden>
-              참여 횟수&nbsp;/&nbsp;총 독서모임 횟수
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="member-books">
       <div class="member__nav">
         <a href="/members" class="member__nav__back">
           <img class="member__nav__back__img" src="/img/main/back-arrow.png" alt="back-arrow">
         </a>
         <a href="/" class="member__nav__home">Home</a>
-      </div>  
+      </div>    
+      {% if member.id === 1 %}
+      <div class="member__hangul">
+        ㅅㅓ
+        <br>
+        ㅎㅏㄴ 
+        <br>
+        ㄴㅏ
+      </div>
+      {% elif member.id === 2 %}
+      <div class="member__hangul">
+        ㄱㅣㅁ
+        <br>
+        ㅈㅓㅇ 
+        <br>
+        ㄱㅕㅇ
+      </div>
+      {% elif member.id === 3 %}
+      <div class="member__hangul">
+        ㄱㅏ
+        <br>
+        ㅇㅖ 
+        <br>
+        ㄹㅣㅁ
+      </div>
+      {% elif member.id === 4 %}
+      <div class="member__hangul">
+        ㄱㅣㅁ
+        <br>
+        ㅎㅕㄴ 
+        <br>
+        ㅇㅏ
+      </div>
+      {% endif %}
+      <div class="member__info">
+        <div id="member__info__nick">nickname<div class="member__info__nick">{{member.nick}}</div></div>
+        <div id="member__info__links">
+          <a href="/wishlist/{{member.id}}" id="member__info__wishlist">WISHLIST</a>
+          <a href="/quotes/{{member.id}}" id="member__info__quotes">Quotes</a>
+          <a href="/choice/{{member.id}}" id="member__info__choice">Choice</a>  
+        </div>
+        <div class="member__info__numbers">
+          <div class="member__info__numbers__books tooltip-elem" data-type="books">{{recommendedBookCount}}<span class="member__info__numbers__books--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
+          <div class="member__info__numbers__attendance tooltip-elem" data-type="attendance">{{attendCount}}<span class="member__info__numbers__attendance--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
+          <div class="tooltip books-tooltip" hidden>
+            추천 횟수&nbsp;/&nbsp;총 도서 권수
+          </div>
+          <div class="tooltip attendance-tooltip" hidden>
+            참여 횟수&nbsp;/&nbsp;총 독서모임 횟수
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="member-books">
       <div class="member-books__container">
         {% for book in recommendedBook %}
         <a href="/book/{{book.id}}" class="member-books__book">

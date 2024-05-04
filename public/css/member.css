@@ -35,17 +35,8 @@ a {
   left: 0;
   top: 0;
   box-sizing: border-box;
-}
-
-.member__name {
-  height: 50%;
-  box-sizing: border-box;
-  border: 0.5px solid black;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
   background-color: #f1c90c;
+  border-right: 0.5px solid black;
 }
 
 .member__hangul {
@@ -54,46 +45,46 @@ a {
   font-weight: 500;
 }
 
-.member__alphabet {
-  font-family: var(--font-poppins);
-  font-size: 2.5rem;
-  font-weight: 100;
-  font-style: italic;
-  letter-spacing: -1px;
-  margin-left: -5px;
+.member__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 25px;
   margin-bottom: 5px;
 }
 
-.member__info {
-  height: 50%;
-  border: 0.5px solid black;
-  box-sizing: border-box;
-  overflow: hidden;
+.member__nav__back {
+  width: 80px;
 }
 
-.member__info-contents {
+.member__nav__back__img {
+  width: 100%;
+  display: block;
+}
+
+.member__nav__home {
+  font-family: var(--font-montserrat);
+  font-size: 1.4rem;
+  letter-spacing: -1.4px;
+  color: black;
+  text-decoration: none;
+}
+
+.member__info {
+  /* nav높이 25px, margin-bottom: 5px, 한글 높이: 192px */
+  height: calc(100% - 192px - 30px);
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  overflow: hidden;
-}
-
-#member__info__wishlist {
-  font-family: var(--font-poppins);
-  font-size: 4rem;
-  letter-spacing: -4px;
-  font-weight: 100;
-  line-height: 0.7;
-}
-
-#member__info__wishlist:hover {
-  text-decoration: line-through;
+  padding-top: 40px;
 }
 
 #member__info__nick {
   font-family: var(--font-poppins);
-  color: #f1c90c;
+  color: white;
   font-size: 1.6rem;
   letter-spacing: -1.5px;
   margin-left: -3px;
@@ -106,6 +97,25 @@ a {
   letter-spacing: -1.5px;
   font-weight: 200;
   font-style: normal;
+}
+
+#member__info__wishlist,
+#member__info__quotes,
+#member__info__choice {
+  font-family: var(--font-poppins);
+  font-size: 3.5rem;
+  letter-spacing: -3.5px;
+  font-weight: 100;
+  line-height: 0.8;
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+#member__info__wishlist:hover,
+#member__info__quotes:hover,
+#member__info__choice:hover {
+  text-decoration: line-through;
 }
 
 .member__info__numbers {
@@ -123,7 +133,7 @@ a {
   font-family: var(--font-poppins);
   font-size: 5rem;
   letter-spacing: -5px;
-  color: #f1c90c;
+  color: white;
   line-height: 0.7;
   cursor: pointer;
 }
@@ -171,31 +181,6 @@ a {
 
 .member-books {
   border: 0.5px solid black;
-}
-
-.member__nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  height: 25px;
-}
-
-.member__nav__back {
-  width: 80px;
-}
-
-.member__nav__back__img {
-  width: 100%;
-  display: block;
-}
-
-.member__nav__home {
-  font-family: var(--font-montserrat);
-  font-size: 1.4rem;
-  letter-spacing: -1.4px;
-  color: black;
-  text-decoration: none;
 }
 
 .member-books__container {
@@ -284,19 +269,6 @@ a {
 }
 
 @media all and (min-width: 1200px) {
-  .member__hangul {
-    font-size: 4.5rem;
-  }
-  
-  .member__alphabet {
-    font-size: 3.5rem;
-    letter-spacing: -2px;
-  }
-    
-  .member__info__hi {
-    font-size: 4.5rem;
-  }
-    
   #member__info__nick {
     font-size: 1.8rem;
     letter-spacing: -1.8px;
@@ -308,13 +280,7 @@ a {
   }
 }
 
-@media all and (min-width: 1400px) {
-  #member__info__wishlist {
-    font-size: 5rem;
-    letter-spacing: -5px;
-    line-height: 0.7;
-  }
-  
+@media all and (min-width: 1400px) {  
   .member-books__container {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }

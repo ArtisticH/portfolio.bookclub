@@ -21,6 +21,7 @@
     </div>
     <div class="wishlist-contents">
       {% if folderBoxes.length == 0 %}
+      <div class="wishlist-empty">오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
       {% else %}
       {% for folderBox in folderBoxes %}
         <div class="wishlist-folder" data-folder-id="{{folderBox.id}}" data-public="{{folderBox.public}}" data-createdAt="{{folderBox.createdAt}}" data-updatedAt="{{folderBox.updatedAt}}">

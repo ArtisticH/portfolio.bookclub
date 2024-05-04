@@ -351,10 +351,13 @@ body::-webkit-scrollbar {
 }
 
 .user__nick,
-.user__wishlist,
 .user__logout {
-  text-decoration: none;
   color: black;
+}
+
+.user__wishlist {
+  color: #99d1a2;
+  text-decoration: none;
 }
 
 .user__nick:hover,

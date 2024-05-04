@@ -31,8 +31,39 @@ router.get('/:memberid', async (req, res) => {
   });
   const doneFolder = await DoneFolder.findOne({
     where: { MemberId: id },
+    attributes: ['count'],
   });
-  res.json({ folderBoxes, doneFolder, member });
+  res.render('wishlist', {
+    folderBoxes,
+    doneFolder,
+    member,
+  })
+});
+
+router.post('/folder', async (req, res) => {
+  const MemberId = req.body.id;
+  const title = req.body.title;
+  const isPublic = req.body.isPublic === 'public' ? true : false;
+  const result = await Folder.create({
+    title,
+    public: isPublic,
+    MemberId,
+  });
+  const folder = {
+    id: result.id,
+    title: result.title,
+    count: result.count,
+    public: result.public,
+    createdAt: funChangeDate(result.createdAt),
+    updatedAt: funChangeDate(result.updatedAt),
+  };
+  const doneFolder = await DoneFolder({
+    where: { MemberId },
+  });
+  res.json({
+    folder,
+    doneFolder,
+  });
 });
 
 module.exports = router;

@@ -10,6 +10,7 @@ module.exports = class Folder extends Sequelize.Model {
       count: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
       public: {
         type: Sequelize.BOOLEAN,

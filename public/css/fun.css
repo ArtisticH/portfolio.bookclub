@@ -1,18 +1,6 @@
 :root {
-  --font-Merriweather: "Merriweather", serif;
   --font-korean:"Noto Sans KR", sans-serif;
-  --font-roboto: "Roboto", sans-serif;
-  --font-poppins: "Poppins", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
-  --font-oswald: "Oswald", sans-serif;
-  --font-raleway: "Raleway", sans-serif;
-  --font-inter: "Inter", sans-serif;
-  --font-schoolbell: "Schoolbell", cursive;
-  --font-rubik: "Rubik", sans-serif;
-  --font-rubikScribble: "Rubik Scribble", system-ui;
-  --font-rubik-doodle: "Rubik Doodle Shadow", system-ui;
-  --font-rubik-bubbles: "Rubik Bubbles", system-ui;
-  --font-rock: "Rock Salt", cursive;
   --height: 70px;
 }
 

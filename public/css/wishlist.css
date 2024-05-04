@@ -48,8 +48,8 @@
 
 .wishlist-contents.grid {
   display: grid;
-  grid-template-columns: 1fr var(--folder-width) var(--folder-width);
-  grid-template-rows: min-content;
+  grid-template-columns: var(--folder-width) 1fr var(--folder-width);
+  grid-template-rows: repeat(auto-fill, 80px);
   padding: 25px 0;
   row-gap: 35px;
 }
@@ -88,10 +88,10 @@
 }
 
 .wishlist-folder__title {
-  font-family: var(--font-montserrat);
-  font-size: 0.9rem;
-  letter-spacing: -0.9px;
-  text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
+  margin-top: 5px;
+  font-family: var(--font-korean);
+  font-size: 0.8rem;
+  letter-spacing: -0.8px;
 }
 
 .wishlist-folder__count {
@@ -177,7 +177,8 @@
   background-color: white;
 }
 
-.add-folder__nav {
+.add-folder__nav,
+.change-name__nav {
   background-color: #039754;
   display: flex;
   justify-content: space-between;
@@ -186,21 +187,22 @@
   margin-bottom: 1px solid black;
 }
 
-.add-folder__title {
+.add-folder__title,
+.change-name__title {
   font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -1px;
 }
 
-.add-folder__cancel {
+.cancel {
   width: 18px;
   height: 18px;
   position: relative;
   cursor: pointer;
 }
 
-.add-folder__cancel__left,
-.add-folder__cancel__right {
+.cancel__left,
+.cancel__right {
   position: absolute;
   top: 50%;
   left: 0;
@@ -209,15 +211,16 @@
   background-color: black;
 }
 
-.add-folder__cancel__left {
+.cancel__left {
   transform: translateY(-50%) rotate(45deg)
 }
 
-.add-folder__cancel__right {
+.cancel__right {
   transform: translateY(-50%) rotate(-45deg)
 }
 
-.add-folder__form {
+.add-folder__form,
+.change-name__form {
   padding: 15px 10px;
 }
 
@@ -228,14 +231,20 @@
   font-weight: 300;
 }
 
-#add-folder__input {
+#add-folder__input,
+#change-name__input {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 20px;
 }
 
-.add-folder__input {
+#change-name__input {
+  margin-top: 0;
+}
+
+.add-folder__input,
+.change-name__input {
   border: none;
   outline: none;
   width: 270px;
@@ -244,18 +253,21 @@
   letter-spacing: -0.9px;
 }
 
-#add-folder__length {
+#add-folder__length,
+#change-name__length {
   font-family: var(--font-poppins);
   font-size: 0.8rem;
   letter-spacing: -0.8px;
   font-weight: 300;
 }
 
-.add-folder__length {
+.add-folder__length,
+.change-name__length {
   color: #039754;
 }
 
-#add-folder__submit {
+#add-folder__submit,
+#change-name__submit {
   box-sizing: border-box;
   border: 1px solid black;
   cursor: pointer;
@@ -268,4 +280,15 @@
   margin: 20px auto 0 auto;
   display: block;
   padding: 5px 0;
+}
+
+#change-name {
+  position: fixed;
+  width: 350px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid black;
+  box-sizing: border-box;
+  background-color: white;
 }

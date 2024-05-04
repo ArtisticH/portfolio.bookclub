@@ -39,7 +39,7 @@ router.get('/:memberid', async (req, res) => {
     member,
   })
 });
-
+// 폴더 생성
 router.post('/folder', async (req, res) => {
   const MemberId = req.body.id;
   const title = req.body.title;
@@ -57,7 +57,7 @@ router.post('/folder', async (req, res) => {
     createdAt: funChangeDate(result.createdAt),
     updatedAt: funChangeDate(result.updatedAt),
   };
-  const doneFolder = await DoneFolder({
+  const doneFolder = await DoneFolder.findOne({
     where: { MemberId },
   });
   res.json({
@@ -65,5 +65,34 @@ router.post('/folder', async (req, res) => {
     doneFolder,
   });
 });
+// 폴더 이름 변경
+router.patch('/folder', async (req, res) => {
+  const id = req.body.id;
+  const title = req.body.title;
+  await Folder.update({
+    title,
+  }, {
+    where: { id },
+  });
+  const result = await Folder.findOne({
+    where: { id },
+    attributes: ['title', 'updatedAt'],
+  });
+  const folder = {
+    title: result.title,
+    updatedAt: result.updatedAt,
+  };
+  res.json({ folder });
+});
+
+// 폴더 삭제
+router.delete('/:folderid', async (req, res) => {
+  const id = req.params.folderid;
+  await Folder.destroy({
+    where: { id },
+  });
+  res.json({});
+});
+
 
 module.exports = router;

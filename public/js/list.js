@@ -1,23 +1,17 @@
 class List {
   constructor() {
-    // 1. 다 읽었으면 책갈피 내려오고, 읽음 폴더로 이동
-    this.$readBtns = document.querySelectorAll('.list-info-read');
-    this.fucRead = this.fucRead.bind(this);
-    [...this.$readBtns].forEach(btn => {
-      btn.addEventListener('click', this.fucRead);
+    // 1. 박스 클릭 시 색깔 변화
+    this.$listBoxes = document.querySelectorAll('.list-box');
+    this.fucBoxClick = this.fucBoxClick.bind(this);
+    [...this.$listBoxes].forEach(box => {
+      box.addEventListener('click', this.fucBoxClick);
     });
-
   }
-
-  // 1. 다 읽었으면 책갈피 내려오고, 읽음 폴더로 이동
-  fucRead(e) {
-    const list = e.target.closest('.list');
-    const readElem = e.currentTarget;
-    const bookmark = list.querySelector('.list-bookmark');
-    readElem.classList.add('read');
-    bookmark.hidden = false;
-    bookmark.classList.add('show');
-
+  // 1. 박스 클릭 시 색깔 변화
+  fucBoxClick(e) {
+    const target = e.currentTarget;
+    const imgBox = target.querySelector('.list-img-box');
+    imgBox.classList.toggle('clicked', !imgBox.classList.contains('clicked'));
   }
 
 }

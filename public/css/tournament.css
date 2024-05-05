@@ -1,0 +1,101 @@
+:root {
+  --font-Merriweather: "Merriweather", serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-korean: "Noto Sans KR", sans-serif;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#tournament {
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.tournament {
+  box-sizing: border-box;
+  /* border: 1px solid black; */
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tournament-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tournament-title {
+  font-family: var(--font-montserrat);
+  font-size: 5rem;
+  font-weight: 600;
+  letter-spacing: -10px;
+  line-height: 0.7;
+}
+
+.tournament-round {
+  font-family: var(--font-montserrat);
+  line-height: 0.7;
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: -6px;
+}
+
+.tournament-box.top {
+  display: flex;
+  align-items: flex-end;
+}
+
+.tournament-box.bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: end;
+}
+
+.tournament-main {
+  font-family: var(--font-montserrat);
+  font-size: 2rem;
+  letter-spacing: -4px;
+}
+
+.tournament-sub {
+  font-family: var(--font-montserrat);
+  font-size: 1.5rem;
+  letter-spacing: -3px;
+  font-weight: 300;
+  line-height: 0.7;
+}
+
+.tournament-vs {
+  font-family: var(--font-montserrat);
+  font-size: 4rem;
+  letter-spacing: -8px;
+  text-align: center;
+}
+
+.tournament-box-info.bottom {
+  margin-right: 5px;
+}
+
+.tournament-sub.bottom {
+  text-align: end;
+}
+
+.tournament-img-box {
+  width: 250px;
+  border: 1px solid black;
+}
+
+.tournament-img {
+  display: block;
+  width: 100%;
+}

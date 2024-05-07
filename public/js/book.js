@@ -443,15 +443,39 @@ class Book {
     this._totalReview--;
     this.$totalReview.textContent = this._totalReview;
     const currentPage = this.$currentPage.textContent;
-    // totalReview가 5개 이상이면 하나를 추가해야 하지만
-    // 5개 미만이면 하나 추가하지 않는다. 
-    if(this._totalReview >= 5) {
+    // totalReview가 5개 초과면 하나를 추가해야 하지만
+    // 5개 이하면 하나 추가하지 않는다. 
+    console.log(currentPage, this._lastPage)
+    if(this._totalReview > 5 && +currentPage !== this._lastPage) {
+      console.log('??')
       const res = await axios.get(`/review/delete/${this._bookId}/${currentPage}`);
       const review = res.data.review;   
       // 가장 마지막에 추가
       this.$reivewContainer.append(this.reviewDOM(this.$clone.cloneNode(true), review));
     }
-    this.showPage();
+    // 마지막 페이지에서 삭제하면 요소 추가 없이 그냥 사라지고
+    // 마지막 페이지의 단 하나를 삭제했을때
+    // 페이지를 그 전으로 전환한다.
+    if(+currentPage === this._lastPage && [...this.$reivewContainer.children].length == 0) {
+      const last = this._lastPage - 1;
+      const arr = [
+        last - 4,
+        last - 3,
+        last - 2,
+        last - 1,
+        last,
+      ];
+      [...this.$number].forEach((item, index) => {
+        item.hidden = false;
+        item.textContent = arr[index];
+      });
+      this.$currentPage = [...this.$number][4];
+      this.$beforePage.classList.remove('clicked');
+      this.$currentPage.classList.add('clicked');   
+      this.getReviews();
+      this.pageIcons();  
+    }
+    this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
   }
   /* --------------------------------------------------------------------------------------------------------- */
   // 11. 첫 리뷰 등록 후 보이는 화면
@@ -477,7 +501,6 @@ class Book {
     }
     if(this._totalReview <= 25) {
       this.$lastIcon.hidden = true;
-      this.$firstIcon.hidden = true;
       [...this.$number].forEach((item, index) => {
         if(index + 1 <= this._lastPage) {
           item.hidden = false;
@@ -488,19 +511,12 @@ class Book {
       });
     } else if(this._totalReview > 25) {
       this.$lastIcon.hidden = false;
-      this.$firstIcon.hidden = false;
       // 25개 이상이면 항상 1, 2, 3, 4, 5가 보여야 한다. 
       [...this.$number].forEach((item, index) => {
         item.hidden = false;
         item.textContent = index + 1;
       });  
     }
-    // 아예 처음 렌더링(this.$nextPage이 null)할때 <와 << 없애기
-    // 가장 아래에 둠으로써 우선순위 높게
-    if(!this.$nextPage) {
-      this.$beforeIcon.hidden = true;
-      this.$firstIcon.hidden = true;
-    }     
   }  
   /* --------------------------------------------------------------------------------------------------------- */
   // 12. 페이지 버튼 클릭 시
@@ -510,131 +526,51 @@ class Book {
     if(target.className === 'review-paganation__number') {
       this.clickNumbers(target);
     } else if(target === this.$afterIcon) {
-      console.log(target === this.$afterIcon)
-      this.clickAfter();
-      if(!this.$nextPage) {
-        // 브라우저 렌더링되고 가장 먼저 클릭할때, this.nextPage는 null,
-        // 만약 2를 클릭했다? this.nextPage는 2가 된다.
-        this.$nextPage = this.$currentPage.nextElementSibling;
-      } else {
-        // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
-        // 이번엔 2에서 4를 클릭한다고 해보자.
-        // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
-        this.$currentPage = this.$nextPage;
-        this.$nextPage = this.$currentPage.nextElementSibling && this.$currentPage.nextElementSibling;
-      }
-      // 현재 페이지 넘버가 5의 배수이고, 5나 10이나 15나...
-      // 현재 페이지를 넘는 페이지가 존재할때는 다음 화면들을 보여주고
-      if(this.$currentPage.textContent % 5 == 0 && this.$currentPage.textContent < this._lastPage) {
-        // 페이지 넘버들 다시 보여줘
-        let start = Number(this.$currentPage.textContent) + 1;
-        const end = this._lastPage;
-        [...this.$number].forEach((item, index) => {
-          if(start % 5 == index + 1 && start <= end) {
-            item.hidden = false;
-            item.textContent = start;
-          } else if(start > end) {
-            item.hidden = true;
-          }
-          start++;
-        });
-        this.$nextPage = [...this.$number][0];
-      }
-    } else if(target.className === this.$beforeIcon) {
-      console.log(target === this.$beforeIcon)
-
+      this.clickAfter(target);
+    } else if(target === this.$beforeIcon) {
       this.clickBefore();
-      if(!this.$nextPage) {
-        return;
-      } else {
-        // 첫 번째 클릭이 아닐때, 내가 맨 처음에 1에서 2를 클릭하고
-        // 이번엔 2에서 4를 클릭한다고 해보자.
-        // this.nextPage는 4가 되고, this.currentPage는 2가 된다. 
-        this.$currentPage = this.$nextPage;
-        this.$nextPage = this.$currentPage.previousElementSibling && this.$currentPage.previousElementSibling;
-      }
-      // 현재 페이지 넘버가 1, 6, 11, 16처럼 % 5가 1이고
-      // 가장 처음 페이지가 아닐때
-      if(this.$currentPage.textContent % 5 == 1 && this.$currentPage.textContent != 1) {
-        // 페이지 넘버들 다시 보여줘
-        let start = this.$currentPage.textContent - 5;
-        [...this.$number].forEach((item, index) => {
-          item.hidden = false;
-          item.textContent = start;
-          start++;
-        });
-        this.$nextPage = [...this.$number][4];
-      }
-    } else if(target.className === this.$lastIcon) {
-      console.log(target === this.$lastIcon)
-
+    } else if(target === this.$lastIcon) {
       this.clickLast();
-      const end = this._lastPage;
-      // 만약 마지막 페이지가 14라면, end % 5는 4다. 
-      // 이건, 처음의 요소로부터 3칸 떨어져있다는 뜻으로 
-      // end에서 - (end % 5) + 1를 하면 처음의 요소 페이지를 구할 수 있다. 
-      let start = end - (end % 5) + 1;
-      [...this.$number].forEach((item, index) => {
-        if(start % 5 == index + 1 && start <= end) {
-          item.hidden = false;
-          item.textContent = start;
-        } else if(start > end) {
-          item.hidden = true;
-        }
-        start++;
-      });
-      if(this.$nextPage) {
-        this.$currentPage = this.$nextPage;
-      }
-      this.$nextPage = [...this.$number][end % 5 - 1];
-    } else if(target.className === this.$firstIcon) {
-      console.log(target === this.$firstIcon)
-
+    } else if(target === this.$firstIcon) {
       this.clickFirst();
-      [...this.$number].forEach((item, index) => {
-        item.hidden = false;
-        item.textContent = index + 1;
-      });
-      this.$currentPage = this.$nextPage;
-      this.$nextPage = [...this.$number][0];
     }
-
-    // 마지막 버튼 클릭 시
-    if(this.$nextPage.textContent == this._lastPage) {
-      this.$afterIcon.hidden = true;
-      this.$lastIcon.hidden = true;
-    } else {
-      this.$afterIcon.hidden = false;
-      this.$lastIcon.hidden = false;
-    }
-    // 맨 처음 버튼 클릭 시
-    if(this.$nextPage.textContent == 1) {
-      this.$firstIcon.hidden = true;
-      this.$beforeIcon.hidden = true;
-    } else {
-      this.$firstIcon.hidden = false;
-      this.$beforeIcon.hidden = false;
-    }
-    // 현재 1에 활성화가 되어있다면
-    // <와 << 없애기
-    if(this.$nextPage.textContent == 1) {
-      this.$beforeIcon.hidden = true;
-      this.$firstIcon.hidden = true;
-    } else {
-      this.$beforeIcon.hidden = false;
-      this.$firstIcon.hidden = false;
-    }
-    // 과거는 지우고, currentPage
-    this.$currentPage && this.$currentPage.classList.remove('clicked');
-    // 현재 업데이트, nextPage
-    this.$nextPage.classList.add('clicked');
   }
 
   async clickNumbers(target) {
     this.$beforePage = this.$currentPage;
     this.$currentPage = target;
+    const before = +this.$beforePage.textContent;
+    const after = +this.$currentPage.textContent;
+    const direction = after > before ? 'right' : 'left';
+    // 4이상일때부터 4가 가운데로, 오른쪽으로 이동
+    if(direction === 'right' && this.$currentPage.textContent >= 4 && this.$currentPage.textContent <= this._lastPage - 2) {
+      this.middleSetting();
+    } else if(direction === 'left' && this.$currentPage.textContent >= 3 && this.$currentPage.textContent < this._lastPage - 2) {
+      this.middleSetting();
+    }
     this.$beforePage.classList.remove('clicked');
     this.$currentPage.classList.add('clicked');   
+    this.getReviews();
+    this.pageIcons();
+  }
+
+  middleSetting() {
+    const middle = +this.$currentPage.textContent;
+    const arr = [
+      middle - 2,
+      middle - 1,
+      middle,
+      middle + 1,
+      middle + 2
+    ];
+    [...this.$number].forEach((item, index) => {
+      item.hidden = false;
+      item.textContent = arr[index];
+    });
+    this.$currentPage = [...this.$number][2];
+  }
+
+  async getReviews() {
     const res = await axios.get(`/review/page/${this._bookId}/${this.$currentPage.textContent}`);
     const reviews = res.data.reviews;
     [...this.$reivewContainer.children].forEach(item => {
@@ -645,22 +581,84 @@ class Book {
     });
   }
 
-  clickBefore() {
+  pageIcons() {
+    // 1, 2이상이고 현재 페이지가 2이상일때 왼쪽 아이콘 활성화
+    if(this._lastPage >= 2 && this.$currentPage.textContent >= 2) {
+      this.$beforeIcon.hidden = false;
+    } else {
+      this.$beforeIcon.hidden = true;
+    }    
+    if(this.$currentPage.textContent == this._lastPage) {
+      this.$lastIcon.hidden = true;
+      this.$afterIcon.hidden = true;
+    } else {
+      this.$lastIcon.hidden = false;
+      this.$afterIcon.hidden = false;
+    }
+    if(this._totalReview > 25 && this.$currentPage.textContent >= 4) {
+      this.$firstIcon.hidden = false;
+    } else {
+      this.$firstIcon.hidden = true;
+    }
   }
 
   clickAfter() {
-    console.log('애프터');
+    this.$beforePage = this.$currentPage;
+    this.$currentPage = this.$beforePage.nextElementSibling;
+    // 4이상일때부터 4가 가운데로, 
+    if(this.$currentPage.textContent >= 4 && this.$currentPage.textContent <= this._lastPage - 2) {
+      this.middleSetting();
+    } 
+    this.$beforePage.classList.remove('clicked');
+    this.$currentPage.classList.add('clicked');   
+    this.getReviews();
+    this.pageIcons();
+  }
 
+  clickBefore() {
+    this.$beforePage = this.$currentPage;
+    this.$currentPage = this.$beforePage.previousElementSibling;
+    if(this.$currentPage.textContent >= 3 && this.$currentPage.textContent < this._lastPage - 2) {
+      this.middleSetting();
+    }
+    this.$beforePage.classList.remove('clicked');
+    this.$currentPage.classList.add('clicked');   
+    this.getReviews();
+    this.pageIcons();
   }
 
   clickLast() {
-    console.log('라스트');
-
+    this.$beforePage = this.$currentPage;
+    const last = this._lastPage;
+    const arr = [
+      last - 4,
+      last - 3,
+      last - 2,
+      last - 1,
+      last,
+    ];
+    [...this.$number].forEach((item, index) => {
+      item.hidden = false;
+      item.textContent = arr[index];
+    });
+    this.$currentPage = [...this.$number][4];
+    this.$beforePage.classList.remove('clicked');
+    this.$currentPage.classList.add('clicked');   
+    this.getReviews();
+    this.pageIcons();
   }
 
   clickFirst() {
-    console.log('퍼스트');
-
+    this.$beforePage = this.$currentPage;
+    [...this.$number].forEach((item, index) => {
+      item.hidden = false;
+      item.textContent = index + 1;
+    });
+    this.$currentPage = [...this.$number][0];
+    this.$beforePage.classList.remove('clicked');
+    this.$currentPage.classList.add('clicked');   
+    this.getReviews();
+    this.pageIcons();
   }
 }
 

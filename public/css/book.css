@@ -420,6 +420,13 @@ body::-webkit-scrollbar {
   border-top: 1px solid rgba(128, 128, 128, 0.4);
 }
 
+.review-paganation-middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
 .review-paganation__img {
   width: 100%;
   display: block;
@@ -432,6 +439,7 @@ body::-webkit-scrollbar {
   cursor: pointer;
   width: 25px;
   height: 25px;
+  box-sizing: border-box;
 }
 
 .review-paganation__before,
@@ -439,6 +447,7 @@ body::-webkit-scrollbar {
   cursor: pointer;
   width: 25px;
   height: 25px;
+  box-sizing: border-box;
 }
 
 .review-paganation__numbers {
@@ -447,6 +456,7 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   cursor: pointer;
 }
 

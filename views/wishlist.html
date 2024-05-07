@@ -14,18 +14,18 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="wishlist" data-total-folder="{{folderBoxes.length}}" data-user-id="{{user.id}}">
+  <section id="wishlist" data-total-folder="{{folders.length}}" data-user-id="{{user.id}}">
     <div class="wishlist">
       <a href="/" class="wishlist__home">HOME</a>
       <a href="/member/{{member.id}}" class="wishlist__nick">{{member.nick}}</a>  
     </div>
-    {% if folderBoxes.length == 0 %}
+    {% if folders.length == 0 %}
     <div class="wishlist-contents">
       <div class="wishlist-empty">오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
       <a class="wishlist-folder done" hidden>
         <div class="wishlist-folder__img-box">
           <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder-done">
-          <div class="wishlist-folder__count done">{{doneFolder.count}}</div>
+          <div class="wishlist-folder__count done"></div>
         </div>
         <div class="wishlist-folder__title done">읽은 것들</div>
       </a>
@@ -39,19 +39,19 @@
     </div> 
     {% else %}
     <div class="wishlist-contents grid">
-      {% for folderBox in folderBoxes %}
-      <a class="wishlist-folder" data-folder-id="{{folderBox.id}}" data-public="{{folderBox.public}}" data-createdAt="{{folderBox.createdAt}}" data-updatedAt="{{folderBox.updatedAt}}">
+      {% for folder in folders %}
+      <a class="wishlist-folder" data-folder-id="{{folder.id}}" data-public="{{folder.public}}" data-createdat="{{folder.createdAt}}" data-updatedat="{{folder.updatedAt}}">
         <div class="wishlist-folder__img-box">
           <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count">{{folderBox.count}}</div>
+          <div class="wishlist-folder__count">{{folder.count}}</div>
         </div>
-        <div class="wishlist-folder__title">{{folderBox.title}}</div>
+        <div class="wishlist-folder__title">{{folder.title}}</div>
       </a>
       {% endfor %}
-      <a class="wishlist-folder done" data-public="{{doneFolder.public}}">
+      <a class="wishlist-folder done" data-public="{{done.public}}">
         <div class="wishlist-folder__img-box">
           <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder-done">
-          <div class="wishlist-folder__count done">{{doneFolder.count}}</div>
+          <div class="wishlist-folder__count done">{{done.count}}</div>
         </div>
         <div class="wishlist-folder__title done">읽은 것들</div>
       </a>
@@ -65,7 +65,7 @@
     </div>
     {% endif %}
     <div id="folder-menu" hidden>
-      <a class="menu" data-menu="open">열기</a>
+      <div class="menu" data-menu="open">열기</div>
       <div class="menu" data-menu="name">이름 변경</div>
       <div class="menu" data-menu="delete">삭제</div>
       <div class="menu" data-menu="public">

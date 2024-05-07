@@ -29,8 +29,8 @@ module.exports = class Folder extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Folder.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); // 폴더의 외래키
-    db.Folder.hasMany(db.List, { foreignKey: 'FolderId', sourceKey: 'id'}); // 리스트의 외래키
+    db.Folder.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); 
+    db.Folder.hasMany(db.List, { foreignKey: 'FolderId', sourceKey: 'id'}); 
     db.Folder.hasMany(db.DoneList, { foreignKey: 'FolderId', sourceKey: 'id'}); 
   }
 }

@@ -2,9 +2,14 @@ const express = require('express');
 const Member = require('../models/member');
 const Folder = require('../models/folder');
 const DoneFolder = require('../models/donefolder');
-const { funChangeDate } = require('../routes/tools');
+const { date } = require('../routes/tools');
 
 const router = express.Router();
+
+router.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
 
 router.get('/:memberid', async (req, res) => {
   const id = req.params.memberid;
@@ -12,30 +17,57 @@ router.get('/:memberid', async (req, res) => {
     where: { id },
     attributes: ['id', 'nick'],
   });
-  const results = await Folder.findAll({
-    include: [{
-      model: Member,
-      where: { id },
-    }],
-  });
-  const folderBoxes = [];
+  let results;
+  if(res.locals.sort === 'default') {
+    results = await Folder.findAll({
+      include: [{
+        model: Member,
+        where: { id },
+      }],
+    });  
+  } else if(res.locals.sort = 'name') {
+    results = await Folder.findAll({
+      include: [{
+        model: Member,
+        where: { id },
+      }],
+      order: [['title', 'ASC']], 
+    });  
+  } else if(res.locals.sort = 'updatedAt') {
+    results = await Folder.findAll({
+      include: [{
+        model: Member,
+        where: { id },
+      }],
+      order: [['updatedAt', 'ASC']], 
+    });  
+  } else if(res.locals.sort = 'createdAt') {
+    results = await Folder.findAll({
+      include: [{
+        model: Member,
+        where: { id },
+      }],
+      order: [['createdAt', 'ASC']], 
+    });  
+  }
+  const folders = [];
   results.forEach(result => {
-    folderBoxes[folderBoxes.length] = {
+    folders[folders.length] = {
       id: result.id,
       title: result.title,
       count: result.count,
       public: result.public,
-      createdAt: funChangeDate(result.createdAt),
-      updatedAt: funChangeDate(result.updatedAt),
+      createdAt: date(result.createdAt),
+      updatedAt: date(result.updatedAt),
     }
   });
-  const doneFolder = await DoneFolder.findOne({
+  const done = await DoneFolder.findOne({
     where: { MemberId: id },
     attributes: ['count', 'public'],
   });
   res.render('wishlist', {
-    folderBoxes,
-    doneFolder,
+    folders,
+    done,
     member,
   })
 });
@@ -54,16 +86,16 @@ router.post('/folder', async (req, res) => {
     title: result.title,
     count: result.count,
     public: result.public,
-    createdAt: funChangeDate(result.createdAt),
-    updatedAt: funChangeDate(result.updatedAt),
+    createdAt: date(result.createdAt),
+    updatedAt: date(result.updatedAt),
   };
-  const doneFolder = await DoneFolder.findOne({
+  const done = await DoneFolder.findOne({
     where: { MemberId },
     attributes: ['count', 'public'],
   });
   res.json({
     folder,
-    doneFolder,
+    done,
   });
 });
 // 폴더 이름 변경
@@ -98,22 +130,56 @@ router.delete('/:folderid', async (req, res) => {
 // 폴더 공개 / 비공개 변경
 router.patch('/public', async (req, res) => {
   const id = req.body.id;
-  const isPublic = req.body.isPublic;
-  await Folder.update({
-    isPublic,
-  }, {
-    where: { id },
-  });
-  const result = await Folder.findOne({
-    where: { id },
-    attributes: ['public', 'updatedAt'],
-  });
-  const folder = {
-    public: result.public,
-    updatedAt: result.updatedAt,
-  };
-  res.json({ folder });
+  const isPublic = req.body.public;
+  const done = req.body.done;
+  if(done) {
+    await DoneFolder.update({
+      public: isPublic,
+    }, {
+      where: { MemberId: id },
+    });
+    const result = await DoneFolder.findOne({
+      where: { MemberId: id },
+      attributes: ['public'],
+    });
+    const done = {
+      public: result.public,
+    };
+    res.json({ done });  
+  } else {
+    await Folder.update({
+      public: isPublic,
+    }, {
+      where: { id },
+    });
+    const result = await Folder.findOne({
+      where: { id },
+      attributes: ['public', 'updatedAt'],
+    });
+    const folder = {
+      public: result.public,
+      updatedAt: result.updatedAt,
+    };
+    res.json({ folder });  
+  }
 });
+
+router.post('/sort', (req, res) => {
+  const sort = req.body.sort;
+  switch(sort) {
+    case 'name':
+      res.locals.sort = 'name';
+      break;
+    case 'updatedAt':
+      res.locals.sort = 'updatedAt';
+      break;
+    case 'createdAt':
+      res.locals.sort = 'createdAt';
+      break;
+  }
+    res.json({});  
+});
+
 
 
 module.exports = router;

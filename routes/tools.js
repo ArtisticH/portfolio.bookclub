@@ -1,5 +1,5 @@
 module.exports = {
-  funChangeDate (dateString) {
+  date (dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : (date.getMonth() + 1);
@@ -7,7 +7,7 @@ module.exports = {
     const formattedDate = year + "-" + month + "-" + day;
     return formattedDate;
   },
-  funCalculateRate (star) {
+  rate (star) {
     let array = [];
     if(star % 1 === 0) {
       // 정수라면, 소수점이 없다면, 만약 3이라면
@@ -39,7 +39,7 @@ module.exports = {
         if(index + 1 <= essence) {
           return 'full';
           // decimal이 0.5라면 그 다음 별을 반개 채운다
-        } else if(index + 1 === essence + 1 && decimal === 0.5) {
+        } else if(index === essence && decimal === 0.5) {
           return 'half';
         } else {
           // 그 외는 빈별

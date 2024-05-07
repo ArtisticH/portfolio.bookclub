@@ -10,6 +10,7 @@ body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  /* 스크롤 효과 위해 */
   height: 1000vh;
 }
 
@@ -22,9 +23,9 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* sticky 덕분에 스크롤 효과 구현 */
 #main {
   height: 100vh;
+  /* sticky 덕분에 스크롤 효과 구현 */
   position: sticky;
   top: 0;
   left: 0;
@@ -45,6 +46,9 @@ body::-webkit-scrollbar {
 .main__top-left {
   /* .main__top-left__click에 대해 */
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .main__top-left__title {
@@ -61,15 +65,11 @@ body::-webkit-scrollbar {
 .main__top-left__click {
   box-sizing: border-box;
   padding: 0 10px;
+  margin-bottom: 10px;
   height: 35px;
   display: grid;
   grid-template-columns: 4fr 6fr;
   gap: 10px;
-  /* .main__top-left에 대해 */
-  position: absolute;
-  width: 100%;
-  bottom: 10px;
-  left: 0;
 }
 
 .main__top-left__click__login,
@@ -84,7 +84,7 @@ body::-webkit-scrollbar {
   justify-content: flex-start;
   padding-left: 10px;
   cursor: pointer;
-  transition: color 0.3s ease-out;
+  transition: color 0.2s ease-out;
 }
 
 .main__top-left__click__login:hover,
@@ -184,20 +184,24 @@ body::-webkit-scrollbar {
 
 .login__input,
 .signup__input {
+  outline: none;
   border: none;
   width: 100%;
   box-sizing: border-box;
   font-family: var(--font-montserrat);
   font-size: 1.3rem;
+  letter-spacing: -1.3px;
   padding: 10px;
 }
 
 .login__input__button,
 .signup__input__button {
   width: 100%;
+  letter-spacing: -1.3px;
   font-size: 1.3rem;
   font-family: var(--font-montserrat);
   border: none;
+  outline: none;
   padding: 10px;
   background-color: black;
   color: white;
@@ -211,11 +215,14 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
   border: 1px solid black;
   font-size: 1.3rem;
+  letter-spacing: -1.3px;
   font-family: var(--font-montserrat);
   text-align: center;
   padding: 10px;
   cursor: pointer;
   font-weight: 500;
+  display: block;
+  text-decoration: none;
 }
 
 .kakao {
@@ -243,15 +250,16 @@ body::-webkit-scrollbar {
   display: flex;
   flex-direction: column;
   justify-content: end;
+  align-items: flex-start;
   overflow: hidden;
 }
 
 .main__top-right__title1,
 .main__top-right__title2 {
-  width: fit-content;
   margin-left: -15px;
   font-family: var(--font-Merriweather);
   font-size: 5rem;
+  letter-spacing: -5px;
   line-height: 0.9;
 }
 
@@ -297,6 +305,7 @@ body::-webkit-scrollbar {
   font-size: 1.4rem;
   animation: main-scroll 1s ease-out infinite alternate;
 }
+
 /* 위아래로 살짝 튀어오르는 효과 */
 @keyframes main-scroll {
   0% { transform: translateY(0); }
@@ -320,7 +329,7 @@ body::-webkit-scrollbar {
 
 /* .main__bottom-right --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__bottom-right__names {
+.main__bottom-right {
   padding: 20px;
 }
 
@@ -342,7 +351,7 @@ body::-webkit-scrollbar {
   flex-direction: column;
   justify-content: space-between;
   position: fixed;
-  bottom: 40%;
+  bottom: 20%;
   left: 50px;
   background-color: white;
   box-sizing: border-box;
@@ -356,14 +365,13 @@ body::-webkit-scrollbar {
 }
 
 .user__wishlist {
-  color: #99d1a2;
+  color: #039754;
   text-decoration: none;
 }
 
 .user__nick:hover,
-.user__wishlist:hover,
 .user__logout:hover {
-  text-decoration: line-through;
+  font-weight: 600;
 }
 
 .user__nick {
@@ -410,7 +418,7 @@ body::-webkit-scrollbar {
   }    
 
   .main__top-right {
-    /* min-width: 650px, .main__top-right__contents__scroll에 대해서 */
+    /* .main__top-right__contents__scroll에 대해서 */
     position: relative;
   }
   
@@ -421,6 +429,7 @@ body::-webkit-scrollbar {
     right: 0;
     animation: main-scroll 4s ease-out infinite;
   }
+
   /* 스크롤 텍스트가 낙수 효과처럼 내려옴 */
   @keyframes main-scroll {
     0% { 

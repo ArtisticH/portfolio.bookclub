@@ -40,6 +40,6 @@ module.exports = class Choice extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Choice.belongsToMany(db.Member, { through: 'RecordChoice'}); 
+    db.Favorite.belongsToMany(db.Member, { through: 'RecordFavorite'}); 
   }
 }

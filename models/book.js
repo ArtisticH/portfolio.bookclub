@@ -36,6 +36,6 @@ module.exports = class Book extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Book.hasMany(db.Review, { foreignKey: 'BookId', sourceKey: 'id'}); // 5. Review의 외래키, 어떤 책에 대한 리뷰
+    db.Book.hasMany(db.Review, { foreignKey: 'BookId', sourceKey: 'id'}); 
   }
 }

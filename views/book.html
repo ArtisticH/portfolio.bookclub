@@ -14,7 +14,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="book">
+  <section id="book" data-user-id="{{user.id}}">
     <div class="book-left">
       <div class="book-href">
         <a href="/books" class="book__back">
@@ -24,7 +24,7 @@
       </div>
       <div class="book-itseft">
         <div class="book__text">Book</div>
-        <div class="book__number"><span class="current__book__number">{{book.id}}</span>&nbsp;/&nbsp;{{totalBookCount}}</div>
+        <div class="book__number"><span class="current__book__number">{{book.id}}</span>&nbsp;/&nbsp;{{totalBook}}</div>
       </div>
       <div class="book-middle">
         <div class="book-contents">
@@ -40,7 +40,7 @@
             </div>
             <div class="book__rate">
               <div class="book__rate__stars">
-                {% for starshape in starshapes %}
+                {% for starshape in starShapes %}
                 <div class="book__rate__star--relative">
                   <div class="book__rate__star {{starshape}}"></div>
                 </div>
@@ -64,25 +64,25 @@
         <div class="empty-review__text">리뷰를 작성해주세요.</div>
       </div>
       <div class="review-container">
-        {% for reviewbox in reviewBoxes %}
-        <div class="review-box" data-review-id="{{reviewbox.id}}">
-          <div class="review-box__title">{{reviewbox.title}}</div>
+        {% for review in reviews %}
+        <div class="review-box" data-review-id="{{review.id}}">
+          <div class="review-box__title">{{review.title}}</div>
           <div class="review-box__info">
             <div class="review-box__info__stars">
-              {% for starshape in reviewbox.stars %}
+              {% for starshape in review.stars %}
               <div class="review-box__info__stars__star {{starshape}}"></div>
               {% endfor %}
             </div>
             <div class="review-box__info__line"></div>
-            <div class="review-box__info__type">{{reviewbox.type}}</div>
+            <div class="review-box__info__type">{{review.type}}</div>
             <div class="review-box__info__line"></div>
-            <a href="/member/{{reviewbox.MemberId}}" class="review-box__info__nickname">{{reviewbox.nick}}</a>
+            <a href="/member/{{review.MemberId}}" class="review-box__info__nickname">{{review.nick}}</a>
             <div class="review-box__info__line"></div>
-            <div class="review-box__info__date">{{reviewbox.createdAt}}</div>
+            <div class="review-box__info__date">{{review.createdAt}}</div>
             <div class="review-box__info__line"></div>
-            <div class="review-box__info__updatedDate">{{reviewbox.updatedAt}}</div>
+            <div class="review-box__info__updatedDate">{{review.updatedAt}}</div>
             <!-- 현재 로그인한 회원과 작성 회원이 같다면 -->
-            {% if user.id == reviewbox.MemberId %} 
+            {% if user.id == review.MemberId %} 
             <div class="review-box__is-user" >
               <div class="review-box__info__line"></div>
               <div class="review-box__info__edit">수정</div>
@@ -99,17 +99,17 @@
             {% endif %}
           </div>
           <!-- slice가 null이라면 -->
-          {% if not reviewbox.text.slice %}
-          <div class="review-box__text">{{reviewbox.text.original}}</div>
+          {% if not review.text.slice %}
+          <div class="review-box__text">{{review.text.original}}</div>
           <div class="review-box__text" hidden></div>
           {% else %}
           <!-- slice가 null이 아니라면 -->
-          <div class="review-box__text">{{reviewbox.text.slice}}...</div>
-          <div class="review-box__text" hidden>{{reviewbox.text.original}}</div>
+          <div class="review-box__text">{{review.text.slice}}...</div>
+          <div class="review-box__text" hidden>{{review.text.original}}</div>
           {% endif %}
           <div class="review-box__bottom">
             <!-- 나중에 리뷰 등록, 업데이트, 삭제 시 2가지 경우를 고려해야 되기 때문에 똑같은 요소 두개 만들어놓고 사용 -->
-            {% if reviewbox.overText %}
+            {% if review.overText %}
             <div class="review-box__more">
               <div class="review-box__more__text">더보기</div>
               <img class="review-box__more__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
@@ -127,13 +127,13 @@
                 <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
                 <img class="review-box__heart__img" src="/img/book/blue-heart.png" alt="blue-heart">
               </div>
-              <div class="review-box__heart__total">{{reviewbox.like}}</div>
+              <div class="review-box__heart__total">{{review.like}}</div>
             </div>
           </div>
         </div>
         {% endfor %}  
       </div>
-      <div class="review-box review-box-for-clone" hidden>
+      <div class="review-box-for-clone" hidden>
         <div class="review-box__title"></div>
         <div class="review-box__info">
           <div class="review-box__info__stars">
@@ -179,7 +179,7 @@
           </div>
         </div>
       </div>
-      <div class="review-paganation">
+      <div class="review-paganation" hidden>
         <div class="review-paganation__first" hidden>
           <img class="review-paganation__img" src="/img/book/page-left-double-arrow.png" alt="page-left-double-arrow.">
         </div>
@@ -200,7 +200,7 @@
           <img class="review-paganation__img" src="/img/book/page-right-double-arrow.png" alt="page-right-double-arrow">
         </div>
       </div>
-      <form id="review-form" data-user-id="{{user.id}}" data-id="">
+      <form id="review-form" data-id="">
         <div class="review-form-nav">
           <div class="review-form__title">Review</div>
           <div class="review-form__cancel">
@@ -225,7 +225,7 @@
           </div>
         </div>
         <div class="review-form-input">
-          <input type="text" name="title" class="review-form__input__title" placeholder="제목을 입력해주세요">
+          <input type="text" name="title" class="review-form__input__title" placeholder="제목을 입력해주세요" maxlength="30">
           <div id="review-form__text__length"><span class="review-form__text__length">0</span>&nbsp;/&nbsp;<span class="review-form__text__length__limit"></span></div>
           <textarea name="text" id="review-form__text" cols="30" rows="10" placeholder="내용을 3000자 이내로 입력해주세요"></textarea>
           <input class="review-form__submit" type="submit" value="등록">  

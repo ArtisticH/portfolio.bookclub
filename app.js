@@ -47,6 +47,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
+    maxAge: 60000,
   },
   name: 'book-club',
 }));

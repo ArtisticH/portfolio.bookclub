@@ -14,7 +14,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/books', async (req, res) => {
-  const books = await Book.findAll({});
+  const books = await Book.findAll({
+    attributes: ['id', 'title', 'author'],
+  });
   res.render('books', { books });
 });
 
@@ -27,8 +29,8 @@ router.get('/members', async (req, res) => {
   res.render('members', { total });
 });
 
-router.get('/meetings', (req, res) => {
-  res.render('meetings');
+router.get('/wishlist/null', (req, res) => {
+  res.redirect('/?wishlist=login');
 });
 
 router.get('/fun', (req, res) => {

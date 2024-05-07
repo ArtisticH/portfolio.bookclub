@@ -3,7 +3,7 @@ const Review = require('../models/review');
 const Book = require('../models/book');
 const Member = require('../models/member');
 const db = require('../models');
-const { funChangeDate, funCalculateRate } = require('../routes/tools');
+const { date, rate } = require('../routes/tools');
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.use((req, res, next) => {
 router.post('/', async (req, res) => {
   try {
     // 리뷰 등록
-    const createdReview = await Review.create({
+    const created = await Review.create({
       title: req.body.title,
       text: req.body.text,
       overText: req.body.overText,
@@ -25,8 +25,7 @@ router.post('/', async (req, res) => {
       BookId: req.body.bookId,
       MemberId: req.user.id,
     });
-    // 가장 최근에 등록한 컨텐츠, 내림차순으로 1개
-    // 연관된 Book, Member정보도 가져와
+    // 방금 등록한 컨텐츠 가져오기
     const result = await Review.findOne({
       include: [{
         model: Book,
@@ -36,13 +35,9 @@ router.post('/', async (req, res) => {
       }],
       order: [['id', 'DESC']], 
       limit: 1,
-      where: { id: createdReview.id },
+      where: { id: created.id },
     });
     let text;
-    // text가 overText라면 
-    // 처음에 slice를 보여주고 더보기를 클릭하면 original을 보여준다. 
-    // overText가 아니라면 처음부터 original을 보여주고 slice는 없다. 
-    // text는 객체이다. 
     if(result.overText) {
       text = {
         slice: result.text.slice(0, 200),
@@ -60,11 +55,10 @@ router.post('/', async (req, res) => {
       text,
       like: result.like,
       overText: result.overText,
-      // 숫자를 배열로 변환, 3이면 ['full', 'full', 'full', 'empty', 'empty']이런식으로
-      stars: funCalculateRate(result.stars),
-      createdAt: funChangeDate(result.createdAt),
-      updatedAt: funChangeDate(result.updatedAt),
-      MemberId: result.MemberId,
+      stars: rate(result.stars),
+      createdAt: date(result.createdAt),
+      updatedAt: date(result.updatedAt),
+      MemberId: result.Member.id,
       type: result.Member.type.toUpperCase(),
       nick: result.Member.nick,
     };
@@ -141,51 +135,6 @@ router.get('/:reviewid', async(req, res) => {
   res.json({ review });  
 });
 
-// 삭제 후 새로 추가할 요소를 원할때
-router.get('/delete/:bookid', async(req, res) => {
-  const id = req.params.bookid;
-  const result = await Review.findOne({
-    include: [{
-      model: Book,
-      where: { id },
-    }, {
-      model: Member,
-      attributes: ['id', 'type', 'nick'],
-    }],
-    order: [['id', 'DESC']], 
-    limit: 1,
-    // 우선은 가장 최신글 5개 중에 삭제한다고 보고, offset: 4,
-    // 만약 페이지네이션이 진행되면 offset에도 변수가 와야한다. 
-    offset: 4,
-  });
-  let text;
-  if(result.text.length > 200) {
-    text = {
-      slice: result.text.slice(0, 200),
-      original: result.text,
-    };
-  } else {
-    text = {
-      slice: null,
-      original: result.text,
-    };
-  }
-  const review = {
-    id: result.id,
-    title: result.title,
-    text,
-    like: result.like,
-    overText: result.overText,
-    stars: funCalculateRate(result.stars),
-    createdAt: funChangeDate(result.createdAt),
-    updatedAt: funChangeDate(result.updatedAt),
-    MemberId: result.MemberId,
-    type: result.Member.type.toUpperCase(),
-    nick: result.Member.nick,
-  };  
-  res.json({ review });      
-});
-
 // 업데이트
 router.patch('/', async (req, res) => {
   try {
@@ -218,8 +167,8 @@ router.patch('/', async (req, res) => {
       title: result.title,
       text,
       overText: result.overText,
-      stars: funCalculateRate(result.stars),
-      updatedAt: funChangeDate(result.updatedAt),
+      stars: rate(result.stars),
+      updatedAt: date(result.updatedAt),
     };
     res.json({ review });  
   } catch(err) {
@@ -230,15 +179,59 @@ router.patch('/', async (req, res) => {
 // 리뷰 삭제
 router.delete('/:reviewid', async (req, res) => {
   const id = req.params.reviewid;
-  const bookId = req.params.bookid;
   await Review.destroy({
     where: { id },
   });
   res.json();
 });
 
+// 삭제 후 새로 추가할 요소를 원할때
+router.get('/delete/:bookid/:pagenumber', async(req, res) => {
+  const id = req.params.bookid;
+  const pageNumber = req.params.pagenumber;
+  const offset = 5 * pageNumber - 1;
+  const result = await Review.findOne({
+    include: [{
+      model: Book,
+      where: { id },
+    }, {
+      model: Member,
+      attributes: ['id', 'type', 'nick'],
+    }],
+    order: [['id', 'DESC']], 
+    limit: 1,
+    offset,
+  });
+  let text;
+  if(result.text.length > 200) {
+    text = {
+      slice: result.text.slice(0, 200),
+      original: result.text,
+    };
+  } else {
+    text = {
+      slice: null,
+      original: result.text,
+    };
+  }
+  const review = {
+    id: result.id,
+    title: result.title,
+    text,
+    like: result.like,
+    overText: result.overText,
+    stars: rate(result.stars),
+    createdAt: date(result.createdAt),
+    updatedAt: date(result.updatedAt),
+    MemberId: result.Member.id,
+    type: result.Member.type.toUpperCase(),
+    nick: result.Member.nick,
+  };  
+  res.json({ review });      
+});
+
 // 페이지 버튼 클릭 시
-router.get('/:bookid/page/:pagenumber', async (req, res) => {
+router.get('/page/:bookid/:pagenumber', async (req, res) => {
   const bookId = req.params.bookid;
   const pageNumber = req.params.pagenumber;
   // 만약 페이지 4를 클릭하면 15개를 건너뛰고 그 다음 5개를 가져와야 한다. 
@@ -257,10 +250,6 @@ router.get('/:bookid/page/:pagenumber', async (req, res) => {
     order: [['id', 'DESC']],
   });
   const reviews = [];
-  for(let i of results) {
-    console.log(i.title)
-  }
-  console.log(results.length);
   results.forEach(item => {
     let text;
     if(item.text.length > 200) {
@@ -280,9 +269,9 @@ router.get('/:bookid/page/:pagenumber', async (req, res) => {
       text,
       like: item.like,
       overText: item.overText,
-      stars: funCalculateRate(item.stars),
-      createdAt: funChangeDate(item.createdAt),
-      updatedAt: funChangeDate(item.updatedAt),
+      stars: rate(item.stars),
+      createdAt: date(item.createdAt),
+      updatedAt: date(item.updatedAt),
       MemberId: item.MemberId,
       type: item.Member.type.toUpperCase(),
       nick: item.Member.nick,  

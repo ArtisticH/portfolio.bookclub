@@ -37,8 +37,8 @@ module.exports = class Review extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Review.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); // 3. Review의 외래키, 작성자
-    db.Review.belongsToMany(db.Member, { through: 'ReviewLike'}); // 4. Review의 좋아요 한번만 클릭 위해 
-    db.Review.belongsTo(db.Book, { foreignKey: 'BookId', targetKey: 'id'}); // 5. Review의 외래키, 어떤 책에 대한 리뷰
+    db.Review.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); 
+    db.Review.belongsTo(db.Book, { foreignKey: 'BookId', targetKey: 'id'}); 
+    db.Review.belongsToMany(db.Member, { through: 'ReviewLike'}); 
   }
 }

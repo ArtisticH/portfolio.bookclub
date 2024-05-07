@@ -11,87 +11,45 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rock+Salt&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="member">
+  <section id="member" data-user-id="{{user.id}}">
     <div class="member-left">
-      <div class="member-left__head"></div>
-      <div class="member-left__middle">
-        <div class="member-left__middle__left"></div>
-        <div class="member-left__middle__right">
-          <div class="member__nav">
-            <a href="/members" class="member__nav__back">
-              <img class="member__nav__back__img" src="/img/main/back-arrow.png" alt="back-arrow">
-            </a>
-            <a href="/" class="member__nav__home">HOME</a>  
-          </div>
-          <div class="member-middel">
-            <div id="member__nick">{{member.nick}}</div>
-            <div id="member__links">
-              <a href="/choice/{{member.id}}" id="member__choice">CHOICE</a>  
-              <a href="/quotes/{{member.id}}" id="member__quotes">QUOTES</a>
-              <a href="/wishlist/{{member.id}}" id="member__wishlist">WISHLIST</a>
-            </div>     
-          </div>
-          <div class="member__numbers">
-            <div class="member__numbers__books tooltip-elem" data-type="books">{{recommendedBookCount}}<span class="member__numbers__books--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
-            <div class="member__numbers__attendance tooltip-elem" data-type="attendance">{{attendCount}}<span class="member__numbers__attendance--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
-            <div class="tooltip books-tooltip" hidden>
-              추천 횟수&nbsp;/&nbsp;총 도서 권수
-            </div>
-            <div class="tooltip attendance-tooltip" hidden>
-              참여 횟수&nbsp;/&nbsp;총 독서모임 횟수
-            </div>
-          </div>   
-        </div>
+      <div class="member__nav">
+        <a href="/members" class="member__nav__back">
+          <img class="member__nav__back__img" src="/img/main/back-arrow.png" alt="back-arrow">
+        </a>
+        <a href="/" class="member__nav__home">HOME</a>  
       </div>
-      <div class="member-left__bottom"></div>
-
-      <!-- <div class="member-box">
-        <div class="member__nav">
-          <a href="/members" class="member__nav__back">
-            <img class="member__nav__back__img" src="/img/main/back-arrow.png" alt="back-arrow">
-          </a>
-          <a href="/" class="member__nav__home">HOME</a>
-        </div>    
+      <div class="member-left-box">
         <div id="member__nick">{{member.nick}}</div>
         <div id="member__links">
-          <a href="/wishlist/{{member.id}}" id="member__wishlist">WISHLIST</a>
-          <a href="/quotes/{{member.id}}" id="member__quotes">Quotes</a>
-          <a href="/choice/{{member.id}}" id="member__choice">Choice</a>  
-        </div>
-      </div>
-      <div class="member__numbers">
-        <div class="member__numbers__books tooltip-elem" data-type="books">{{recommendedBookCount}}<span class="member__numbers__books--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
-        <div class="member__numbers__attendance tooltip-elem" data-type="attendance">{{attendCount}}<span class="member__numbers__attendance--total">&nbsp;/&nbsp;{{totalBookCount}}</span></div>
-        <div class="tooltip books-tooltip" hidden>
-          추천 횟수&nbsp;/&nbsp;총 도서 권수
-        </div>
-        <div class="tooltip attendance-tooltip" hidden>
-          참여 횟수&nbsp;/&nbsp;총 독서모임 횟수
-        </div>
-      </div> -->
+          <a href="/favorite/member/{{member.id}}" id="member__favorite" class="member__link">FAVORITE</a>  
+          <a href="/quotes/{{member.id}}" id="member__quotes" class="member__link">QUOTES</a>
+          <a href="/wishlist/{{member.id}}" id="member__wishlist" class="member__link">WISHLIST</a>
+        </div>     
+        <div class="member__numbers">
+          <div class="member__numbers__books tooltip-elem" data-type="books">{{books.length}}<span class="member__numbers__books--total">&nbsp;/&nbsp;{{bookTotal}}</span></div>
+          <div class="member__numbers__attendance tooltip-elem" data-type="attendance">{{attend}}<span class="member__numbers__attendance--total">&nbsp;/&nbsp;{{bookTotal}}</span></div>
+          <div class="tooltip books-tooltip" hidden>
+            추천 횟수&nbsp;/&nbsp;총 도서 권수
+          </div>
+          <div class="tooltip attendance-tooltip" hidden>
+            참여 횟수&nbsp;/&nbsp;총 독서모임 횟수
+          </div>
+        </div>  
+      </div>   
     </div>
-    <div class="member-books">
-      <div class="member-books__container">
-        {% for book in recommendedBook %}
-        <a href="/book/{{book.id}}" class="member-books__book">
-          <div class="member-books__book__title">{{book.title}}</div>
-          <div class="member-books__book__author">{{book.author}}</div>
-          <div class="member-books__book__blank"></div>  
+    <div class="member-right">
+      <div class="member-books">
+        {% for book in books %}
+        <a href="/book/{{book.id}}" class="member-book">
+          <div class="member-book__title">{{book.title}}</div>
+          <div class="member-book__author">{{book.author}}</div>
+          <div class="member-book__blank"></div>  
         </a>
-        {% endfor %}
-        <div class="member-books__blank">
-          YOU
-          <br>
-          SHOULD
-          <br>
-          READ
-          <br>
-          MORE
-          <br>
-          BOOKS!
-        </div>
+        {% endfor %}  
       </div>
     </div>
   </section>

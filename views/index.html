@@ -22,8 +22,8 @@
         <!-- main__top-left__btn는 이벤트 위임을 위해 -->
         {% if not user %}
         <div class="main__top-left__click">
-          <div class="main__top-left__click__login main__top-left__btn" data-form-type="login">LOG IN</div>
-          <div class="main__top-left__click__signup main__top-left__btn" data-form-type="signup">SIGN UP</div>
+          <div class="main__top-left__click__login main__top-left__btn" data-form="login">LOG IN</div>
+          <div class="main__top-left__click__signup main__top-left__btn" data-form="signup">SIGN UP</div>
         </div>
         {% endif %}
       </div>
@@ -41,17 +41,17 @@
           <div class="form-target__title">LOG IN</div>
           <form class="login" method="post" action="/auth/login">
             <div class="login__id">
-              <input class="login__input" name="email" type="email" placeholder="e-mail">
+              <input class="login__input" name="email" type="email" placeholder="e-mail*">
             </div>
             <div class="login__pwd">
-              <input class="login__input" name="password" type="password" placeholder="password">
+              <input class="login__input" name="password" type="password" placeholder="password*">
             </div>
             <div class="login__btn">
               <input class="login__input__button" type="submit" value="LOG IN">
             </div>
           </form>
-          <div class="kakao">KAKAO</div>
-          <div class="naver">NAVER</div>    
+          <a href="/auth/kakao" class="kakao">KAKAO</a>
+          <a href="/auth/naver" class="naver">NAVER</a>    
         </div>
       </div> 
       <div id="signup" class="form-target">
@@ -99,16 +99,15 @@
     <div class="main__bottom">
       <div class="main__bottom-left"></div>
       <div class="main__bottom-right">
-        <div class="main__bottom-right__names">
-          <div class="main__name">Seo Hanna</div>
-          <div class="main__name">Kim Jungkyung</div>
-          <div class="main__name">Kang Yerim</div>
-          <div class="main__name">Kim Hyuna</div>
-        </div>
+        <div class="main__name">Seo Hanna</div>
+        <div class="main__name">Kim Jungkyung</div>
+        <div class="main__name">Kang Yerim</div>
+        <div class="main__name">Kim Hyuna</div>
       </div>  
     </div>
+    <!-- 로그인한 후 뜨는 명함카드 -->
     {% if user and user.id %}
-    <div id="user">
+    <div id="user" data-user-id="{{user.id}}">
       <a href="/member/{{user.id}}" class="user__nick">{{user.nick}}</a>
       <div class="user__wishlist-box">
         <div class="user__wishlist__text">CHECK YOUR WISHLIST</div>

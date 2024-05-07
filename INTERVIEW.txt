@@ -23,10 +23,19 @@
 * document.removeEventListener('pointermove',...를 하는 이유?
 * removeEventListener('pointerup',...를 하는 이유?
 
-// 💜 로그인, 회원가입, 로그아웃과 req.user
+* this.searchParams = new URL(location.href).searchParams;
+* this.searchParams.has('signup')와 this.searchParams.get('signup')의 의미
+
 // 💚 로그인
+* 로그인 과정에 대해 설명해봐
+* req.session과 req.signedCookies의 차이, 
+로그인 전에 둘이 다른 경우, req.signedCookies이 요청마다 다른 이유는?, 로그인 후에 둘이 같은 이유는?
 // 💚 회원가입
+* 회원가입 과정에 대해 말해봐라.
+* req.session.destroy();는 무슨 역할?
+* req.logout(cb)은 무슨 역할?
 // 💚 로그아웃
+* 로그아웃 과정에 대해 설명
 
 // 💜 books.html, books.css, 
 

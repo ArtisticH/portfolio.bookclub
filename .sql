@@ -53,7 +53,6 @@ INSERT INTO attend (BookId, MemberId) VALUES (13, 2);
 INSERT INTO attend (BookId, MemberId) VALUES (13, 3);
 INSERT INTO attend (BookId, MemberId) VALUES (13, 4);
 
-
 INSERT INTO doneFolders (MemberId, public) VALUES (1, true);
 INSERT INTO doneFolders (MemberId, public) VALUES (2, true);
 INSERT INTO doneFolders (MemberId, public) VALUES (3, true);

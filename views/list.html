@@ -5,8 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/public/css/list.css">
-  <script defer src="/public/js/list.js"></script>
+  <link rel="stylesheet" href="/css/list.css">
+  <script defer src="/js/list.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,16 +14,16 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="list">
+  <section id="list" data-list="{{lists.length}}">
     <div class="list">
       <div id="list-top">
         <div class="list-block">
-          <a href="/wishlist/1" class="list-back-arrow">
-            <img class="list-img" src="/public/img/main/back-arrow.png" alt="">
+          <a href="/wishlist/{{member.id}}" class="list-back-arrow">
+            <img class="list-img" src="/img/main/back-arrow.png" alt="back-arrow">
           </a>
           <div class="list-block-info">
-            <div class="list-block__title">프로그래밍&nbsp;(22)</div>
-            <a href="/member/1" class="list-block__nick">서망고</a>  
+            <div class="list-block__title">프로그래밍&nbsp;<span class="list-total">({{count}})</span></div>
+            <a href="/member/{{member.id}}" class="list-block__nick">{{member.nick}}</a>  
           </div>
         </div>
         <div class="list-btns">
@@ -33,118 +33,39 @@
           <div class="list-btn" data-btn="read">완독</div>
         </div>        
       </div>
-      <!-- <div class="list-contents">
+      {% if lists.length == 0 %}
+      <div class="list-contents">
         <div class="list-empty">리스트를 추가해주세요.</div>
-      </div> -->
-      <div class="list-contents grid">
-        <div class="list-box">
+        <div class="list-box clone" hidden>
           <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
+            <img class="list-img width" src="" alt="">
           </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
-        </div>
-        <div class="list-box">
-          <div class="list-img-box">
-            <img class="list-img" src="/public/img/list/default.jpeg" alt="default">
-          </div>
-          <div class="list-box-title">어린왕자</div>
-          <div class="list-box-author">쌩땍쥐베리</div>
+          <div class="list-box-title"></div>
+          <div class="list-box-author"></div>
         </div>
       </div>
+      {% else %}
+      <div class="list-contents grid">
+        {% for list in lists %}
+        <div class="list-box" data-list-id="{{list.id}}">
+          <div class="list-img-box">
+            <img class="list-img width" src="{{list.img}}" alt="">
+          </div>
+          <div class="list-box-title">{{list.title}}</div>
+          <div class="list-box-author">{{list.author}}</div>
+        </div>
+        {% endfor %}
+        <div class="list-box clone" hidden>
+          <div class="list-img-box">
+            <img class="list-img width" src="" alt="">
+          </div>
+          <div class="list-box-title"></div>
+          <div class="list-box-author"></div>
+        </div>
+      </div>
+      {% endif %}
     </div>
-    <div id="list-add">
+    <div id="list-add" class="root" hidden>
       <div class="list-nav">
         <div class="list-title">
           리스트 추가
@@ -154,20 +75,25 @@
           <div class="list-cancel-box__right"></div>
         </div>
       </div>
-      <div class="list-add" hidden>
-        <form class="list-add-form" action="" enctype="multipart/form-data">
+      <div class="list-add">
+        <form class="list-add-form" action="post" enctype="multipart/form-data">
           <label for="add-img" class="add-img-label">
             <div class="add-img-plus-ver"></div>
             <div class="add-img-plus-hor"></div>
+            <div class="add-img-preview">
+              <img class="list-img width" src="" alt="preview">
+            </div>  
           </label>
-          <input id="add-img" class="add-img-input" type="file" accept="image/*">
-          <input class="add-title" type="text" maxlength="20" placeholder="책 제목을 입력하세요">
-          <input class="add-author" type="text" maxlength="10" placeholder="저자를 입력하세요">
+          <input id="add-img" name="image" class="add-img-input" type="file" accept="image/*">
+          <input class="add-img-url" type="hidden" name="url">
+          <div class="add-img-default">*기본값 쓰기</div>
+          <input class="add-title" name="title" type="text" maxlength="20" placeholder="책 제목을 입력하세요">
+          <input class="add-author" name="author" type="text" maxlength="10" placeholder="저자를 입력하세요">
           <input class="form-submit" type="submit" value="등록">
         </form>
       </div>
     </div>
-    <div id="list-move">
+    <div id="list-move" class="root" hidden>
       <div class="list-nav">
         <div class="list-title">
             폴더 이동
@@ -178,7 +104,7 @@
         </div>
       </div>
       <div class="list-move">
-        <form class="list-move-form" action="">
+        <form class="list-move-form" action="post">
           <label class="list-move-label">
             <div class="list-move-title">
               <input id="" type="radio" name="listFolder" value="">

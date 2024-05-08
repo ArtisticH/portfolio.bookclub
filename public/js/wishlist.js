@@ -21,11 +21,8 @@ class Wishlist {
     this.$sortElem.onpointerenter = this.sort.bind(this);
     /* ------------------------------------------------------------------------------------------------ */
     // 4. 폴더 더블클릭 시 이동
-    this.$folders = document.querySelectorAll('.wishlist-folder');
     this.dblclick = this.dblclick.bind(this);
-    [...this.$folders].forEach(folder => {
-      folder.addEventListener('dblclick', this.dblclick);
-    })
+    this.$area.ondblclick = this.dblclick;
     /* ------------------------------------------------------------------------------------------------ */
     // 5. 폴더 생성 창 띄우기
     this.$addFolder = document.getElementById('add-folder');
@@ -168,7 +165,8 @@ class Wishlist {
   /* ------------------------------------------------------------------------------------------------ */
   // 4. 폴더 더블클릭 시 이동
   dblclick(e) {
-    const folder = target.closest('.wishlist-folder');
+    const folder = e.target.closest('.wishlist-folder');
+    if(!folder) return;
     this.$currentFolder = folder;
     this.open();
   }

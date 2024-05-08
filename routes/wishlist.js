@@ -1,8 +1,8 @@
 const express = require('express');
 const Member = require('../models/member');
 const Folder = require('../models/folder');
+const Sort = require('../models/sort');
 const DoneFolder = require('../models/donefolder');
-const { date } = require('../routes/tools');
 
 const router = express.Router();
 
@@ -10,45 +10,57 @@ router.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-
+// 데이터베이스에 폴더의 분류 방법을 저장
+router.post('/sort', async (req, res) => {
+  const sort = req.body.sort;
+  const MemberId = req.body.MemberId;
+  const order = req.body.order;
+  const result = await Sort.findOne({
+    where: { MemberId },
+  });
+  if(!result) {
+    await Sort.create({
+      sort,
+      order,
+      MemberId
+    });  
+  } else {
+    await Sort.update({
+      sort,
+      order,
+    }, {
+      where: { MemberId },
+    });  
+  }
+  res.json({});  
+});
+// 처음에 내려줄때
 router.get('/:memberid', async (req, res) => {
   const id = req.params.memberid;
   const member = await Member.findOne({
     where: { id },
     attributes: ['id', 'nick'],
   });
+  const sort = await Sort.findOne({
+    where: { MemberId: id },
+  })
   let results;
-  if(res.locals.sort === 'default') {
+  // 맨처음에 아무것도 없으면 sort는 null
+  if(!sort) {
     results = await Folder.findAll({
       include: [{
         model: Member,
         where: { id },
       }],
     });  
-  } else if(res.locals.sort = 'name') {
+  } else {
     results = await Folder.findAll({
       include: [{
         model: Member,
         where: { id },
       }],
-      order: [['title', 'ASC']], 
-    });  
-  } else if(res.locals.sort = 'updatedAt') {
-    results = await Folder.findAll({
-      include: [{
-        model: Member,
-        where: { id },
-      }],
-      order: [['updatedAt', 'ASC']], 
-    });  
-  } else if(res.locals.sort = 'createdAt') {
-    results = await Folder.findAll({
-      include: [{
-        model: Member,
-        where: { id },
-      }],
-      order: [['createdAt', 'ASC']], 
-    });  
+      order: [[sort.sort, sort.order]],
+    }); 
   }
   const folders = [];
   results.forEach(result => {
@@ -57,8 +69,10 @@ router.get('/:memberid', async (req, res) => {
       title: result.title,
       count: result.count,
       public: result.public,
-      createdAt: date(result.createdAt),
-      updatedAt: date(result.updatedAt),
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+      // createdAt: date(result.createdAt),
+      // updatedAt: date(result.updatedAt),
     }
   });
   const done = await DoneFolder.findOne({
@@ -86,8 +100,11 @@ router.post('/folder', async (req, res) => {
     title: result.title,
     count: result.count,
     public: result.public,
-    createdAt: date(result.createdAt),
-    updatedAt: date(result.updatedAt),
+    createdAt: result.createdAt,
+    updatedAt: result.updatedAt,
+
+    // createdAt: date(result.createdAt),
+    // updatedAt: date(result.updatedAt),
   };
   const done = await DoneFolder.findOne({
     where: { MemberId },
@@ -162,22 +179,6 @@ router.patch('/public', async (req, res) => {
     };
     res.json({ folder });  
   }
-});
-
-router.post('/sort', (req, res) => {
-  const sort = req.body.sort;
-  switch(sort) {
-    case 'name':
-      res.locals.sort = 'name';
-      break;
-    case 'updatedAt':
-      res.locals.sort = 'updatedAt';
-      break;
-    case 'createdAt':
-      res.locals.sort = 'createdAt';
-      break;
-  }
-    res.json({});  
 });
 
 

@@ -105,6 +105,10 @@ class Wishlist {
         this.$areaMenu.hidden = true;
         return;    
       }
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.changeName();
     } else if(type === 'delete') {
       if(this.$currentFolder.classList[1] == 'done') {
@@ -113,24 +117,40 @@ class Wishlist {
         this.$areaMenu.hidden = true;
         return;    
       }
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.delete();
     } else if(type === 'public') {
-      // if(this._userId != this._memberId) {
-      //   alert('권한이 없습니다.');
-      //   return;
-      // }  
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.public();
     } else if(type === 'add') {
-      // if(this._userId != this._memberId) {
-      //   alert('권한이 없습니다.');
-      //   return;
-      // }  
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.add();
     } else if(type === 'sort-name') {
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.sortName();
     } else if(type === 'sort-updated') {
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.sortUpdatedAt();
     } else if(type === 'sort-created') {
+      if(this._userId != this._memberId) {
+        alert('권한이 없습니다.');
+        return;
+      }  
       this.sortCreatedAt();
     } 
     this.$folderMenu.hidden = true;
@@ -288,9 +308,14 @@ class Wishlist {
     newFolders.forEach(item => {
       this.$done.before(item);
     });
-    await axios.post('/wishlist/sort', { sort: 'name' });
+    await axios.post('/wishlist/sort', { 
+      sort: 'title', 
+      MemberId: this._memberId,
+      order: 'ASC',
+    });
   }
   // 8. 폴더 정렬 - 생성일순
+  // 오름차순으로
   async sortCreatedAt() {
     let $folders = document.querySelectorAll('.wishlist-folder');
     $folders = [...$folders].filter(item => item.classList.length === 1);
@@ -301,37 +326,66 @@ class Wishlist {
         index
       ]
     });
-    // 생성날짜 오름차순으로
-    createdAt.sort();
+    // 오름차순
+    function compareDates(date1, date2) {
+      // Date 객체로 변환
+      const d1 = new Date(date1);
+      const d2 = new Date(date2);
+      // getTime() 메서드를 사용하여 날짜를 밀리초 단위의 숫자로 변환한 후 비교
+      if (d1.getTime() < d2.getTime()) {
+        return -1;
+      } else if (d1.getTime() > d2.getTime()) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+    createdAt.sort(compareDates);
     const newFolders = [];
     createdAt.forEach(date => {
-      newFolders[newFolders.length] = [...$folders][date[1]]
+      newFolders[newFolders.length] = [...$folders][date[1]];
     });
-    // 원래꺼 삭제
     [...$folders].forEach((fol) => {
       fol.remove();
     });
-    // 새로운 배열 삽입
     newFolders.forEach(item => {
       this.$done.before(item);
     });
-    await axios.post('/wishlist/sort', { sort: 'name' });
+    await axios.post('/wishlist/sort', { 
+      sort: 'createdAt', 
+      MemberId: this._memberId,
+      order: 'ASC',
+    });
   }
   // 8. 폴더 정렬 - 수정일순
   async sortUpdatedAt() {
-    const $folders = document.querySelectorAll('.wishlist-folder');
+    let $folders = document.querySelectorAll('.wishlist-folder');
+    $folders = [...$folders].filter(item => item.classList.length === 1);
     const updatedAt = [];
     [...$folders].forEach((fol, index) => {
       updatedAt[updatedAt.length] = [
-        fol.dataset.updatedAt,
+        fol.dataset.updatedat,
         index
       ]
     });
-    // 생성날짜 오름차순으로
-    createdAt.sort((a, b) => a[0].localeCompare(b[0]));
+    // 내림차순
+    function compareDates(date1, date2) {
+      // Date 객체로 변환
+      const d1 = new Date(date1);
+      const d2 = new Date(date2);
+      // getTime() 메서드를 사용하여 날짜를 밀리초 단위의 숫자로 변환한 후 비교
+      if (d1.getTime() < d2.getTime()) {
+        return 1;
+      } else if (d1.getTime() > d2.getTime()) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
+    updatedAt.sort(compareDates);
     const newFolders = [];
     updatedAt.forEach(date => {
-      newFolders[newFolders.length] = [...$folders][date[1]]
+      newFolders[newFolders.length] = [...$folders][date[1]];
     });
     // 원래꺼 삭제
     [...$folders].forEach((fol) => {
@@ -339,9 +393,14 @@ class Wishlist {
     });
     // 새로운 배열 삽입
     newFolders.forEach(item => {
+      console.log(item);
       this.$done.before(item);
     });
-    await axios.post('/wishlist/sort', { sort: 'name' });
+    await axios.post('/wishlist/sort', { 
+      sort: 'updatedAt', 
+      MemberId: this._memberId,
+      order: 'DESC',
+    });
   }  
   /* ------------------------------------------------------------------------------------------------ */
   // 9. 공개 / 비공개 전환

@@ -70,19 +70,19 @@ class DoneList {
     const elemIds = [];
     for(let target of targets) {
       elemIds[elemIds.length] = target.dataset.listId;
-      // target.remove();
+      target.remove();
     }
     const length = elemIds.length;
-    // this._totalDonelist -= length;
-    // this.$totalDoneList.textContent = this._totalDonelist;
-    const res = await axios.post('/list/delete', {
-      id: JSON.stringify(lists),
-      FolderId: this._folderId,
+    this._totalDonelist -= length;
+    this.$totalDoneList.textContent = this._totalDonelist;
+    const res = await axios.post('/list/done/delete', {
+      elemIds: JSON.stringify(elemIds),
+      MemberId: this._memberId,
     });
-    // if(this._totalList == 0) {
-    //   this.$empty.hidden = false;
-    //   this.$listContents.classList.remove('grid');
-    // }
+    if(this._totalDonelist == 0) {
+      this.$empty.hidden = false;
+      this.$listContents.classList.remove('grid');
+    }
   }
 }
 

@@ -237,14 +237,33 @@ router.post('/back', async (req, res) => {
     where: { id: MemberId },
   })
   // 기존의 폴더를 찾아가 늘리기
-  const decrements = id.map(async (elemId) => {
+  const increments = id.map(async (elemId) => {
     await Folder.increment('count', {
       by: obj[elemId],
       where: { id: elemId },
     });
   });
-  await Promise.all(decrements);
+  await Promise.all(increments);
   res.json({})
 })
+
+// 읽은 것들에서 삭제
+router.post('/done/delete', async (req, res) => {
+  const elemIds = JSON.parse(req.body.elemIds);
+  const MemberId = req.body.MemberId;
+  // doneFolder의 count는 줄이고.
+  await DoneFolder.decrement('count', {
+    by: elemIds.length,
+    where: { id: MemberId },
+  })
+  // List에서 삭제하고
+  await List.destroy({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }],
+    where: { id: elemIds },
+  });
+});
 
 module.exports = router;

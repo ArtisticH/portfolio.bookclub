@@ -19,7 +19,8 @@ a {
   color: black;
 }
 
-#list {
+#list,
+#donelist {
   box-sizing: border-box;
   width: 100vw;
   min-height: 100vh;
@@ -29,6 +30,13 @@ a {
 .list {
   box-sizing: border-box;
   background-color: #e5f403;
+  border-top: none;
+  min-height: 100vh;
+}
+
+.donelist {
+  box-sizing: border-box;
+  background-color: #039753;
   border-top: none;
   min-height: 100vh;
 }
@@ -75,6 +83,7 @@ a {
   display: block;
   text-decoration: none;
   color: black;
+  margin-top: 3px;
 }
 
 .list-btns {
@@ -335,6 +344,15 @@ a {
 
 .list-move {
   background-color: white;
+}
+
+.list-move-empty {
+  padding: 40px 0;
+  text-align: center;
+  font-family: var(--font-korean);
+  font-weight: 300;
+  font-size: 1rem;
+  letter-spacing: -1px;
 }
 
 .list-move-form {

@@ -22,7 +22,7 @@
             <img class="list-img" src="/img/main/back-arrow.png" alt="back-arrow">
           </a>
           <div class="list-block-info">
-            <div class="list-block__title">프로그래밍&nbsp;<span class="list-total">({{count}})</span></div>
+            <div class="list-block__title">{{currentFolder.title}}&nbsp;(<span class="list-total">{{currentFolder.count}}</span>)</div>
             <a href="/member/{{member.id}}" class="list-block__nick">{{member.nick}}</a>  
           </div>
         </div>
@@ -104,30 +104,22 @@
         </div>
       </div>
       <div class="list-move">
-        <form class="list-move-form" action="post">
-          <label class="list-move-label">
-            <div class="list-move-title">
-              <input id="" type="radio" name="listFolder" value="">
-              <span>인문학</span>  
-            </div>
-            <div class="list-move-count">19개</div>
-          </label>
-          <label class="list-move-label">
-            <div class="list-move-title">
-              <input id="" type="radio" name="listFolder" value="">
-              <span>인문학</span>  
-            </div>
-            <div class="list-move-count">19개</div>
-          </label>
-          <label class="list-move-label">
-            <div class="list-move-title">
-              <input id="" type="radio" name="listFolder" value="">
-              <span>인문학</span>  
-            </div>
-            <div class="list-move-count">19개</div>
-          </label>
-          <input class="form-submit" type="submit" value="등록">
-        </form>
+        {% if folders.length == 0 %}
+        <div class="list-move-empty">먼저 폴더를 추가해주세요.</div>
+        {% else %}
+          <form class="list-move-form">
+            {% for folder in folders %}
+            <label class="list-move-label">
+              <div class="list-move-title">
+                <input type="radio" name="listFolder" value="{{folder.id}}">
+                <span>{{folder.title}}</span>  
+              </div>
+              <div class="list-move-count">{{folder.count}}개</div>
+            </label>
+            {% endfor %}
+            <input class="form-submit" type="submit" value="등록">          
+          </form>
+        {% endif %}
       </div>
     </div>
   </section>

@@ -432,12 +432,17 @@ class Wishlist {
   }
   /* ------------------------------------------------------------------------------------------------ */
   // 10. 폴더 열기
+  // '읽은 것들'과 아닌 것 구분
   open() {
-    const FolderId = this.$currentFolder.dataset.folderId;
     const MemberId = this._memberId;
-    const url = `/list/${FolderId}/${MemberId}`;
-    this.$currentFolder.href = url;
-    window.open(url);
+    if(this.$currentFolder.classList.contains('done')) {
+      const url = `/list/true/null/${MemberId}`;
+      window.location.href = url;  
+    } else {
+      const FolderId = this.$currentFolder.dataset.folderId;
+      const url = `/list/false/${FolderId}/${MemberId}`;
+      window.location.href = url;  
+    }
   }
 }
 

@@ -71,8 +71,6 @@ router.get('/:memberid', async (req, res) => {
       public: result.public,
       createdAt: result.createdAt,
       updatedAt: result.updatedAt,
-      // createdAt: date(result.createdAt),
-      // updatedAt: date(result.updatedAt),
     }
   });
   const done = await DoneFolder.findOne({
@@ -102,9 +100,6 @@ router.post('/folder', async (req, res) => {
     public: result.public,
     createdAt: result.createdAt,
     updatedAt: result.updatedAt,
-
-    // createdAt: date(result.createdAt),
-    // updatedAt: date(result.updatedAt),
   };
   const done = await DoneFolder.findOne({
     where: { MemberId },

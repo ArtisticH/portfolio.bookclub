@@ -1,10 +1,10 @@
+
 class List {
   constructor() {
-    this._memberId = new URL(location.href).pathname.split('/')[2];
+    this._memberId = new URL(location.href).pathname.split('/')[4];
     this._folderId = new URL(location.href).pathname.split('/')[3];
     // 1. 리스트 박스 클릭 시 색깔 변화
     this.$listBoxes = document.querySelectorAll('.list-box');
-    this._clicked = [];
     this.clickBox = this.clickBox.bind(this);
     [...this.$listBoxes].forEach(box => {
       box.addEventListener('click', this.clickBox);
@@ -39,14 +39,15 @@ class List {
     this.$clone = document.querySelector('.clone');
     this.$empty = document.querySelector('.list-empty');
     this.$listContents = document.querySelector('.list-contents');
-    // 6. 리스트 삭제
+    // 7. 폴더 이동
+    this.$moveForm.onsubmit = this.moveSubmit.bind(this);
+    this.$labels = Array.from(document.querySelectorAll('.list-move-label'))
   }
   // 1. 리스트 박스 클릭 시 색깔 변화
   clickBox(e) {
     const target = e.currentTarget;
     const imgBox = target.querySelector('.list-img-box');
     imgBox.classList.toggle('clicked', !imgBox.classList.contains('clicked'));
-    // 클릭된 친구들을 배열에 넣기
   }
   // 2. 버튼 클릭 이벤트 위임
   clickBtn(e) {
@@ -58,11 +59,13 @@ class List {
         this.showForm(this.$addForm);
         break;
       case 'delete':
+        this.delete();
         break;
       case 'move':
         this.showForm(this.$moveForm);
         break;
       case 'read':
+        this.read();
         break;            
     }
   }
@@ -119,6 +122,13 @@ class List {
     this.$default.classList.toggle('clicked', false);  
   }
 
+  resetMove() {
+    this.$moveForm.hidden = true;
+    for(let label of this.$labels) {
+      label.querySelector('.list-move-title > input').checked = false;
+    }
+  }
+
   async addSubmit(e) {
     e.preventDefault();
     const img = e.target.url.value;
@@ -142,7 +152,7 @@ class List {
       this.$listContents.classList.add('grid');
     } 
     this.$clone.before(this.listDOM(this.$clone.cloneNode(true), list));
-    // 항상 다시 리스트 박스 세팅, 클릭할 수 있으니까
+    // 항상 다시 리스트 박스 세팅, 박스 클릭할 수 있으니까
     this.$listBoxes = document.querySelectorAll('.list-box');
   }
 
@@ -157,7 +167,94 @@ class List {
     return c;
   }
   // 6. 리스트 삭제
-
+  async delete() {
+    const boxes = document.querySelectorAll('.list-box');
+    const targets = [...boxes].filter(box => {
+      return box.querySelector('.list-img-box').classList.contains('clicked');
+    });
+    const lists = [];
+    for(let target of targets) {
+      lists[lists.length] = target.dataset.listId;
+      target.remove();
+    }
+    const length = lists.length;
+    this._totalList -= length;
+    this.$totalList.textContent = this._totalList;
+    const res = await axios.post('/list/delete', {
+      id: JSON.stringify(lists),
+      FolderId: this._folderId,
+    });
+    if(this._totalList == 0) {
+      this.$empty.hidden = false;
+      this.$listContents.classList.remove('grid');
+    }
+  }
+  // 7. 폴더 이동
+  async moveSubmit(e) {
+    e.preventDefault();
+    const boxes = document.querySelectorAll('.list-box');
+    const targets = [...boxes].filter(box => {
+      return box.querySelector('.list-img-box').classList.contains('clicked');
+    });
+    const elemIds = [];
+    for(let target of targets) {
+      elemIds[elemIds.length] = target.dataset.listId;
+      target.remove();
+    }
+    const targetId = e.target.listFolder.value;
+    this.resetMove();
+    const res = await axios.post('/list/move', {
+      elemIds: JSON.stringify(elemIds),
+      targetId,
+      currentFolderId: this._folderId,
+      MemberId: this._memberId,
+    })
+    // 빠져나가는것만큼 빼주자
+    this._totalList -= elemIds.length;
+    this.$totalList.textContent = this._totalList;
+    // 그리고 다시 move-list폼의 갯수를 수정, 
+    // 현재 예시로 든 폴더의 갯수가 변하는 일은 없고 추가하거나 삭제하는게 아니니까
+    // 기존의 것들에서 내용만 바꾸자.
+    const folders = res.data.folders;
+    this.$labels.forEach((label, index) => {
+      this.changeLabel(label, folders[index]);
+    })
+    if(this._totalList == 0) {
+      this.$empty.hidden = false;
+      this.$listContents.classList.remove('grid');
+    }
+  }
+  changeLabel(c, obj) {
+    c.querySelector('.list-move-title > input').value = obj.id;
+    c.querySelector('.list-move-title > span').textContent = obj.title;
+    c.querySelector('.list-move-count').textContent = obj.count;
+  }
+  // 8. 읽음 선택
+  async read() {
+    const boxes = document.querySelectorAll('.list-box');
+    const targets = [...boxes].filter(box => {
+      return box.querySelector('.list-img-box').classList.contains('clicked');
+    });
+    const elemIds = [];
+    for(let target of targets) {
+      elemIds[elemIds.length] = target.dataset.listId;
+      target.remove();
+    }
+    // 기존의 list의 done항목을 true로 수정, 
+    // 그리고 폴더를 열때 만약 '읽은 것들' 이라면 읽은 애들만 가져와라.
+    console.log(elemIds);
+    const res = await axios.post('/list/read', {
+      elemIds: JSON.stringify(elemIds),
+      FolderId: this._folderId,
+      MemberId: this._memberId,
+    })
+    this._totalList -= elemIds.length;
+    this.$totalList.textContent = this._totalList;
+    if(this._totalList == 0) {
+      this.$empty.hidden = false;
+      this.$listContents.classList.remove('grid');
+    }
+  }
 }
 
 new List();

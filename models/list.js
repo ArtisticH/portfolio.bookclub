@@ -15,6 +15,11 @@ module.exports = class List extends Sequelize.Model {
         type: Sequelize.STRING(500),
         allowNull: false,
         defaultValue: '',
+      },
+      done: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
       }
     }, {
       sequelize,
@@ -29,7 +34,7 @@ module.exports = class List extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.List.belongsTo(db.Folder, { foreignKey: 'FolderId', targetKey: 'id'}); // 외래키
-    db.List.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); // 외래키
+    db.List.belongsTo(db.Folder, { foreignKey: 'FolderId', targetKey: 'id'});
+    db.List.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'});
   }
 }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOK CLUB</title>
+  <link rel="stylesheet" href="/css/favorite.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <section id="favorite">
+    <div class="favorite-title">Favorite</div>
+    <div class="favorite-grid">
+      {% for favorite in favorites %}
+      <a class="favorite {{favorite.modelName}}" href="/favorite/{{favorite.id}}/{{favorite.round}}">
+        <div class="favorite-img-box">
+          <img class="favorite-img" src="{{favorite.img}}" alt="favorite">
+        </div>
+        <div class="favorite-info">
+          <div class="favorite-info-top">
+            <div class="favorite-info-title {{favorite.types}}">{{favorite.title}}</div>
+            <div class="favorite-explanation">{{favorite.explanation}}</div>  
+          </div>
+          <div class="favorite-info-bottom">
+            {% if favorite.types == music or favorite.types == music2 %}
+            <div class="favorite-music"></div>
+            {% endif %}
+            <div class="favorite-round">{{favorite.round}}</div>
+          </div>
+        </div>
+      </a>  
+      {% endfor %}  
+    </div>
+    <div id="round-box">
+      <div class="round-nav">
+        <div class="round-title">라운드 선택</div>
+        <div class="round-cancel">
+          <div class="round-cancel__left"></div>
+          <div class="round-cancel__right"></div>
+        </div>
+      </div>
+      <form action="" class="round-form">
+        <div class="round-flex">
+          <div class="round-box">
+            <input id="thirtytwo" type="radio" name="round" value="thirtytwo">
+            <label for="thirtytwo" class="">32</label>  
+          </div>
+          <div class="round-box">
+            <input id="sixteen" type="radio" name="round" value="sixteen">
+            <label for="sixteen" class="">16</label>  
+          </div>
+          <div class="round-box">
+            <input id="eight" type="radio" name="round" value="eight">
+            <label for="eight" class="">8</label>  
+          </div>
+          <div class="round-box">
+            <input id="four" type="radio" name="round" value="four">
+            <label for="four" class="">4</label>  
+          </div>  
+        </div>
+        <input class="submit" type="submit" value="시작">
+      </form>
+    </div>
+  </section>
+</body>
+</html>

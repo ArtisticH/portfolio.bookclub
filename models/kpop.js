@@ -28,7 +28,7 @@ module.exports = class KPOP extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'KPOP',
       tableName: 'kpop',

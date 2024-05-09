@@ -1,6 +1,7 @@
 const express = require('express');
 const Book = require('../models/book');
 const Member = require('../models/member');
+const Favorite = require('../models/favorite');
 
 const router = express.Router();
 
@@ -36,5 +37,11 @@ router.get('/wishlist/null', (req, res) => {
 router.get('/fun', (req, res) => {
   res.render('fun');
 });
+
+router.get('/favorite', async (req, res) => {
+  const favorites = await Favorite.findAll({});
+  res.render('favorite', { favorites });
+});
+
 
 module.exports = router;

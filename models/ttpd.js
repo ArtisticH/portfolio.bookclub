@@ -28,7 +28,7 @@ module.exports = class TTPD extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'TTPD',
       tableName: 'ttpd',

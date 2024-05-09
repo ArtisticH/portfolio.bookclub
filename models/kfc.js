@@ -28,7 +28,7 @@ module.exports = class KFC extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'KFC',
       tableName: 'kfc',

@@ -28,7 +28,7 @@ module.exports = class POP extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'POP',
       tableName: 'pop',

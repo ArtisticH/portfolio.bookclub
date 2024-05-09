@@ -28,7 +28,7 @@ module.exports = class KMC extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'KMC',
       tableName: 'kmc',

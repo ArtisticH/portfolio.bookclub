@@ -63,3 +63,11 @@ UPDATE members SET type = 'member' WHERE id = 2;
 UPDATE members SET type = 'member' WHERE id = 3;
 UPDATE members SET type = 'member' WHERE id = 4;
 
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('TTPD', 'music', '/img/favorite/ttpd.jpeg', "What's your Favorite song in TTPD album?", 'TTPD', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('POP', 'music2', '/img/favorite/pop.jpeg', "What's your Favorite song in POP?", 'POP', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('K-POP', 'music2', '/img/favorite/kpop.jpeg', "What's your Favorite song in K-POP?", 'KPOP', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN<br>FEMALE', 'basic', '/img/favorite/kfc.jpeg', "Who's your Favorite female celebrity in KOREA?", 'KFC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD<br>FEMALE', 'basic', '/img/favorite/hfc.jpeg', "Who's your Favorite female celebrity in HOLLYWOOD?", 'HFC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD<br>MALE', 'basic', '/img/favorite/hmc.jpeg', "Who's your Favorite male celebrity in HOLLYWOOD?", 'HMC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN<br>MALE', 'basic', '/img/favorite/kmc.jpeg', "Who's your Favorite male celebrity in KOREA?", 'KMC', 32);
+

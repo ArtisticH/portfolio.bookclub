@@ -28,7 +28,7 @@ module.exports = class HFC extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'HFC',
       tableName: 'hfc',

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
   <link rel="stylesheet" href="/css/favorite.css">
+  <script defer src="/js/favorite.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,10 +15,11 @@
 </head>
 <body>
   <section id="favorite">
+    <img class="favorite-background" src="/img/favorite/background.jpeg" alt="background">
     <div class="favorite-title">Favorite</div>
     <div class="favorite-grid">
       {% for favorite in favorites %}
-      <a class="favorite {{favorite.modelName}}" href="/favorite/{{favorite.id}}/{{favorite.round}}">
+      <div class="favorite {{favorite.modelName}}" data-id="{{favorite.id}}">
         <div class="favorite-img-box">
           <img class="favorite-img" src="{{favorite.img}}" alt="favorite">
         </div>
@@ -33,10 +35,10 @@
             <div class="favorite-round">{{favorite.round}}</div>
           </div>
         </div>
-      </a>  
+      </div>  
       {% endfor %}  
     </div>
-    <div id="round-box">
+    <div id="round-box" hidden>
       <div class="round-nav">
         <div class="round-title">라운드 선택</div>
         <div class="round-cancel">
@@ -44,22 +46,22 @@
           <div class="round-cancel__right"></div>
         </div>
       </div>
-      <form action="" class="round-form">
+      <form class="round-form">
         <div class="round-flex">
           <div class="round-box">
-            <input id="thirtytwo" type="radio" name="round" value="thirtytwo">
+            <input id="thirtytwo" class="radio-input" type="radio" name="round" value="32">
             <label for="thirtytwo" class="">32</label>  
           </div>
           <div class="round-box">
-            <input id="sixteen" type="radio" name="round" value="sixteen">
+            <input id="sixteen" class="radio-input" type="radio" name="round" value="16">
             <label for="sixteen" class="">16</label>  
           </div>
           <div class="round-box">
-            <input id="eight" type="radio" name="round" value="eight">
+            <input id="eight" class="radio-input" type="radio" name="round" value="8">
             <label for="eight" class="">8</label>  
           </div>
           <div class="round-box">
-            <input id="four" type="radio" name="round" value="four">
+            <input id="four" class="radio-input" type="radio" name="round" value="4">
             <label for="four" class="">4</label>  
           </div>  
         </div>

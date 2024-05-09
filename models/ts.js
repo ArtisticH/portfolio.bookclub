@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = class TTPD extends Sequelize.Model {
+module.exports = class TS extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
       main: {
@@ -30,8 +30,8 @@ module.exports = class TTPD extends Sequelize.Model {
       sequelize,
       timestamps: false,
       underscored: false,
-      modelName: 'TTPD',
-      tableName: 'ttpd',
+      modelName: 'TS',
+      tableName: 'ts',
       paranoid: false,
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',

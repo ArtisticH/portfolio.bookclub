@@ -63,11 +63,48 @@ UPDATE members SET type = 'member' WHERE id = 2;
 UPDATE members SET type = 'member' WHERE id = 3;
 UPDATE members SET type = 'member' WHERE id = 4;
 
-INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('TTPD', 'music', '/img/favorite/ttpd.jpeg', "What's your Favorite song in TTPD album?", 'TTPD', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('Taylor Swift', 'music', '/img/favorite/ts.jpeg', "What's your Favorite Taylor Swift's song?", 'TS', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('POP', 'music2', '/img/favorite/pop.jpeg', "What's your Favorite song in POP?", 'POP', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('K-POP', 'music2', '/img/favorite/kpop.jpeg', "What's your Favorite song in K-POP?", 'KPOP', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN<br>FEMALE', 'basic', '/img/favorite/kfc.jpeg', "Who's your Favorite female celebrity in KOREA?", 'KFC', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD<br>FEMALE', 'basic', '/img/favorite/hfc.jpeg', "Who's your Favorite female celebrity in HOLLYWOOD?", 'HFC', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD<br>MALE', 'basic', '/img/favorite/hmc.jpeg', "Who's your Favorite male celebrity in HOLLYWOOD?", 'HMC', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN<br>MALE', 'basic', '/img/favorite/kmc.jpeg', "Who's your Favorite male celebrity in KOREA?", 'KMC', 32);
+
+INSERT INTO ts (main, sub) VALUES ('You Belong With Me', "Fearless(Taylor's Version)");
+INSERT INTO ts (main, sub) VALUES ('Superstar', "Fearless(Taylor's Version)");
+INSERT INTO ts (main, sub) VALUES ('Love Story', "Fearless(Taylor's Version)");
+INSERT INTO ts (main, sub) VALUES ("Don't You", "Fearless(Taylor's Version)");
+INSERT INTO ts (main, sub) VALUES ('Back to December', 'Speak Now');
+INSERT INTO ts (main, sub) VALUES ('Sparks Fly', 'Speak Now');
+INSERT INTO ts (main, sub) VALUES ('Long Live', 'Speak Now');
+INSERT INTO ts (main, sub) VALUES ('Superman', "Speak Now(Taylor's Version)");
+INSERT INTO ts (main, sub) VALUES ('Anti-hero', 'Midnights');
+INSERT INTO ts (main, sub) VALUES ("You're on Your Own, Kid", 'Midnights');
+INSERT INTO ts (main, sub) VALUES ('Snow on the Beach(Feat. More Lana Del Rey)', 'Midnights');
+INSERT INTO ts (main, sub) VALUES ('Shake It Off', '1989');
+INSERT INTO ts (main, sub) VALUES ('Clean', '1989');
+INSERT INTO ts (main, sub) VALUES ('Wildest Dreams', '1989');
+INSERT INTO ts (main, sub) VALUES ('Style', '1989');
+INSERT INTO ts (main, sub) VALUES ('Getaway Car', 'reputation');
+INSERT INTO ts (main, sub) VALUES ('I Did Something Bad', 'reputation');
+INSERT INTO ts (main, sub) VALUES ("Don't Blame Me", 'reputation');
+INSERT INTO ts (main, sub) VALUES ('Cruel Summer', 'Lover');
+INSERT INTO ts (main, sub) VALUES ('Miss Americana & The Heartbreak Prince', 'Lover');
+INSERT INTO ts (main, sub) VALUES ('Lover', 'Lover');
+INSERT INTO ts (main, sub) VALUES ('All Too Well', "Red (Taylor's Version)");
+INSERT INTO ts (main, sub) VALUES ('Starlight', 'Red');
+INSERT INTO ts (main, sub) VALUES ('Treacherous', 'Red');
+INSERT INTO ts (main, sub) VALUES ("august", 'folklore');
+INSERT INTO ts (main, sub) VALUES ('exile', 'folklore');
+INSERT INTO ts (main, sub) VALUES ('illicit affairs', 'folklore');
+INSERT INTO ts (main, sub) VALUES ('this is me trying', 'folklore');
+INSERT INTO ts (main, sub) VALUES ('Fortnight(Feat. Post Malone)', 'TTPD');
+INSERT INTO ts (main, sub) VALUES ('Guilty as Sin?', 'TTPD');
+INSERT INTO ts (main, sub) VALUES ('The Alchemy', 'TTPD');
+INSERT INTO ts (main, sub) VALUES ('I Can Do It With a Broken Heart', 'TTPD');
+
+
+
+
 

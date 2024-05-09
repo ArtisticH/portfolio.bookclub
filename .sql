@@ -66,10 +66,10 @@ UPDATE members SET type = 'member' WHERE id = 4;
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('Taylor Swift', 'music', '/img/favorite/ts.jpeg', "What's your Favorite Taylor Swift's song?", 'TS', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('POP', 'music2', '/img/favorite/pop.jpeg', "What's your Favorite song in POP?", 'POP', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('K-POP', 'music2', '/img/favorite/kpop.jpeg', "What's your Favorite song in K-POP?", 'KPOP', 32);
-INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN<br>FEMALE', 'basic', '/img/favorite/kfc.jpeg', "Who's your Favorite female celebrity in KOREA?", 'KFC', 32);
-INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD<br>FEMALE', 'basic', '/img/favorite/hfc.jpeg', "Who's your Favorite female celebrity in HOLLYWOOD?", 'HFC', 32);
-INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD<br>MALE', 'basic', '/img/favorite/hmc.jpeg', "Who's your Favorite male celebrity in HOLLYWOOD?", 'HMC', 32);
-INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN<br>MALE', 'basic', '/img/favorite/kmc.jpeg', "Who's your Favorite male celebrity in KOREA?", 'KMC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN FEMALE', 'basic', '/img/favorite/kfc.jpeg', "Who's your Favorite female celebrity in KOREA?", 'KFC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD FEMALE', 'basic', '/img/favorite/hfc.jpeg', "Who's your Favorite female celebrity in HOLLYWOOD?", 'HFC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('HOLLYWOOD MALE', 'basic', '/img/favorite/hmc.jpeg', "Who's your Favorite male celebrity in HOLLYWOOD?", 'HMC', 32);
+INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('KOREAN MALE', 'basic', '/img/favorite/kmc.jpeg', "Who's your Favorite male celebrity in KOREA?", 'KMC', 32);
 
 INSERT INTO ts (main, sub) VALUES ('You Belong With Me', "Fearless(Taylor's Version)");
 INSERT INTO ts (main, sub) VALUES ('Superstar', "Fearless(Taylor's Version)");
@@ -100,7 +100,7 @@ INSERT INTO ts (main, sub) VALUES ('exile', 'folklore');
 INSERT INTO ts (main, sub) VALUES ('illicit affairs', 'folklore');
 INSERT INTO ts (main, sub) VALUES ('this is me trying', 'folklore');
 INSERT INTO ts (main, sub) VALUES ('Fortnight(Feat. Post Malone)', 'TTPD');
-INSERT INTO ts (main, sub) VALUES ('Guilty as Sin?', 'TTPD');
+INSERT INTO ts (main, sub) VALUES ('Guilty as Sin', 'TTPD');
 INSERT INTO ts (main, sub) VALUES ('The Alchemy', 'TTPD');
 INSERT INTO ts (main, sub) VALUES ('I Can Do It With a Broken Heart', 'TTPD');
 

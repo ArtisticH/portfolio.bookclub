@@ -14,7 +14,7 @@ router.get('/:id/:round', async (req, res) => {
   const id = req.params.id;
   const model = await Favorite.findOne({
     where: { id },
-    attributes: ['modelName'],
+    attributes: ['modelName', 'title', 'types'],
   });
   let results;
   if(model.modelName === 'TS') {
@@ -39,11 +39,16 @@ router.get('/:id/:round', async (req, res) => {
       id: result.id,
       main: result.main,
       sub: result.sub,
+      selected: result.selected,
+      win: result.win,
+      finalWin: result.finalWin,
     }
   })
   res.render('tournament', {
     original: JSON.stringify(arr),
     model: model.modelName,
+    title: model.title,
+    types: model.types,
   });
 });
 

@@ -6,10 +6,20 @@ class Tournament {
     this.$tournament = document.getElementById('tournament');
     this._original = JSON.parse(this.$tournament.dataset.original);
     this._model = this.$tournament.dataset.model;
+    this._types = this.$tournament.dataset.types;
     this._random = null;
     this._idArr = [];
     this._main = [];
     this._sub = [];
+    // HTML에 반영
+    this.$top = document.querySelector('.tournament-box.top');
+    this.$bottom = document.querySelector('.tournament-box.bottom');
+    this.$topImg = document.querySelector('.tournament-img.top');
+    this.$bottomImg = document.querySelector('.tournament-img.bottom');
+    this.$topMain = document.querySelector('.tournament-main.top');
+    this.$bottomMain = document.querySelector('.tournament-main.bottom');
+    this.$topSub = document.querySelector('.tournament-sub.top');
+    this.$bottomSub = document.querySelector('.tournament-sub.bottom');
   }
   // 0에서 31의 수 중에서 몇개(라운드)만큼 랜덤으로 뽑기
   // 예를 들어 [4, 17, 25, 30, ...]
@@ -36,12 +46,22 @@ class Tournament {
   }
 
   init() {
+    // 랜덤 숫자 배열 만들고
     this._random = this.random(this._round);
+    // 랜덤 숫자를 인덱스로 해서 this._main, this._sub 배열 만든다.
     this.filterOriginal();
   }
   // 위쪽의 요소
-  top() {
-
+  top(index) {
+    this.$topImg.src = `/img/${this._model}/${this._main[index]}.jpeg`;
+    this.$topMain.textContent = this._main[index];
+    this.$topSub.textContent = this._sub[index];
+  }
+  // 아래쪽 요소
+  bottom(index) {
+    this.$bottomImg.src = `/img/${this._model}/${this._main[index]}.jpeg`;
+    this.$bottomMain.textContent = this._main[index];
+    this.$bottomSub.textContent = this._sub[index];
   }
 }
 

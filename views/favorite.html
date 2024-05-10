@@ -14,7 +14,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="favorite">
+  <section id="favorite" data-user-id="{{user.id}}">
     <img class="favorite-background" src="/img/favorite/background.jpeg" alt="background">
     <div class="favorite-title">Favorite</div>
     <div class="favorite-grid">
@@ -29,9 +29,12 @@
             <div class="favorite-explanation">{{favorite.explanation}}</div>  
           </div>
           <div class="favorite-info-bottom">
-            {% if favorite.types == music or favorite.types == music2 %}
-            <div class="favorite-music"></div>
+            {% if favorite.types == 'music' or favorite.types == 'music2' %}
+            <div class="favorite-music">
+              <img class="favorite-img music" src="/img/favorite/music-icon.png" alt="music-icon">
+            </div>
             {% endif %}
+            <div></div>
             <div class="favorite-round">{{favorite.round}}</div>
           </div>
         </div>

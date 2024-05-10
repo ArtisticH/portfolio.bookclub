@@ -48,6 +48,5 @@ module.exports = class Member extends Sequelize.Model {
     db.Member.hasMany(db.Folder, { foreignKey: 'MemberId', sourceKey: 'id'}); 
     db.Member.hasMany(db.List, { foreignKey: 'MemberId', sourceKey: 'id'}); 
     db.Member.hasMany(db.Quote, { foreignKey: 'MemberId', sourceKey: 'id'}); 
-    db.Member.belongsToMany(db.Favorite, { through: 'RecordFavorite'}); 
   }
 }

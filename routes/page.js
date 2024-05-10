@@ -43,5 +43,4 @@ router.get('/favorites', async (req, res) => {
   res.render('favorite', { favorites });
 });
 
-
 module.exports = router;

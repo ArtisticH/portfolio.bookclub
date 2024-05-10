@@ -1,8 +1,16 @@
 const Sequelize = require('sequelize');
 
-module.exports = class RecordChoice extends Sequelize.Model {
+module.exports = class RecordFavortie extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
+      MemberId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      FavoriteId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       main: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -13,7 +21,7 @@ module.exports = class RecordChoice extends Sequelize.Model {
       },
     }, {
       sequelize,
-      timestamps: true,
+      timestamps: false,
       underscored: false,
       modelName: 'RecordFavortie',
       tableName: 'recordFavortie',

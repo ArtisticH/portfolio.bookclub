@@ -1,5 +1,7 @@
 class Favorite {
   constructor() {
+    this.$favorite = document.getElementById('favorite');
+    this._memberId = this.$favorite.dataset.userId;
     // 1. 버튼 클릭 시 상자 보여주기, 이벤트 위임
     this.$favoritGrid = document.querySelector('.favorite-grid');
     this.$favoritGrid.onclick = this.showRound.bind(this);
@@ -25,7 +27,7 @@ class Favorite {
     e.preventDefault();
     this._round = e.target.round.value;
     this.resetForm();
-    window.location.href = `/favorite/${this._id}/${this._round}`
+    window.location.href = `/favorite/${this._id}/${this._round}/${this._memberId}`
   }
   // 2. 취소 버튼
   cancelForm(e) {

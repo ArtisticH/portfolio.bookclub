@@ -110,6 +110,10 @@ body {
   justify-content: space-between;
 }
 
+.favorite-img.music {
+  width: 30px;
+}
+
 .favorite-round {
   font-family: var(--font-montserrat);
   font-size: 2rem;
@@ -207,11 +211,14 @@ body {
 }
 
 @media all and (min-width: 990px) {
+  .favorite-img.music {
+    width: 40px;
+  }
+  
   .favorite-info-title.basic {
     font-size: 1.7rem;
     letter-spacing: -3px;
   }
-  
 
   .favorite-explanation {
     font-size: 1rem;

@@ -7,10 +7,12 @@ const KFC = require('../models/kfc');
 const HFC = require('../models/hfc');
 const HMC = require('../models/hmc');
 const KMC = require('../models/kmc');
+const RecordFavortie = require('../models/recordsFavorite');
+const { sequelize } = require('../models');
 
 const router = express.Router();
 
-router.get('/:id/:round', async (req, res) => {
+router.get('/:id/:round/:memberid', async (req, res) => {
   const id = req.params.id;
   const model = await Favorite.findOne({
     where: { id },
@@ -51,5 +53,129 @@ router.get('/:id/:round', async (req, res) => {
     types: model.types,
   });
 });
+// final
+router.post('/final', async (req, res) => {
+  const id = req.body.id;
+  const MemberId = req.body.MemberId;
+  const main = req.body.main;
+  const sub = req.body.sub;
+  const original = JSON.parse(req.body.original);
+  const model = await Favorite.findOne({
+    where: { id },
+    attributes: ['modelName', 'title'],
+  });
+  const modelName = model.modelName;
+  const title = model.title;
+  console.log(original,
+    main,
+    sub,
+    modelName,
+    title,
+    MemberId,
+    id,
+
+    )
+  let increments;
+  if(modelName === 'TS') {
+    increments = original.map(async (obj) => {
+      await TS.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  } else if(modelName === 'POP') {
+    increments = original.map(async (obj) => {
+      await POP.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  } else if(modelName === 'KPOP') {
+    increments = original.map(async (obj) => {
+      await KPOP.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  } else if(modelName === 'KFC') {
+    increments = original.map(async (obj) => {
+      await KFC.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  } else if(modelName === 'HFC') {
+    increments = original.map(async (obj) => {
+      await HFC.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  } else if(modelName === 'HMC') {
+    increments = original.map(async (obj) => {
+      await HMC.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  } else if(modelName === 'KMC') {
+    increments = original.map(async (obj) => {
+      await KMC.update(
+        {
+          selected: sequelize.literal(`selected + ${obj.selected}`),
+          win: sequelize.literal(`win + ${obj.win}`),
+          finalWin: sequelize.literal(`finalWin + ${obj.finalWin}`)
+        },
+        {
+          where: { id: obj.id }
+        }
+      );
+    });
+  }
+  await Promise.all(increments);
+  await RecordFavortie.create({
+    FavoriteId: id,
+    MemberId,
+    main,
+    sub,
+  })
+  res.json({})
+})
 
 module.exports = router;

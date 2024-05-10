@@ -16,32 +16,64 @@
 <body>
   <section id="tournament" data-original="{{original}}" data-model="{{model}}" data-types="{{types}}">
     <img class="tournament-background" src="/img/favorite/backgroundTournament.jpeg" alt="backgroundTournament">
-    <div class="tournament">
+    <div class="tournament top">
       <div class="tournament-info">
         <div class="tournament-title">{{title}}</div>
         <div class="tournament-round"><span class="round-current">1</span>&nbsp;/&nbsp;<span class="round-total">32</span></div>  
       </div>
       <div class="tournament-box top">
-        <div class="tournament-img-box">
+        <div class="tournament-img-box top">
           <img class="tournament-img top" src="" alt="">
         </div>
-        <div class="tournament-box-info">
+        <div class="tournament-box-info top">
+          <audio class="tournament-audio top" src="" hidden></audio>
+          <div class="play-btn top" hidden>
+            <img class="play-img" src="/img/favorite/play.png" alt="play">
+          </div>
+          <div class="pause-btn top" hidden>
+            <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
+          </div>
           <div class="tournament-main top"></div>
-          <div class="tournament-sub top"></div>
+          <div class="tournament-sub top" hidden></div>
         </div>  
       </div>
     </div>
-    <div class="tournament">
+    <div class="tournament bottom">
       <div class="tournament-vs">VS</div>
       <div class="tournament-box bottom">
         <div class="tournament-box-info bottom">
+          <audio class="tournament-audio bottom" src="" hidden></audio>
+          <div class="play-btn bottom" hidden>
+            <img class="play-img" src="/img/favorite/play.png" alt="play">
+          </div>
+          <div class="pause-btn bottom" hidden>
+            <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
+          </div>
           <div class="tournament-main bottom"></div>
-          <div class="tournament-sub bottom"></div>
+          <div class="tournament-sub bottom" hidden></div>
         </div>  
-        <div class="tournament-img-box">
+        <div class="tournament-img-box bottom">
           <img class="tournament-img bottom" src="" alt="">
         </div>
       </div>
+    </div>
+  </section>
+  <section id="final" hidden>
+    <img class="final-background" src="/img/favorite/backgroundFinal.jpeg" alt="backgroundFinal">
+    <div id="final-title">In&nbsp;<span class="final-title">Taylor Swift</span>,</div>
+    <div class="final-is">Your Favorite Is...</div>
+    <div class="final-box">
+      <div class="final-img-box">
+        <img class="final-img" src="/img/TS/Don't You.jpeg" alt="final">
+      </div>
+      <div class="final-main">Don't You</div>
+      <div class="final-sub">Fearless</div>
+    </div>
+    <div class="final-options">
+      <a href="/" class="final-option">Home</a>
+      <div class="final-option" href="" download="">Img Download</div>
+      <div class="final-option img">See Ranking</div>
+      <div class="final-option">See My Results</div>
     </div>
   </section>
 </body>

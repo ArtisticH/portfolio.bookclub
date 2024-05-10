@@ -18,7 +18,7 @@ const KMC = require('./kmc');
 const KPOP = require('./kpop');
 const POP = require('./pop');
 const Quote = require('./quotes');
-const RecordsChoice = require('./recordsFavorite');
+const RecordFavortie = require('./recordsFavorite');
 
 const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
@@ -41,7 +41,7 @@ db.KMC = KMC;
 db.KPOP = KPOP;
 db.POP = POP;
 db.Quote = Quote;
-db.RecordsChoice = RecordsChoice;
+db.RecordFavortie = RecordFavortie;
 
 Book.init(sequelize);
 Member.init(sequelize);
@@ -60,7 +60,7 @@ KMC.init(sequelize);
 KPOP.init(sequelize);
 POP.init(sequelize);
 Quote.init(sequelize);
-RecordsChoice.init(sequelize);
+RecordFavortie.init(sequelize);
 
 Book.associate(db);
 Member.associate(db);

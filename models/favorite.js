@@ -44,6 +44,5 @@ module.exports = class Favorite extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Favorite.belongsToMany(db.Member, { through: 'RecordFavorite'}); 
   }
 }

@@ -100,7 +100,7 @@ class Tournament {
   }
   // 타입별 노출 요소 선택
   types() {
-    if(this._types === 'music' || this._types === 'music2') {
+    if(this._types !== 'basic') {
       this.$topAudio.hidden = false;
       this.$bottomAudio.hidden = false;
       this.$topSub.hidden = false;

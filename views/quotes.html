@@ -12,9 +12,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Diphylleia&family=East+Sea+Dokdo&family=Hahmlet:wght@100..900&family=Nanum+Brush+Script&family=Nanum+Myeongjo&family=Noto+Sans+KR:wght@100..900&family=VT323&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-  <section id="quotes">
+  <section id="quotes" data-user-id="{{user.id}}">
     <div class="quotes-nav">
       <div class="quotes-title">Decorate your Img</div>
       <a href="/" class="quotes-home">HOME</a>
@@ -22,7 +23,6 @@
     <div class="quotes-main">
       <div class="quotes-preview">
         <div class="quotes-img-box">
-          <img class="quotes-img" src="/img/quotes/one.jpeg" alt="quotes-img">
           <div class="quotes-img-inputs">
             <div class="quotes-img-inputs-quotes"></div>
             <div class="quotes-img-inputs-from"></div>
@@ -128,7 +128,7 @@
         </div>
         <div class="quotes-box-input">
           <form class="quotes-form input">
-            <div class="quotes-form-title">Enter quotes & Where this quotes is taken from...</div>
+            <div class="quotes-form-title">Enter quotes</div>
             <input class="quotes-input-quotes" type="text" maxlength="100" placeholder="quotes..." name="quotes">
             <div class="quotes-form-title">This quotes is taken from...</div>
             <input class="quotes-input-from" type="text" maxlength="20" placeholder="this quotes taken from..." name="from">
@@ -199,6 +199,7 @@
       <div class="quotes-register">Register to MY PAGE</div>
       <div class="quotes-download">Img Download</div>
     </div>
+    <a id="capture" hidden></a>
   </section>
 </body>
 </html>

@@ -19,7 +19,7 @@ class Quotes {
     // 3. 꾸미기
     // 비율 조작
     this.$imgBox = document.querySelector('.quotes-img-box');
-    this.$img = document.querySelector('.quotes-img');
+    // this.$img = document.querySelector('.quotes-img');
     this.$inputs = document.querySelector('.quotes-img-inputs');
     this.$quotes = document.querySelector('.quotes-img-inputs-quotes');
     this.$from = document.querySelector('.quotes-img-inputs-from');
@@ -37,6 +37,15 @@ class Quotes {
     this.$cancelBtns.forEach(btn => {
       btn.addEventListener('click', this.cancel);
     });
+    // 5. 다운로드
+    this.$download = document.querySelector('.quotes-download');
+    this.$download.onclick = this.download.bind(this);
+    this.$output = null;
+    this.$link = document.getElementById('capture');
+    this.$register = document.querySelector('.quotes-register');
+    this.$register.onclick = this.register.bind(this);
+    this.$quotesSection = document.getElementById('quotes');
+    this._userId = this.$quotesSection.dataset.userId;
     // 기본 박스
     this.$noneBox = document.querySelector('.quotes-box.none');
   }
@@ -64,7 +73,6 @@ class Quotes {
     const target = e.target.closest('.quotes-box-con');
     if(!target) return;
     const value = target.dataset.value;
-    console.log(value, this._type)
     switch(this._type) {
       case 'ratio':
         this.ratio(value);
@@ -101,7 +109,6 @@ class Quotes {
     }
   }
   color(value) {
-    console.log(value);
     if(value === 'white') {
       this.$quotes.style.color = 'white';
       this.$from.style.color = 'white';
@@ -158,13 +165,30 @@ class Quotes {
     const formData = new FormData();
     formData.append('image', file);
     const res = await axios.post('/quotes/img', formData);
-    this.$img.src = res.data.url;
+    this.$imgBox.style.backgroundImage = `url(${res.data.url})`;
   }
   // 4. 엑스 버튼 클릭 시 기본 상자 보여주기
   cancel(e) {
     const box = e.target.closest('.quotes-box');
     box.hidden = true;
     this.$noneBox.hidden = false;
+  }
+  // 5. 다운로드
+  async download() {
+    this.$output = document.querySelector('.quotes-img-box');
+    html2canvas(this.$output, { scale: 1 })
+      .then((canvas) => {
+        const img = canvas.toDataURL();
+        this.$link.href = img;
+        this.$link.download = 'capture.png'; 
+        this.$link.click();
+      })
+  }
+  register() {
+    if(!this._userId) {
+      alert('로그인 후 이용 가능합니다');
+      return;
+    }
   }
 }
 

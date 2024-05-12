@@ -6,6 +6,7 @@
   --font-hahmlet: "Hahmlet", serif;
   --font-dokdo: "East Sea Dokdo", sans-serif;
   --font-diphylleia :"Diphylleia", serif;
+  --width: 400px;
 }
 
 body::-webkit-scrollbar {
@@ -23,7 +24,8 @@ body::-webkit-scrollbar {
 
 .quotes-nav {
   font-family: var(--font-vt323);
-  height: 28px;
+  font-size: 1.2rem;
+  height: 30px;
   background-color: #0201a5;
   display: flex;
   align-items: center;
@@ -41,18 +43,24 @@ body::-webkit-scrollbar {
 }
 
 .quotes-main {
+  border: 2px solid green;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.quotes-main-right {
+  width: var(--width);
 }
 
 .quotes-preview {
   box-sizing: border-box;
   background-color: #0201a5;
   padding: 5px;
-  width: 400px;
+  width: var(--width);
   border: 3px solid #ccc9c0;
   aspect-ratio: 1 / 1;
   box-shadow: 1px 1px 2px 2px #503b46;
@@ -79,7 +87,7 @@ body::-webkit-scrollbar {
   left: 0;
   width: 100%;
   transform: translateY(-50%);
-  font-family: var(--font-myeongjo);
+  font-family: var(--font-hahmlet);
   box-sizing: border-box;
   padding: 0 10px;
 }
@@ -102,7 +110,7 @@ body::-webkit-scrollbar {
 }
 
 .quotes-oper {
-  width: 400px;
+  width: var(--width);
   display: flex;
   box-sizing: border-box;
   align-items: center;
@@ -139,7 +147,7 @@ body::-webkit-scrollbar {
 .quotes-box {
   margin-top: 2px;
   box-sizing: border-box;
-  width: 400px;
+  width: var(--width);
   background-color: #ccc9c0;
   padding: 1px;
   box-shadow: 1px 1px 2px 2px #503b46;
@@ -241,7 +249,7 @@ input::placeholder {
   border: none;
   outline: none;
   height: 22px;
-  font-family: var(--font-myeongjo);
+  font-family: var(--font-hahmlet);
   font-size: 1rem;
   letter-spacing: -1px;
   background-color: #ffffff;
@@ -328,8 +336,7 @@ input::placeholder {
   justify-content: space-between;
   font-family: var(--font-vt323);
   font-size: 1.2rem;
-  margin: 0 auto;
-  padding-bottom: 20px;
+  margin: 20px auto 0 auto;
 }
 
 .quotes-register,
@@ -342,4 +349,78 @@ input::placeholder {
   justify-content: center;
   background-color: #efefef;
   cursor: pointer;
+}
+
+@media all and (min-width: 800px) {
+  #quotes {
+    height: 100vh;
+  }
+
+  .quotes-main {
+    height: calc(100vh - 30px);
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .quotes-main-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+  }
+
+  .quotes-main-right {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quotes-box {
+    margin-top: 0px;
+  }  
+}
+
+@media all and (min-width: 1000px) {
+  .quotes-main-left {
+    margin-right: 20px;
+  }
+
+  .quotes-main-right {
+    margin-left: 20px;
+  }
+}
+
+@media all and (min-width: 1200px) {
+  :root {
+    --width: 450px;
+  }
+    
+  .quotes-oper {
+    width: var(--width);
+    margin-bottom: 10px;
+  }
+  
+  .quotes-oper-theme {
+    height: 27px;
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .quotes-oper-box {
+    font-size: 1.2rem;
+    height: 27px;
+    margin-right: 10px;
+  }
+
+  .quotes-main-left {
+    margin-right: 40px;
+  }
+
+  .quotes-main-right {
+    margin-left: 40px;
+  }
 }

@@ -124,8 +124,8 @@ class Quotes {
       this.$inputs.style.fontFamily = 'var(--font-noto)';
     } else if(value === 'brush') {
       this.$inputs.style.fontFamily = 'var(--font-brush)';
-    } else if(value === 'hahmlet') {
-      this.$inputs.style.fontFamily = 'var(--font-hahmlet)';
+    } else if(value === 'myeongjo') {
+      this.$inputs.style.fontFamily = 'var(--font-myeongjo)';
     } else if(value === 'dokdo') {
       this.$inputs.style.fontFamily = 'var(--font-dokdo)';
     } else if(value === 'diphylleia') {
@@ -157,7 +157,9 @@ class Quotes {
   }
   basic(e) {
     const value = e.target.value;
-    this.$img.src = `/img/quotes/${value}.jpeg`
+    this.$imgBox.style.backgroundImage = `url("/img/quotes/${value}.jpeg")`;
+    this.$quotes.textContent = '';
+    this.$from.textContent = '';
   }
   async myImg(e) {
     const target = e.currentTarget;
@@ -166,6 +168,8 @@ class Quotes {
     formData.append('image', file);
     const res = await axios.post('/quotes/img', formData);
     this.$imgBox.style.backgroundImage = `url(${res.data.url})`;
+    this.$quotes.textContent = '';
+    this.$from.textContent = '';
   }
   // 4. 엑스 버튼 클릭 시 기본 상자 보여주기
   cancel(e) {

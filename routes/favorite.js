@@ -160,12 +160,12 @@ router.post('/final', async (req, res) => {
     });
   }
   await Promise.all(increments);
-  await RecordFavortie.create({
-    FavoriteId: id,
-    MemberId,
-    main,
-    sub,
-  })
+  // await RecordFavortie.create({
+  //   FavoriteId: id,
+  //   MemberId,
+  //   main,
+  //   sub,
+  // })
   res.json({})
 })
 

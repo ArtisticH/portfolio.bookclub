@@ -10,69 +10,92 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=VT323&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
   <section id="tournament" data-original="{{original}}" data-model="{{model}}" data-types="{{types}}" data-user-id="{{user.id}}">
-    <img class="tournament-background" src="/img/favorite/backgroundTournament.jpeg" alt="backgroundTournament">
-    <div class="tournament top">
-      <div class="tournament-info">
-        <div class="tournament-title">{{title}}</div>
+    <img class="tournament-background" src="/img/favorite/background.jpeg" alt="background">
+    <div class="tournament-title">{{title}}</div>
+    <div class="tournament">
+      <div class="tournament-con icon">
+        {% if types == 'music' or types == 'music2' %}
+        <div class="tournament-icon">
+          <img class="tournament-icon-img" src="/img/favorite/music-icon.png" alt="music-icon">
+        </div>
+        <div class="tournament-icon-text">Click Play & Pause Icon!<br>And Enjoy Music!🤟</div>
+        {% else %}
+        <!-- 위 요소가 없을때 텍스트를 아래에 놓기 위한 빈 요소 -->
+        <div class="tournament-icon-text">Click Img to Choose Your Favorite! 💖</div>
+        {% endif %}
+      </div>
+      <div class="tournament-con round">
         <div class="tournament-round"><span class="round-current">1</span>&nbsp;/&nbsp;<span class="round-total">32</span></div>  
       </div>
-      <div class="tournament-box top">
+      <div class="tournament-con top-img">
         <div class="tournament-img-box top">
           <img class="tournament-img top" src="" alt="">
         </div>
-        <div class="tournament-box-info top">
-          <audio class="tournament-audio top" src="" hidden></audio>
-          <div class="play-btn top" hidden>
-            <img class="play-img" src="/img/favorite/play.png" alt="play">
-          </div>
-          <div class="pause-btn top" hidden>
-            <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
-          </div>
-          <div class="tournament-main top"></div>
-          <div class="tournament-sub top" hidden></div>
-        </div>  
       </div>
-    </div>
-    <div class="tournament bottom">
-      <div class="tournament-vs">VS</div>
-      <div class="tournament-box bottom">
-        <div class="tournament-box-info bottom">
-          <audio class="tournament-audio bottom" src="" hidden></audio>
-          <div class="play-btn bottom" hidden>
-            <img class="play-img" src="/img/favorite/play.png" alt="play">
-          </div>
-          <div class="pause-btn bottom" hidden>
-            <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
-          </div>
-          <div class="tournament-main bottom"></div>
-          <div class="tournament-sub bottom" hidden></div>
-        </div>  
-        <div class="tournament-img-box bottom">
-          <img class="tournament-img bottom" src="" alt="">
+      <div class="tournament-con top-info">
+        {% if types == 'music' or types == 'music2' %}
+        <audio class="tournament-audio top" src=""></audio>
+        <div class="play-btn top">
+          <img class="play-img" src="/img/favorite/play.png" alt="play">
+        </div>
+        <div class="pause-btn top" hidden>
+          <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
+        </div>
+        <div class="tournament-main top"></div>
+        <div class="tournament-sub top"></div>
+        {% else %}
+        <div class="tournament-main top"></div>
+        <div class="tournament-sub top">Celebrity</div>
+        {% endif %}
+      </div>
+      <div class="tournament-con bot-info">
+        {% if types == 'music' or types == 'music2' %}
+        <audio class="tournament-audio bot" src=""></audio>
+        <div class="play-btn bot">
+          <img class="play-img" src="/img/favorite/play.png" alt="play">
+        </div>
+        <div class="pause-btn bot" hidden>
+          <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
+        </div>
+        <div class="tournament-main bot"></div>
+        <div class="tournament-sub bot"></div>
+        {% else %}
+        <div class="tournament-main bot"></div>
+        <div class="tournament-sub bot">Celebrity</div>
+        {% endif %}
+      </div>
+      <div class="tournament-con bot-img">
+        <div class="tournament-img-box bot">
+          <img class="tournament-img bot" src="" alt="">
         </div>
       </div>
     </div>
   </section>
   <section id="final" hidden>
-    <img class="final-background" src="/img/favorite/background.jpeg" alt="backgroundFinal">
-    <div id="final-title">In&nbsp;<span class="final-title">Taylor Swift</span>,</div>
-    <div class="final-is">Your Favorite Is...</div>
-    <div class="final-box">
-      <div class="final-img-box">
-        <img class="final-img" src="/img/TS/Don't You.jpeg" alt="final">
+    <div class="final-nav">
+      <a href="/favorites" class="final-other">Other Category...</a>
+      <a href="/" class="final-home">HOME</a>
+    </div>
+    <div class="final">
+      <div class="final-info">
+        <div class="final-title">Your Favorite Is...</div>
+        <div>
+          <div class="final-main"></div>
+          <div class="final-sub"></div>   
+        </div>
       </div>
-      <div class="final-main">Don't You</div>
-      <div class="final-sub">Fearless</div>
+      <div class="final-img-box">
+        <img class="final-img" src="" alt="final">
+      </div>
     </div>
     <div class="final-options">
-      <a href="/" class="final-option">Home</a>
-      <div class="final-option" href="" download="">Img Download</div>
-      <div class="final-option img">See Ranking</div>
+      <a class="final-option img" href="" download="">Img Download</a>
+      <div class="final-option">See Ranking</div>
       <div class="final-option">See My Results</div>
     </div>
   </section>

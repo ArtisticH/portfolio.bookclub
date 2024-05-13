@@ -38,6 +38,11 @@ router.get('/fun', (req, res) => {
   res.render('fun');
 });
 
+router.get('/p', (req, res) => {
+  res.render('p');
+});
+
+
 router.get('/favorites', async (req, res) => {
   const favorites = await Favorite.findAll({});
   res.render('favorite', { favorites });

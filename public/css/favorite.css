@@ -18,10 +18,16 @@ body {
   min-height: 100vh;
   box-sizing: border-box;
   position: relative;
-  background-image: url("/img/favorite/background.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-origin: center;
+}
+
+.favorite-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: block;
+  height: 100%;
+  width: 100%;
 }
 
 .favorite-title {

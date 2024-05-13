@@ -3,7 +3,6 @@ class Tournament {
     this._id = new URL(location.href).pathname.split('/')[2];
     // 몇 라운드인지 클릭했는지
     this._round = +new URL(location.href).pathname.split('/')[3];
-    this._title = document.querySelector('.tournament-title').textContent;
     this.$tournament = document.getElementById('tournament');
     this._memberId = this.$tournament.dataset.userId;
     // 서버에서 보내온 배열
@@ -21,36 +20,35 @@ class Tournament {
     this._temSub = [];
     this._final = false;
     // HTML에 반영
-    this.$top = document.querySelector('.tournament-box.top');
-    this.$bottom = document.querySelector('.tournament-box.bottom');
     this.$topImg = document.querySelector('.tournament-img.top');
-    this.$bottomImg = document.querySelector('.tournament-img.bottom');
+    this.$bottomImg = document.querySelector('.tournament-img.bot');
     this.$topMain = document.querySelector('.tournament-main.top');
-    this.$bottomMain = document.querySelector('.tournament-main.bottom');
+    this.$bottomMain = document.querySelector('.tournament-main.bot');
     this.$topSub = document.querySelector('.tournament-sub.top');
-    this.$bottomSub = document.querySelector('.tournament-sub.bottom');
+    this.$bottomSub = document.querySelector('.tournament-sub.bot');
     this.$topAudio = document.querySelector('.tournament-audio.top');
-    this.$bottomAudio = document.querySelector('.tournament-audio.bottom');
+    this.$bottomAudio = document.querySelector('.tournament-audio.bot');
+    this.$audios = Array.from(document.querySelectorAll('.tournament-audio'));
     this.$topPlay = document.querySelector('.play-btn.top');
-    this.$bottomPlay = document.querySelector('.play-btn.bottom');
+    this.$bottomPlay = document.querySelector('.play-btn.bot');
     this.$topPause = document.querySelector('.pause-btn.top');
-    this.$bottomPause = document.querySelector('.pause-btn.bottom');
+    this.$bottomPause = document.querySelector('.pause-btn.bot');
     this.$plays = Array.from(document.querySelectorAll('.play-btn'));
     this.$pauses = Array.from(document.querySelectorAll('.pause-btn'));
     // 플레이 버튼 클릭 시 노래 재생
     // 멈춤으로 바꾼다.
     this.play = this.play.bind(this);
-    this.$plays.forEach(play => {
+    this.$plays && this.$plays.forEach(play => {
       play.addEventListener('click', this.play);
     })
     // 멈춤 클릭 시 노래 중지하고, 플레이로 바꾸기
     this.pause = this.pause.bind(this);
-    this.$pauses.forEach(pause => {
+    this.$pauses && this.$pauses.forEach(pause => {
       pause.addEventListener('click', this.pause);
     })
     // 오디오 재생이 끝나면 처음으로 감고 play버튼으로 복귀
     this.ended = this.ended.bind(this);
-    [this.$topAudio, this.$bottomAudio].forEach(audio => {
+    this.$audios && this.$audios.forEach(audio => {
       audio.addEventListener('ended', this.ended);
     })
     // 클릭
@@ -74,7 +72,6 @@ class Tournament {
     this.$finalSub = document.querySelector('.final-sub');
     // 이미지 다운로드
     this.$finalImgOpt = document.querySelector('.final-option.img');
-
   }
   // 0에서 31의 수 중에서 몇개(라운드)만큼 랜덤으로 뽑기
   // 예를 들어 [4, 17, 25, 30, ...]
@@ -98,27 +95,22 @@ class Tournament {
       this._sub[this._sub.length] = this._original[item].sub;
     });
   }
-  // 타입별 노출 요소 선택
-  types() {
-    if(this._types !== 'basic') {
-      this.$topAudio.hidden = false;
-      this.$bottomAudio.hidden = false;
-      this.$topSub.hidden = false;
-      this.$bottomSub.hidden = false;
-      this.$topPlay.hidden = false;
-      this.$bottomPlay.hidden = false;
-    } 
-  }
   play(e) {
     const direction = e.currentTarget.classList[1];
     if(direction === 'top') {
+      this.$bottomAudio.pause();
+      this.$bottomPause.hidden = true;
+      this.$bottomPlay.hidden = false;
       this.$topPlay.hidden = true;
-      this.$topAudio.play();
       this.$topPause.hidden = false;
-    } else if(direction === 'bottom') {
+      this.$topAudio.play();
+    } else if(direction === 'bot') {
+      this.$topAudio.pause();
+      this.$topPause.hidden = true;
+      this.$topPlay.hidden = false;
       this.$bottomPlay.hidden = true;
-      this.$bottomAudio.play();
       this.$bottomPause.hidden = false;
+      this.$bottomAudio.play();
     }
   }
   pause(e) {
@@ -127,7 +119,7 @@ class Tournament {
       this.$topPause.hidden = true;
       this.$topAudio.pause();
       this.$topPlay.hidden = false;
-    } else if(direction === 'bottom') {
+    } else if(direction === 'bot') {
       this.$bottomPause.hidden = true;
       this.$bottomAudio.pause();
       this.$bottomPlay.hidden = false;
@@ -139,7 +131,7 @@ class Tournament {
       this.$topPause.hidden = true;
       this.$topAudio.currentTime = 0;
       this.$topPlay.hidden = false;
-    } else if(direction === 'bottom') {
+    } else if(direction === 'bot') {
       this.$bottomPause.hidden = true;
       this.$bottomAudio.currentTime = 0;
       this.$bottomPlay.hidden = false;
@@ -170,10 +162,12 @@ class Tournament {
   }
 
   tournament(index) {
-    this.$topPlay.hidden = false;
-    this.$topPause.hidden = true;
-    this.$bottomPlay.hidden = false;
-    this.$bottomPause.hidden = true;
+    if(this._types !== 'basic') {
+      this.$topPlay.hidden = false;
+      this.$topPause.hidden = true;
+      this.$bottomPlay.hidden = false;
+      this.$bottomPause.hidden = true;  
+    }
     this.top(index);
     this.bottom(index + 1);
   }
@@ -195,7 +189,7 @@ class Tournament {
     if(direction === 'top') {
       // 만약 위쪽이면 현재 this._index
       index = this._random[this._index];
-    } else if(direction === 'bottom') {
+    } else if(direction === 'bot') {
       // 아래면 this._index + 1
       index = this._random[this._index + 1];
     }
@@ -249,10 +243,8 @@ class Tournament {
       sub: this._original[index].sub,
     });
     // 싹 다 엎고 final 보여주기
-    this.$tournament.hidden = true;
     this.$final.hidden = false;
     this.$finalImg.src = `/img/${this._model}/${this._original[index].main}.jpeg`;
-    this.$finalTitle.textContent = this._title;
     this.$finalMain.textContent = this._original[index].main;
     this.$finalSub.textContent = this._original[index].sub;
     this.$finalImgOpt.href = `/img/${this._model}/${this._original[index].main}.jpeg`;
@@ -260,8 +252,6 @@ class Tournament {
   }
 
   init() {
-    // 타입별로 나타나야 할 요소들
-    this.types();
     // 라운드에 맞는 랜덤 숫자 배열 만들고
     this._random = this.random(this._round);
     // 랜덤 숫자를 인덱스로 해서 this._main, this._sub 배열 만든다.

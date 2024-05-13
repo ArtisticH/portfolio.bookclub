@@ -12,7 +12,7 @@ const { sequelize } = require('../models');
 
 const router = express.Router();
 
-router.get('/:id/:round/:memberid', async (req, res) => {
+router.get('/:id/:round', async (req, res) => {
   const id = req.params.id;
   const model = await Favorite.findOne({
     where: { id },
@@ -66,15 +66,6 @@ router.post('/final', async (req, res) => {
   });
   const modelName = model.modelName;
   const title = model.title;
-  console.log(original,
-    main,
-    sub,
-    modelName,
-    title,
-    MemberId,
-    id,
-
-    )
   let increments;
   if(modelName === 'TS') {
     increments = original.map(async (obj) => {

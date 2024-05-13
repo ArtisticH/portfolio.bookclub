@@ -3,9 +3,9 @@ class Tournament {
     this._id = new URL(location.href).pathname.split('/')[2];
     // 몇 라운드인지 클릭했는지
     this._round = +new URL(location.href).pathname.split('/')[3];
-    this._memberId = +new URL(location.href).pathname.split('/')[4];
     this._title = document.querySelector('.tournament-title').textContent;
     this.$tournament = document.getElementById('tournament');
+    this._memberId = this.$tournament.dataset.userId;
     // 서버에서 보내온 배열
     this._original = JSON.parse(this.$tournament.dataset.original);
     // 이미지 경로할때 필요, 오디오 경로할때 필요

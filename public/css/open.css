@@ -1,8 +1,6 @@
 :root {
   --font-montserrat: "Montserrat", sans-serif;
   --font-korean: "Noto Sans KR", sans-serif;
-  --font-vt323: "VT323", monospace;
-  --font-orbit: "Orbit", sans-serif;
 }
 
 body::-webkit-scrollbar {

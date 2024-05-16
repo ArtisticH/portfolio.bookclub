@@ -1,0 +1,19 @@
+:root {
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-korean: "Noto Sans KR", sans-serif;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}

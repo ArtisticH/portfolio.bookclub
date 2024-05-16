@@ -1,0 +1,108 @@
+:root {
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-korean: "Noto Sans KR", sans-serif;
+  --font-vt323: "VT323", monospace;
+  --font-orbit: "Orbit", sans-serif;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+#open {
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.book-home {
+  color: black;
+  border-bottom: 1px solid black;
+  font-family: var(--font-montserrat);
+  height: 21px;
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  box-sizing: border-box;
+}
+
+.open-title {
+  color: black;
+  border-bottom: 0.5px solid black;
+  font-family: var(--font-korean);
+  height: 21px;
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  letter-spacing: -0.5px;
+  font-size: 0.9rem;
+  font-weight: 200;
+  box-sizing: border-box;
+}
+
+.open-main {
+  display: grid;
+  grid-template-columns: 250px 250px;
+  grid-template-rows: repeat(4, 320px);
+}
+
+.open-box {
+  border: 0.5px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.open-box-title {
+  font-family: var(--font-korean);
+  font-weight: 300;
+  letter-spacing: -1px;
+}
+
+.open-img-box {
+  border: 1px solid black;
+  width: 150px;
+  aspect-ratio: 1 / 1.4;
+}
+
+.open-img {
+  display: block;
+  width: 100%;
+}
+
+.open-box-number {
+  font-family: var(--font-montserrat);
+  letter-spacing: -1px;
+  font-weight: 500;
+}
+
+@media all and (min-width: 750px) {
+  .open-main {
+    grid-template-columns: 250px 250px 250px;
+    grid-template-rows: repeat(3, 320px);
+  }  
+}
+
+@media all and (min-width: 1000px) {
+  .open-main {
+    grid-template-columns: 250px 250px 250px 250px;
+    grid-template-rows: repeat(2, 320px);
+  }  
+}

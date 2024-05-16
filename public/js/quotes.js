@@ -48,6 +48,66 @@ class Quotes {
     this._userId = this.$quotesSection.dataset.userId;
     // 기본 박스
     this.$noneBox = document.querySelector('.quotes-box.none');
+    // 클라우드
+    this.$cloud = document.querySelector('.quotes-other.cloud');
+    this.$cloudText = this.$cloud.querySelector('.quotes-other-text');
+    this.$cloudBtns = this.$cloud.querySelector('.quotes-other-btns');
+    this.$cloudOne = document.querySelector('.cloud-one');
+    this.$cloudTwo = document.querySelector('.cloud-two');
+    this.$cloudThree = document.querySelector('.cloud-three');
+    this.$cloudBtns.onclick = this.cloud.bind(this);
+    this._cloud = 0;
+    this._cloudYes = [
+      "Do you want to see Cloud?",
+      "More Cloud?",
+      "More Cloud??",
+      "More Cloud???",
+      "That's enough 😶‍🌫️",
+    ];
+    this._cloudNo = [
+      "Ok, bye",
+      "You have 1 Cloud 😢",
+      "You have 2 Cloud 😢",
+      "You have 3 Cloud 😢",
+    ];
+    this.resize = this.resize.bind(this);
+    // 고양이
+    this.$catImg = document.querySelector('.img-cat');
+    this.$cat = document.querySelector('.quotes-other.cat');
+    this.$catText = this.$cat.querySelector('.quotes-other-text');
+    this.$catBtns = this.$cat.querySelector('.quotes-other-btns');
+    this.$catBtns.onclick = this.cat.bind(this);
+    // Reading Quotes
+    this.$ReadingQuotes = document.querySelector('.quotes-other.quotes');
+    this.$RQText = this.$ReadingQuotes.querySelector('.quotes-other-text');
+    this.$RQFrom = this.$ReadingQuotes.querySelector('.quotes-other-from');
+    this.$RQBtns = this.$ReadingQuotes.querySelector('.quotes-other-btns');
+    this.$RQBtns.onclick = this.readingQuotes.bind(this);    
+    this._readingQuotes = 0;
+    this._rqText = [
+      "Today a reader, tomorrow a leader.",
+      "A word after a word after a word is power.",
+      "Think before you speak. Read before you think.",
+      "Writing and reading decrease our sense of isolation. They deepen and widen and expand our sense of life: They feed the soul.",
+      "Books and doors are the same thing. You open them, and you go through into another world.",
+      "Once you learn to read, you will be forever free.",
+      "The reading of all good books is like a conversation with the finest minds of past centuries.",
+      "Books may well be the only true magic.",
+      "A reader lives a thousand lives before he dies . . . The man who never reads lives only one.",
+      "No entertainment is so cheap as reading, nor any pleasure so lasting.",
+    ];
+    this._rqTextFrom = [
+      "- Margaret Fuller -",
+      "- Margaret Atwood -",
+      "- Fran Lebowitz -",
+      "- Anne Lamott -",
+      "- Jeanette Winterson -",
+      "- Frederick Douglass -",
+      "- Rene Descartes -",
+      "- Alice Hoffman -",
+      "- George R.R. Martin -",
+      "- Mary Wortley Montagu -"
+    ];
   }
   // 1. 조작
   // 클릭한 type에 맞는 폼 보여주기
@@ -194,6 +254,138 @@ class Quotes {
       return;
     }
   }
+  // 클라우드
+  cloud(e) {
+    const target = e.target.closest('.quotes-other-btn');
+    if(!target) return;
+    const answer = target.textContent;
+    if(answer === 'Yes') {
+      this._cloud++;
+      // 클라우드 추가
+      if(this._cloud < 4) {
+        this.addCloud(this._cloud);
+        this.$cloudText.textContent = this._cloudYes[this._cloud];
+      } else if(this._cloud === 4) {
+        this.$cloudText.textContent = this._cloudYes[this._cloud];
+        this.cloudNo(0);
+      }
+    } else if (answer === 'No') {
+      this.$cloudText.textContent = this._cloudNo[this._cloud];
+      this.cloudNo(this._cloud);
+    } else if (answer === 'Reset') {
+      [...this.$cloudBtns.children][0].hidden = false;
+      [...this.$cloudBtns.children][0].textContent = 'Yes';
+      [...this.$cloudBtns.children][1].textContent = 'No';  
+      this._cloud = 0;
+      this.$cloudText.textContent = this._cloudYes[this._cloud];
+      this.$cloudOne.style.display = 'none';
+      this.$cloudTwo.style.display = 'none';
+      this.$cloudThree.style.display = 'none';
+    } if (answer === 'Before') {
+      [...this.$cloudBtns.children][0].textContent = 'Yes';
+      [...this.$cloudBtns.children][1].textContent = 'No';    
+      this._cloud--;
+      this.$cloudText.textContent = this._cloudYes[this._cloud];
+      if(this._cloud == 0) {
+        this.$cloudOne.style.display = 'none';
+      } else if(this._cloud == 1) {
+        this.$cloudTwo.style.display = 'none';
+      } else if(this._cloud == 2) {
+        this.$cloudThree.style.display = 'none';  
+      }
+    }
+  }
+  addCloud(cloud) {
+    switch(cloud) {
+      case 1:
+        this.$cloudOne.style.display = 'block';
+        break;
+      case 2:
+        this.$cloudTwo.style.display = 'block';
+        break;
+      case 3:
+        this.$cloudThree.style.display = 'block';
+        break;      
+    }
+  }
+  cloudNo(cloud) {
+    // Reset과 Before 버튼으로 바꾸기
+    if(cloud == 0) {
+      [...this.$cloudBtns.children][0].hidden = true;
+      [...this.$cloudBtns.children][1].textContent = 'Reset';  
+    } else {
+      [...this.$cloudBtns.children][0].textContent = 'Before';
+      [...this.$cloudBtns.children][1].textContent = 'Reset';    
+    }
+  }
+
+  resize() {
+    if(document.documentElement.clientWidth < 850) {
+      // Cloud
+      this.$cloudOne.style.display = 'none';
+      this.$cloudTwo.style.display = 'none';
+      this.$cloudThree.style.display = 'none';
+      this._cloud = 0;
+      this.$cloudText.textContent = this._cloudYes[this._cloud];
+      [...this.$cloudBtns.children][0].textContent = 'Yes';
+      [...this.$cloudBtns.children][1].textContent = 'No';    
+      // Cat
+      this.$catText.textContent = 'Are you a Cat person? 😾';
+      this.$catImg.style.display = '';
+      [...this.$catBtns.children][0].hidden = false;
+      [...this.$catBtns.children][0].textContent = 'Yes';
+      [...this.$catBtns.children][1].textContent = 'No';
+      // Reading Quotes
+      this._readingQuotes = 0;
+      this.$RQText.textContent = this._rqText[this._readingQuotes];
+      this.$RQFrom.textContent = this._rqTextFrom[this._readingQuotes];  
+    } 
+  }
+
+  cat(e) {
+    const target = e.target.closest('.quotes-other-btn');
+    if(!target) return;
+    const answer = target.textContent;
+    if(answer === 'Yes') {
+      [...this.$catBtns.children][0].hidden = true;
+      [...this.$catBtns.children][1].textContent = 'Reset';
+      this.$catImg.style.display = 'block'
+      this.$catText.textContent = 'great minds think alike 😎';
+    } else if(answer === 'No') {
+      [...this.$catBtns.children][0].hidden = true;
+      [...this.$catBtns.children][1].textContent = 'Reset';
+      this.$catImg.style.display = 'block'  
+      this.$catText.textContent = 'Take this opportunity to like Cat 😎'
+    } else if(answer === 'Reset') {
+      [...this.$catBtns.children][0].hidden = false;
+      [...this.$catBtns.children][0].textContent = 'Yes';
+      [...this.$catBtns.children][1].textContent = 'No';
+      this.$catImg.style.display = ''  
+      this.$catText.textContent = 'Are you a Cat person? 😾'
+    }
+  }
+
+  readingQuotes(e) {
+    const target = e.target.closest('.quotes-other-btn');
+    if(!target) return;
+    const answer = target.textContent;
+    if(answer === 'Before') {
+      if(this._readingQuotes == 0) {
+        alert('처음입니다.');
+        return;
+      }
+      this._readingQuotes--;
+    } else if(answer === 'Next') {
+      if(this._readingQuotes == 9) {
+        alert('끝입니다.');
+        return;
+      }
+      this._readingQuotes++;
+    }
+    this.$RQText.textContent = this._rqText[this._readingQuotes];
+    this.$RQFrom.textContent = this._rqTextFrom[this._readingQuotes];
+  }
 }
 
-new Quotes();
+const quotes = new Quotes();
+window.addEventListener('resize', quotes.resize);

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOK CLUB</title>
+  <link rel="stylesheet" href="/css/ranking.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <section id="ranking">
+    <img class="ranking-background" src="/img/favorite/background.jpeg" alt="background">
+    <div class="rank-nav">
+      <div class="rank-nav-text">
+        <div class="ranking">Ranking</div>
+        <div class="rank-title">{{title}}</div>
+      </div>
+      <div class="rank-nav-link">
+        <a href="/fun">FUN</a>
+        <a class="rank-nav-link-home" href="/">HOME</a>
+      </div>
+    </div>
+    <div class="ranking-main">
+      {% for ranking in rankings %}
+      <div class="ranking-box">
+        <div class="ranking-img-box">
+          <img class="ranking-img" src="/img/{{ranking.model}}/{{ranking.main}}.jpeg" alt="{{ranking.main}}">
+        </div>
+        <div class="ranking-box-info">
+          <div class="ranking-box-info-top">
+            <div class="ranking-box-number">{{loop.index}}</div>
+            <div>
+              <div class="ranking-box-main">{{ranking.main}}</div>
+              <div class="ranking-box-sub">{{ranking.sub}}</div>    
+            </div>
+          </div>
+          <div class="ranking-box-info-bottom">
+            <div class="ranking-number-box">
+              <div class="ranking-box-victory">승률</div>
+              <div class="ranking-box-victory-number">{{ranking.victoryRate}}%</div>
+            </div>
+            <div class="ranking-number-box">
+              <div class="ranking-box-winning">우승비율</div>
+              <div class="ranking-box-winning-number">{{ranking.winningRate}}%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="ranking-terms">
+      <div class="ranking-terms-box">
+        <div class="ranking-terms-text">승률:</div>
+        <div class="ranking-terms-exp">승리 횟수 / 전체 1 : 1 대결수</div>
+      </div>
+      <div class="ranking-terms-box">
+        <div class="ranking-terms-text">우승비율:</div>
+        <div class="ranking-terms-exp">최종 우승 횟수 / 전체 게임 수</div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

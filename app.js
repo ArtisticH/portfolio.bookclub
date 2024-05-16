@@ -17,6 +17,8 @@ const wishlistRouter = require('./routes/wishlist');
 const listRouter = require('./routes/list');
 const favoriteRouter = require('./routes/favorite');
 const quotesRouter = require('./routes/quotes');
+const rankingRouter = require('./routes/ranking');
+const openRouter = require('./routes/open');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -67,7 +69,8 @@ app.use('/wishlist', wishlistRouter);
 app.use('/list', listRouter);
 app.use('/favorite', favoriteRouter);
 app.use('/quotes', quotesRouter);
-
+app.use('/ranking', rankingRouter);
+app.use('/open', openRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다`);

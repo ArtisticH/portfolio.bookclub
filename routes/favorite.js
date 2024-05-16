@@ -16,7 +16,7 @@ router.get('/:id/:round', async (req, res) => {
   const id = req.params.id;
   const model = await Favorite.findOne({
     where: { id },
-    attributes: ['modelName', 'title', 'types'],
+    attributes: ['modelName', 'title', 'types', 'explanation'],
   });
   let results;
   if(model.modelName === 'TS') {
@@ -51,6 +51,8 @@ router.get('/:id/:round', async (req, res) => {
     model: model.modelName,
     title: model.title,
     types: model.types,
+    explanation: model.explanation,
+    id,
   });
 });
 // final
@@ -167,6 +169,6 @@ router.post('/final', async (req, res) => {
   //   sub,
   // })
   res.json({})
-})
+});
 
 module.exports = router;

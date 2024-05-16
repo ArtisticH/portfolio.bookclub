@@ -49,7 +49,7 @@ body::-webkit-scrollbar {
 }
 
 .quotes-main-right {
-  width: var(--width);
+  box-sizing: border-box;
 }
 
 .quotes-preview {
@@ -325,6 +325,102 @@ input::placeholder {
   display: none;
 }
 
+.quotes-other {
+  z-index: 1;
+  display: none;
+  box-sizing: border-box;
+  background-color: #cbc9c0;
+  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+}
+
+.quotes-other-nav {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  box-sizing: border-box;
+  background-color: #0201a5;
+  padding: 0 5px;
+  font-family: var(--font-vt323);
+  color: white;
+}
+
+.quotes-other-contents {
+  font-family: var(--font-vt323);
+  padding: 15px;
+}
+
+.quotes-other-text {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.quotes-other.quotes .quotes-other-text {
+  font-size: 1.3rem;
+}
+
+.quotes-other-from {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.quotes-other-btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.quotes-other-btn {
+  height: 22px;
+  padding: 0 20px;
+  font-family: var(--font-vt323);
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+  cursor: pointer;
+}
+
+.cloud-one {
+  position: fixed;
+  width: 400px;
+  top: 50px;
+  right: 0;
+  z-index: 0;
+  display: none;
+}
+
+.cloud-two {
+  position: absolute;
+  width: 200px;
+  top: 20px;
+  left: -50px;
+  z-index: 0;
+  display: none;
+}
+
+.cloud-three {
+  position: absolute;
+  width: 300px;
+  top: 100px;
+  left: 35%;
+  transform: translateX(-50%);
+  z-index: 0;
+  display: none;
+}
+
+.img-cat {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 80px;
+  transform: rotate3d(0, 1, 0, 180deg);
+}
+
 .quotes-btns {
   width: var(--width);
   display: flex;
@@ -374,16 +470,54 @@ input::placeholder {
     align-items: center;
     justify-content: center;
     position: relative;
+    width: 50vw;
   }
 
   .quotes-box {
     margin-top: 0px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }  
 
   .quotes-btns {
+    margin-top: 0;
     position: absolute;
-    bottom: 17%;
+    top: 50%;
+    transform: translateY(-50%);
+    left: calc(var(--width) + 10px);
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    align-items: flex-start;
+  }
+
+  .quotes-register {
+    margin-bottom: 10px;
+  }
+
+  .quotes-other {
+    display: block;
+    position: absolute;
+  }
+
+  .quotes-other.cloud {
+    right: 0;
+    top: 15%;
+    width: 300px;
+  }
+
+  .quotes-other.cat {
+    right: 0;
+    bottom: 15%;
+    width: 240px;
+  }
+
+  .quotes-other.quotes {
     left: 0;
+    bottom: 30px;
+    width: 450px;
   }
 }
 

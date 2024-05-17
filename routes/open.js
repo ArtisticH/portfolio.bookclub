@@ -69,14 +69,15 @@ router.post('/search', async (req, res) => {
   const json = await response.json();
   const lists = [];
   json.result.forEach(item => {
+
     lists[lists.length] = {
       title: item.titleInfo,
       author: item.authorInfo,
       pub: item.pubInfo,
       year: item.pubYearInfo,
-      call: item.callo,
+      call: item.callNo,
       place: item.placeInfo,
-      detail: item.detailLink,
+      detail: `https://www.nl.go.kr${item.detailLink}`,
       img: item.imageUrl ? `http://cover.nl.go.kr/${item.imageUrl}` : null,
     }
   })

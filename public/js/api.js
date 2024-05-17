@@ -12,9 +12,18 @@ class API {
     this.$current.onchange = this.targetPage.bind(this);
     this.$moveBtn.onclick = this.changePage.bind(this);
     this.$clone = document.querySelector('.list-box.clone');
-    this.$listMain = document.querySelector('.api-main');
+    this.$main = document.querySelector('.api-main');
     this.$api = document.getElementById('api');
+    this._userId = this.$api.dataset.userId;
     this._lastPage = +this.$api.dataset.last;
+    // 리스트 박스 여러 개 클릭 후 => wishlist에 추가작업
+    this.$listBoxes = Array.from(document.querySelectorAll('.list-box'));
+    this.clickBox = this.clickBox.bind(this);
+    this.$listBoxes.forEach(item => {
+      item.addEventListener('click', this.clickBox);
+    });
+    this.$wishlist = document.querySelector('.api-wishlist');
+    this.$wishlist.onclick = this.wishlist.bind(this);
   }
   pagenation(e) {
     const target = e.target.closest('.api-page-btn');
@@ -68,12 +77,12 @@ class API {
     const lists = JSON.parse(res.data.lists);
     this._currentPage = this._targetPage;
     // 기존의 12개 삭제
-    [...this.$listMain.children].forEach(item => {
+    [...this.$main.children].forEach(item => {
       item.remove();
     })
     // 새로운 열두개 투입
     lists.forEach(list => {
-      this.$listMain.append(this.listDOM(this.$clone.cloneNode(true), list));
+      this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
     })
   }
   listDOM(c, obj) {
@@ -95,14 +104,29 @@ class API {
     const lists = JSON.parse(res.data.lists);
     this._currentPage = this._targetPage;
     // 기존의 12개 삭제
-    [...this.$listMain.children].forEach(item => {
+    [...this.$main.children].forEach(item => {
       item.remove();
     })
     // 새로운 열두개 투입
     lists.forEach(list => {
-      this.$listMain.append(this.listDOM(this.$clone.cloneNode(true), list));
+      this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
     })
     this.$current.value = this._currentPage;
+  }
+  clickBox(e) {
+    const target = e.currentTarget;
+    target.classList.toggle('clicked', !target.classList.contains('clicked'));
+  }
+  wishlist() {
+    if(!this._userId) {
+      alert('로그인 후 이용 가능합니다');
+      return;
+    }
+    const children = [...this.$main.children];
+    const lists = children.filter(item => {
+      return item.classList.contains('clicked');
+    });
+    // 데이터베이스에 반영
   }
 }
 

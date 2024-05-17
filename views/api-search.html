@@ -14,12 +14,12 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="apisearch">
+  <section id="apisearch" data-user-id="{{user.id}}">
     <div class="search-nav">
       <a href="/open" class="search-back">BACK</a>
       <a href="/" class="search-back">HOME</a>
     </div>
-    <div class="search-limit">오프라인 그리고 도서 자료 검색 결과를 10건 검색 가능합니다.</div>
+    <div class="search-limit">오프라인 그리고 도서 자료 검색 결과를 10건 반환합니다.</div>
     <form class="search-box">
       <div class="search-target-box">
         <img class="search-select-img" src="/img/open/search-select.png" alt="search-select">
@@ -40,23 +40,40 @@
       </div>
     </form>
   </section>
-  <section id="results">
+  <section id="results" hidden>
     <div class="results-cancel">
       <div class="results-cancel-box">
         <div class="results-cancel-left"></div>
         <div class="results-cancel-right"></div>  
       </div>
     </div>
-    <div class="results-title"><span class="results-title-target">전체</span>&nbsp;:&nbsp;<span class="results-title-kwd">자바스크립트</span>&nbsp;검색결과</div>
+    <div class="results-title"><span class="results-title-target"></span>&nbsp;:&nbsp;<span class="results-title-kwd"></span>&nbsp;검색결과</div>
+    <div class="results-line"></div>
     <div class="results-main">
-      <div class="results-box clone">
-        
-      </div>
-      <div class="results-box clone">
-        
-      </div>
-      <div class="results-box clone">
-        
+      <div class="results-box clone" hidden>
+        <div class="results-box-contents">
+          <div class="results-img-box">
+            <img class="results-img" src="" alt="">
+          </div>  
+          <div class="results-info-box">
+            <div class="results-info-title"></div>
+            <div class="results-info">
+              <span class="results-author"></span>
+              <span class="results-ver"></span>
+              <span class="results-pub"></span>
+            </div>
+            <div class="results-info">
+              <span class="results-year"></span>
+              <span class="results-ver"></span>
+              청구기호:&nbsp;<span class="results-call"></span>
+            </div>
+            <div class="results-place-box"><span class="results-place-box-npc">자료이용장소:&nbsp;</span><span class="results-place"></span></div>
+          </div>
+        </div>
+        <div class="results-btns">
+          <a class="results-btn" href="">원문 URL</a>
+          <div class="results-btn wishlist">WISHLIST에 추가</div>
+        </div>
       </div>
     </div>
   </section>

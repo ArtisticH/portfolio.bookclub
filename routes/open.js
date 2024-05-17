@@ -55,4 +55,34 @@ router.post('/nat/rec', async (req, res) => {
   });
 });
 
+router.get('/search', (req, res) => {
+  res.render('api-search');
+})
+
+router.post('/search', async (req, res) => {
+  const target = req.body.target;
+  const kwd = req.body.kwd;
+  const url = `
+  https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
+  `;
+  const response = await fetch(url);
+  const json = await response.json();
+  const lists = [];
+  json.result.forEach(item => {
+    lists[lists.length] = {
+      title: item.titleInfo,
+      author: item.authorInfo,
+      pub: item.pubInfo,
+      year: item.pubYearInfo,
+      call: item.callo,
+      place: item.placeInfo,
+      detail: item.detailLink,
+      img: item.imageUrl ? `http://cover.nl.go.kr/${item.imageUrl}` : null,
+    }
+  })
+  res.json({
+    lists,
+  })
+})
+
 module.exports = router;

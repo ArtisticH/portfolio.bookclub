@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOK CLUB</title>
+  <link rel="stylesheet" href="/css/api-search.css">
+  <script defer src="/js/api-search.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <section id="apisearch">
+    <div class="search-nav">
+      <a href="/open" class="search-back">BACK</a>
+      <a href="/" class="search-back">HOME</a>
+    </div>
+    <div class="search-limit">오프라인 그리고 도서 자료 검색 결과를 10건 검색 가능합니다.</div>
+    <form class="search-box">
+      <div class="search-target-box">
+        <img class="search-select-img" src="/img/open/search-select.png" alt="search-select">
+        <select id="targets" name="options">
+          <option value="전체">전체</option>
+          <option value="제목">제목</option>
+          <option value="저자">저자</option>
+          <option value="발행자">발행자</option>
+        </select>
+      </div>
+      <div class="search-input-box">
+        <img class="search-input-img" src="/img/open/search-input.png" alt="search-input">
+        <input class="search-input-box__input" type="text" name="kwd" placeholder="검색어를 입력해주세요.">
+      </div>
+      <div class="search-button">
+        <img class="search-button-img" src="/img/open/glasses.png" alt="glasses">
+        <input class="search-button__input" type="submit" value="">
+      </div>
+    </form>
+  </section>
+  <section id="results">
+    <div class="results-cancel">
+      <div class="results-cancel-box">
+        <div class="results-cancel-left"></div>
+        <div class="results-cancel-right"></div>  
+      </div>
+    </div>
+    <div class="results-title"><span class="results-title-target">전체</span>&nbsp;:&nbsp;<span class="results-title-kwd">자바스크립트</span>&nbsp;검색결과</div>
+    <div class="results-main">
+      <div class="results-box clone">
+        
+      </div>
+      <div class="results-box clone">
+        
+      </div>
+      <div class="results-box clone">
+        
+      </div>
+    </div>
+  </section>
+</body>
+</html>

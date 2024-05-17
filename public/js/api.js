@@ -15,10 +15,6 @@ class API {
     this.$listMain = document.querySelector('.api-main');
     this.$api = document.getElementById('api');
     this._lastPage = +this.$api.dataset.last;
-    // 소장자료조회는 open.html과 연결
-    this.$searchBox = document.querySelector('.open-box.search');
-    this.$searchForm = document.getElementById('search');
-    this.$searchBox.onclick = this.search.bind(this);
   }
   pagenation(e) {
     const target = e.target.closest('.api-page-btn');
@@ -107,10 +103,6 @@ class API {
       this.$listMain.append(this.listDOM(this.$clone.cloneNode(true), list));
     })
     this.$current.value = this._currentPage;
-  }
-  // 소장자료 조회
-  search() {
-    this.$searchForm.hidden = false;
   }
 }
 

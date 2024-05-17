@@ -329,4 +329,8 @@ select {
   .search-input-img {
     height: 60px;
   }  
+
+  #results {
+    padding: 10px 20px;
+  }  
 }

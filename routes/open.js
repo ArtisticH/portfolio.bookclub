@@ -1,11 +1,10 @@
 const express = require('express');
 const xml2js = require('xml2js');
-// const fetch = require('node-fetch');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('open')
+  res.render('open');
 });
 
 const parseXMLToJSON = (xml) => {
@@ -20,14 +19,19 @@ const parseXMLToJSON = (xml) => {
   });
 };
 
-router.get('/national/recommend', async (req, res) => {
-  const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.KEY}&startRowNumApi=1&endRowNumApi=20&start_date=20240101&end_date=20240601`;
+const totalLists = [];
+
+router.get('/nat/rec', async (req, res) => {
+  const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
   const response = await fetch(url);
   const xml = await response.text();
   const data = await parseXMLToJSON(xml);
-  const lists = [];
-  data.channel.list.forEach(list => {
-    lists[lists.length] = {
+  const title = '2024 국립중앙도서관 사서추천도서';
+  const img = '/img/open/national-rec.png';
+  const length = data.channel.list.length;
+  const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
+  data.channel.list.forEach((list) => {
+    totalLists[totalLists.length] = {
       title: list.item.recomtitle,
       author: list.item.recomauthor,
       publisher: list.item.recompublisher,
@@ -37,8 +41,18 @@ router.get('/national/recommend', async (req, res) => {
       contents: list.item.recomcontens,
     }
   });
-  res.render('api', { lists })
+  const lists = totalLists.slice(0, 12);
+  res.render('api', { lists, title, img, last });
 });
 
+router.post('/nat/rec', async (req, res) => {
+  const page = req.body.page;
+  const start = (page - 1) * 12;
+  const end = start + 11;
+  const lists = totalLists.slice(start, end + 1);
+  res.json({
+    lists: JSON.stringify(lists),
+  });
+});
 
 module.exports = router;

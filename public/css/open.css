@@ -19,8 +19,9 @@ a {
 }
 
 #open {
-  min-height: 100vh;
+  height: 100vh;
   box-sizing: border-box;
+  position: relative;
 }
 
 .book-home {
@@ -34,6 +35,7 @@ a {
   font-weight: 500;
   letter-spacing: -1px;
   box-sizing: border-box;
+  background-color: white;
 }
 
 .open-title {
@@ -48,22 +50,25 @@ a {
   font-size: 0.9rem;
   font-weight: 200;
   box-sizing: border-box;
+  background-color: white;
 }
 
 .open-main {
   display: grid;
   grid-template-columns: 250px 250px;
-  grid-template-rows: repeat(4, 320px);
+  grid-template-rows: repeat(2, 320px);
+  box-sizing: border-box;
+  width: fit-content;
 }
 
 .open-box {
   border: 0.5px solid black;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 20px;
   background-color: white;
   cursor: pointer;
 }
@@ -72,6 +77,9 @@ a {
   font-family: var(--font-korean);
   font-weight: 300;
   letter-spacing: -1px;
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .open-img-box {
@@ -85,22 +93,28 @@ a {
   width: 100%;
 }
 
-.open-box-number {
-  font-family: var(--font-montserrat);
-  letter-spacing: -1px;
-  font-weight: 500;
+.open-deco {
+  position: fixed;
+  left: 950px;
+  bottom: -10px;
+  width: 400px;
 }
 
-@media all and (min-width: 750px) {
-  .open-main {
-    grid-template-columns: 250px 250px 250px;
-    grid-template-rows: repeat(3, 320px);
-  }  
+.open-text {
+  position: fixed;
+  left: 550px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 470px;
 }
 
-@media all and (min-width: 1000px) {
-  .open-main {
-    grid-template-columns: 250px 250px 250px 250px;
-    grid-template-rows: repeat(2, 320px);
-  }  
+#search {
+  border: 2px solid green;
+  box-sizing: border-box;
+  width: 200px;
+  height: 300px;
+  top: 50%;
+  left: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
 }

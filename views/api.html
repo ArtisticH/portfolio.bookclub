@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
   <link rel="stylesheet" href="/css/api.css">
+  <script defer src="/js/api.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,17 +14,59 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="api">
-    {% for list in lists %}
-    <div class="list-box">
-      <img src="{{list.img}}" alt="">
-      <div>{{list.title}}</div>
-      <div>{{list.author}}</div>
-      <div>{{list.publisher}}</div>
-      <div>{{list.date}}</div>
-      <div>{{list.codeName}}</div>
+  <section id="api" data-last="{{last}}">
+    <img src="{{img}}" alt="api-text" class="api-text">   
+    <div class="api-nav">
+      <a href="/open" class="api-back">BACK</a>
+      <a href="/" class="api-home">HOME</a>
     </div>
-    {% endfor %}
+    <div class="api-title">{{title}}</div>
+    <div class="api-main">
+      {% for list in lists %}
+      <div class="list-box">
+        <div>
+          <div class="list-title">{{list.title}}</div>
+          <div class="list-line"></div>
+          <div class="list-author">{{list.author}}</div>
+          <div class="list-publisher">{{list.publisher}}</div>
+          <div class="list-info">
+            <div class="list-date">{{list.date}}</div>
+            <div class="list-vertical"></div>
+            <div class="list-codename">{{list.codeName}}</div>  
+          </div>  
+        </div>
+        <div class="list-img-box">
+          <img class="list-img" src="{{list.img}}" alt="">
+        </div>
+      </div>
+      {% endfor %}  
+    </div>
+    <div class="list-box clone"  hidden>
+      <div>
+        <div class="list-title">{{list.title}}</div>
+        <div class="list-line"></div>
+        <div class="list-author">{{list.author}}</div>
+        <div class="list-publisher">{{list.publisher}}</div>
+        <div class="list-info">
+          <div class="list-date">{{list.date}}</div>
+          <div class="list-vertical"></div>
+          <div class="list-codename">{{list.codeName}}</div>  
+        </div>  
+      </div>
+      <div class="list-img-box">
+        <img class="list-img" src="{{list.img}}" alt="">
+      </div>
+    </div>
+    <div class="api-line"></div>
+    <div class="api-pagenation">
+      <div class="api-page-btn" data-dir="first">&lt;&lt;</div>
+      <div class="api-page-btn" data-dir="before">&lt;</div>
+      <input type="text" name="targetpage" class="api-page-current" value="1">
+      <div class="api-page-last">/&nbsp;&nbsp;{{last}}</div>
+      <div class="api-page-move">이동</div>
+      <div class="api-page-btn" data-dir="after">&gt;</div>
+      <div class="api-page-btn" data-dir="last">&gt;&gt;</div>
+    </div>
   </section>
 </body>
 </html>

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
   <link rel="stylesheet" href="/css/open.css">
-  <script defer src="/js/open.js"></script>
+  <script defer src="/js/api.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,68 +15,44 @@
 </head>
 <body>
   <section id="open">
+    <img src="/img/open/open-text.png" class="open-text">
+    <img src="/img/open/open-deco.png" class="open-deco">
     <a href="/" class="book-home">BOOKCLUB</a>
     <div class="open-title">
-      OPEN API를 통해 다양한 기능을 체험해보세요.
+      OPEN API를 통해 다양한 책을 접해보세요.
     </div>
     <div class="open-main">
-      <a class="open-box" href="/open/national/recommend">
-        <div class="open-box-title">국립중앙도서관 사서추천도서</div>
+      <a class="open-box" href="/open/nat/rec">
+        <div class="open-box-title">2023 ∙ 2024<br>국립중앙도서관 사서추천도서</div>
         <div class="open-img-box">
           <img src="/img/open/national-recommend.png" alt="national-recommend" class="open-img">
         </div>
-        <div class="open-box-number">29</div>
       </a>
-      <div class="open-box">
+      <div class="open-box search">
         <div class="open-box-title">국립중앙도서관 소장자료조회</div>
         <div class="open-img-box">
           <img src="/img/open/national-search.png" alt="national-search" class="open-img">
         </div>
-        <div class="open-box-number">29</div>
       </div>
-      <div class="open-box">
+      <a class="open-box">
         <div class="open-box-title">페이커 독서목록</div>
         <div class="open-img-box">
           <img src="/img/open/faker.png" alt="faker" class="open-img">
         </div>
-        <div class="open-box-number">29</div>
-      </div>
-      <div class="open-box">
+      </a>
+      <a class="open-box">
         <div class="open-box-title">고전문학 100선</div>
         <div class="open-img-box">
           <img src="/img/open/classical.png" alt="classical" class="open-img">
         </div>
-        <div class="open-box-number">29</div>
-      </div>
-      <div class="open-box">
-        <div class="open-box-title">인터파크 베스트셀러</div>
-        <div class="open-img-box">
-          <img src="/img/open/interpark-best.png" alt="interpark-best" class="open-img">
-        </div>
-        <div class="open-box-number">29</div>
-      </div>
-      <div class="open-box">
-        <div class="open-box-title">인터파크 추천도서</div>
-        <div class="open-img-box">
-          <img src="/img/open/interpark-recommend.png" alt="interpark-recommend" class="open-img">
-        </div>
-        <div class="open-box-number">29</div>
-      </div>
-      <div class="open-box">
-        <div class="open-box-title">인터파크 신간도서</div>
-        <div class="open-img-box">
-          <img src="/img/open/interpark-new.png" alt="interpark-new" class="open-img">
-        </div>
-        <div class="open-box-number">29</div>
-      </div>
-      <div class="open-box">
-        <div class="open-box-title">인터파크 책검색</div>
-        <div class="open-img-box">
-          <img src="/img/open/interpark-search.png" alt="interpark-search" class="open-img">
-        </div>
-        <div class="open-box-number">29</div>
-      </div>
+      </a>
     </div>  
   </section>
+  <section id="search" hidden>
+
+  </section>
+  <img src="" alt="" class="search-eng">
+  <img src="" alt="" class="search-kor">
+  <img src="" alt="" class="search-glasses">
 </body>
 </html>

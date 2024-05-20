@@ -21,45 +21,78 @@ const parseXMLToJSON = (xml) => {
   });
 };
 
-const totalLists = [];
+const totalNationalLists = [];
+const totalAladinLists = [];
 // 추천 도서 가져오기
-router.get('/nat/rec', async (req, res) => {
+router.get('/nat', async (req, res) => {
   const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
   const response = await fetch(url);
   const xml = await response.text();
   const data = await parseXMLToJSON(xml);
   const title = '2024 국립중앙도서관 사서추천도서';
-  const img = '/img/open/national-rec.png';
+  const img = '/img/open/national.png';
   const length = data.channel.list.length;
   const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
+  const type = 'national';
   data.channel.list.forEach((list) => {
-    totalLists[totalLists.length] = {
+    totalNationalLists[totalNationalLists.length] = {
       title: list.item.recomtitle,
       author: list.item.recomauthor,
       publisher: list.item.recompublisher,
       img: list.item.recomfilepath,
       date: `${list.item.publishYear}.${list.item.recomMonth}`,
       codeName: list.item.drCodeName,
-      contents: list.item.recomcontens,
     }
   });
-  const lists = totalLists.slice(0, 12);
-  res.render('api', { lists, title, img, last });
+  const lists = totalNationalLists.slice(0, 12);
+  res.render('api', { lists, title, img, last, type });
 });
+// 알라딘 도서 가져오기
+router.get('/aladin', async (req, res) => {
+  const url = `http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=${process.env.ALADIN}&QueryType=Bestseller&start=1&MaxResults=100&Output=JS&Version=20131101&SearchTarget=Book&CategoryId=1&Cover=Big`;
+  const response = await fetch(url);
+  const json = await response.json();
+  const title = '알라딘 베스트셀러 리스트 - 소설/시/희곡';
+  const img = '/img/open/aladin-list.png';
+  const length = json.item.length;
+  const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
+  const type = 'aladin';
+  json.item.forEach((item) => {
+    totalAladinLists[totalAladinLists.length] = {
+      title: item.title,
+      author: item.author,
+      publisher: item.publisher,
+      img: item.cover,
+      date: item.pubDate,
+      codeName: item.categoryName,
+    }
+  });
+  const lists = totalAladinLists.slice(0, 12);
+  res.render('api', { lists, title, img, last, type });
+})
+
 // 추천 도서 페이지네이션
-router.post('/nat/rec', async (req, res) => {
+router.post('/list', async (req, res) => {
   const page = req.body.page;
+  const type = req.body.type;
   const start = (page - 1) * 12;
   const end = start + 11;
-  const lists = totalLists.slice(start, end + 1);
+  let lists;
+  if(type === 'aladin') {
+    lists = totalAladinLists.slice(start, end + 1);
+  } else if(type === 'national') {
+    lists = totalNationalLists.slice(start, end + 1);
+  }
   res.json({
     lists: JSON.stringify(lists),
   });
 });
 // 소장자료 검색 페이지
 router.get('/search', (req, res) => {
-  res.render('api-search');
-})
+  const explanation = '국립중앙도서관 오프라인 도서 자료 검색 결과를 10건 반환합니다.';
+  res.render('api-search', { explanation });
+});
+
 // 소장 자료 검색 결과 반환
 router.post('/search', async (req, res) => {
   const target = req.body.target;

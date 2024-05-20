@@ -118,17 +118,8 @@ a {
   line-height: 1.2;
 }
 
-.list-info {
-  display: flex;
-  align-items: flex-end;
+.list-codename {
   margin-bottom: 5px;
-}
-
-.list-vertical {
-  height: 12px;
-  width: 1px;
-  margin: 0 5px;
-  background-color: black;
 }
 
 .list-img {

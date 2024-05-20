@@ -16,6 +16,7 @@ class API {
     this.$api = document.getElementById('api');
     this._userId = this.$api.dataset.userId;
     this._lastPage = +this.$api.dataset.last;
+    this._type = this.$api.dataset.type;
     // 리스트 박스 여러 개 클릭 후 => wishlist에 추가작업
     this.$listBoxes = Array.from(document.querySelectorAll('.list-box'));
     this.clickBox = this.clickBox.bind(this);
@@ -43,10 +44,9 @@ class API {
     this.searchParams = new URL(location.href).searchParams;
     this.alert = this.alert.bind(this);
     this.$clickedLists = null;
-    this.$lists = [];
+    this._lists = [];
     // 기존 폴더에 추가
     this.$folders.onsubmit = this.existingFolder.bind(this);
-
   }
   pagenation(e) {
     const target = e.target.closest('.api-page-btn');
@@ -93,7 +93,8 @@ class API {
   }
   async changePage() {
     if(this._currentPage == this._targetPage) return;
-    const res = await axios.post('/open/nat/rec', {
+    const res = await axios.post('/open/list', {
+      type: this._type,
       page: this._targetPage,
     });
     // 내림차순(최신 => 오래된 순)으로 옴
@@ -121,7 +122,8 @@ class API {
     return c;
   }
   async btnChangePage() {
-    const res = await axios.post('/open/nat/rec', {
+    const res = await axios.post('/open/list', {
+      type: this._type,
       page: this._targetPage,
     });
     // 내림차순(최신 => 오래된 순)으로 옴
@@ -155,7 +157,7 @@ class API {
       return;
     }
     this.$clickedLists.forEach(item => {
-      this.$lists[this.$lists.length] = {
+      this._lists[this._lists.length] = {
         title: item.querySelector('.list-title').textContent,
         author: item.querySelector('.list-author').textContent,
         img: item.querySelector('.list-img').src,
@@ -212,7 +214,7 @@ class API {
       MemberId: this._userId,
       title,
       isPublic,
-      lists: JSON.stringify(this.$lists),
+      lists: JSON.stringify(this._lists),
     });
     this.$add.querySelector('.folder-add-form-input').value = '';
     const labels = this.$add.querySelectorAll('label > input');
@@ -232,7 +234,7 @@ class API {
     e.preventDefault();
     const FolderId = e.target.folder.value;
     const res = await axios.post('/open/exist', {
-      lists: JSON.stringify(this.$lists),
+      lists: JSON.stringify(this._lists),
       FolderId,
       MemberId: this._userId,
     });

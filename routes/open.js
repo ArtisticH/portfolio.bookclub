@@ -21,8 +21,7 @@ const parseXMLToJSON = (xml) => {
   });
 };
 
-const totalNationalLists = [];
-const totalAladinLists = [];
+const totalLists = [];
 // 추천 도서 가져오기
 router.get('/nat', async (req, res) => {
   const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
@@ -33,9 +32,8 @@ router.get('/nat', async (req, res) => {
   const img = '/img/open/national.png';
   const length = data.channel.list.length;
   const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
-  const type = 'national';
   data.channel.list.forEach((list) => {
-    totalNationalLists[totalNationalLists.length] = {
+    totalLists[totalLists.length] = {
       title: list.item.recomtitle,
       author: list.item.recomauthor,
       publisher: list.item.recompublisher,
@@ -44,8 +42,8 @@ router.get('/nat', async (req, res) => {
       codeName: list.item.drCodeName,
     }
   });
-  const lists = totalNationalLists.slice(0, 12);
-  res.render('api', { lists, title, img, last, type });
+  const lists = totalLists.slice(0, 12);
+  res.render('api', { lists, title, img, last });
 });
 // 알라딘 도서 가져오기
 router.get('/aladin', async (req, res) => {
@@ -56,9 +54,8 @@ router.get('/aladin', async (req, res) => {
   const img = '/img/open/aladin-list.png';
   const length = json.item.length;
   const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
-  const type = 'aladin';
   json.item.forEach((item) => {
-    totalAladinLists[totalAladinLists.length] = {
+    totalLists[totalLists.length] = {
       title: item.title,
       author: item.author,
       publisher: item.publisher,
@@ -67,22 +64,36 @@ router.get('/aladin', async (req, res) => {
       codeName: item.categoryName,
     }
   });
-  const lists = totalAladinLists.slice(0, 12);
-  res.render('api', { lists, title, img, last, type });
+  const lists = totalLists.slice(0, 12);
+  res.render('api', { lists, title, img, last });
 })
-
+// 페이커
+router.get('/faker', async (req, res) => {
+  const url = 'http://localhost:8081/api';
+  const response = await fetch(url);
+  const json = await response.json();
+  const title = '다독가 페이커의 독서목록';
+  const img = '/img/open/faker-list.png';
+  const length = json.data.length;
+  const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
+  json.data.forEach((item) => {
+    totalLists[totalLists.length] = {
+      title: item.title,
+      author: item.author,
+      publisher: item.pub,
+      img: `http://localhost:8081/${item.img}`,
+    }
+  });
+  const lists = totalLists.slice(0, 12);
+  console.log(lists);
+  res.render('api', { lists, title, img, last });
+})
 // 추천 도서 페이지네이션
 router.post('/list', async (req, res) => {
   const page = req.body.page;
-  const type = req.body.type;
   const start = (page - 1) * 12;
   const end = start + 11;
-  let lists;
-  if(type === 'aladin') {
-    lists = totalAladinLists.slice(start, end + 1);
-  } else if(type === 'national') {
-    lists = totalNationalLists.slice(start, end + 1);
-  }
+  const lists = totalLists.slice(start, end + 1);
   res.json({
     lists: JSON.stringify(lists),
   });

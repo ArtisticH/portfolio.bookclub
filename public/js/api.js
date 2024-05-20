@@ -24,6 +24,29 @@ class API {
     });
     this.$wishlist = document.querySelector('.api-wishlist');
     this.$wishlist.onclick = this.wishlist.bind(this);
+    this.$folders = document.getElementById('folders');
+    this.$folderEmpty = document.querySelector('.folders-main-empty');
+    this.$folderCancels = document.querySelectorAll('.folders-cancel-box');
+    [...this.$folderCancels].forEach(item => {
+      item.onclick = this.folderCancel.bind(this);
+    });
+    this.$addFolders = document.querySelectorAll('.folders-add-folder');
+    [...this.$addFolders].forEach(item => {
+      item.onclick = this.showAddForm.bind(this);
+    });
+    this.$folderForm = document.querySelector('.folders-main-form');
+    this.$labelClone = document.querySelector('.folders-main-label.clone');
+    this.$labelBox = document.querySelector('.label-box');
+    this.$add = document.getElementById('add');
+    // 새로운 폴더 등록
+    this.$add.onsubmit = this.addFolder.bind(this);
+    this.searchParams = new URL(location.href).searchParams;
+    this.alert = this.alert.bind(this);
+    this.$clickedLists = null;
+    this.$lists = [];
+    // 기존 폴더에 추가
+    this.$folders.onsubmit = this.existingFolder.bind(this);
+
   }
   pagenation(e) {
     const target = e.target.closest('.api-page-btn');
@@ -94,6 +117,7 @@ class API {
     c.querySelector('.list-date').textContent = obj.date;
     c.querySelector('.list-codename').textContent = obj.codeName;
     c.querySelector('.list-img').src = obj.img;
+    c.onclick = this.clickBox;
     return c;
   }
   async btnChangePage() {
@@ -117,17 +141,124 @@ class API {
     const target = e.currentTarget;
     target.classList.toggle('clicked', !target.classList.contains('clicked'));
   }
-  wishlist() {
+  async wishlist() {
     if(!this._userId) {
       alert('로그인 후 이용 가능합니다');
       return;
     }
     const children = [...this.$main.children];
-    const lists = children.filter(item => {
+    this.$clickedLists = children.filter(item => {
       return item.classList.contains('clicked');
     });
+    if(this.$clickedLists.length == 0) {
+      alert('도서를 클릭해주세요.');
+      return;
+    }
+    this.$clickedLists.forEach(item => {
+      this.$lists[this.$lists.length] = {
+        title: item.querySelector('.list-title').textContent,
+        author: item.querySelector('.list-author').textContent,
+        img: item.querySelector('.list-img').src,
+      }
+    });
     // 데이터베이스에 반영
+    // 우선 폴더 목록과 새로운 폴더 생성 폼 보여주기
+    [...this.$labelBox.children].forEach(item => {
+      item.remove();
+    })  
+    this.$folders.hidden = false;
+    const res = await axios.get(`/open/wishlist/${this._userId}`);
+    const folders = JSON.parse(res.data.folders);
+    if(folders.length === 0) {
+      this.$folderEmpty.hidden = false;
+      this.$folderForm.hidden = true;
+    } else {  
+      this.$folderForm.hidden = false;
+      this.$folderEmpty.hidden = true;
+      folders.forEach(item => {
+        this.$labelBox.append(this.labelDOM(this.$labelClone.cloneNode(true), item));
+      });
+    }
+  }
+  folderCancel(e) {
+    const form = e.target.closest('.root');
+    if(form.id === 'add') {
+      form.querySelector('.folder-add-form-input').value = '';
+      const labels = form.querySelectorAll('label > input');
+      [...labels].forEach(item => {
+        item.checked = false;
+      });
+    }
+    form.hidden = true;
+  }
+  showAddForm() {
+    this.$add.hidden = false;
+    this.$folders.hidden = true;
+  }
+  labelDOM(c, obj) {
+    c.className = 'folders-main-label';
+    c.hidden = false;
+    c.querySelector('span').textContent = obj.title;
+    c.querySelector('.folders-main-count').textContent = obj.count;
+    c.querySelector('.folders-main-title > input').value = obj.id;
+    return c;
+  }
+  async addFolder(e) {
+    e.preventDefault();
+    const title = e.target.folder.value;
+    const isPublic = e.target.isPublic.value;
+    // 폴더 추가 후 거기에 저장
+    const res = await axios.post('/open/folder', {
+      MemberId: this._userId,
+      title,
+      isPublic,
+      lists: JSON.stringify(this.$lists),
+    });
+    this.$add.querySelector('.folder-add-form-input').value = '';
+    const labels = this.$add.querySelectorAll('label > input');
+    [...labels].forEach(item => {
+      item.checked = false;
+    });
+    this.$add.hidden = true;
+    const children = [...this.$main.children];
+    children.forEach(item => {
+      if(item.classList.contains('clicked')) {
+        item.classList.remove('clicked');
+      };
+    });
+    alert('등록이 완료되었습니다!');
+  }
+  async existingFolder(e) {
+    e.preventDefault();
+    const FolderId = e.target.folder.value;
+    const res = await axios.post('/open/exist', {
+      lists: JSON.stringify(this.$lists),
+      FolderId,
+      MemberId: this._userId,
+    });
+    [...this.$labelBox.children].forEach(item => {
+      item.remove();
+    })  
+    this.$folders.hidden = true;
+    const children = [...this.$main.children];
+    children.forEach(item => {
+      if(item.classList.contains('clicked')) {
+        item.classList.remove('clicked');
+      };
+    });
+    alert('등록이 완료되었습니다!');
+  }
+  alert() {
+    if(this.searchParams.has('login')) {
+      switch(this.searchParams.get('login')) {
+        case 'need':
+          alert('로그인이 필요합니다.');
+          break;
+      }
+    } 
   }
 }
 
-new API();
+const api = new API();
+window.addEventListener('load', api.alert);
+

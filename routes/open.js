@@ -1,5 +1,7 @@
 const express = require('express');
 const xml2js = require('xml2js');
+const Folder = require('../models/folder');
+const List = require('../models/list');
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ const parseXMLToJSON = (xml) => {
 };
 
 const totalLists = [];
-
+// 추천 도서 가져오기
 router.get('/nat/rec', async (req, res) => {
   const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
   const response = await fetch(url);
@@ -44,7 +46,7 @@ router.get('/nat/rec', async (req, res) => {
   const lists = totalLists.slice(0, 12);
   res.render('api', { lists, title, img, last });
 });
-
+// 추천 도서 페이지네이션
 router.post('/nat/rec', async (req, res) => {
   const page = req.body.page;
   const start = (page - 1) * 12;
@@ -54,11 +56,11 @@ router.post('/nat/rec', async (req, res) => {
     lists: JSON.stringify(lists),
   });
 });
-
+// 소장자료 검색 페이지
 router.get('/search', (req, res) => {
   res.render('api-search');
 })
-
+// 소장 자료 검색 결과 반환
 router.post('/search', async (req, res) => {
   const target = req.body.target;
   const kwd = req.body.kwd;
@@ -83,7 +85,69 @@ router.post('/search', async (req, res) => {
   })
   res.json({
     lists,
+  });
+});
+// 폴더 내용 불러오기
+router.get('/wishlist/:memberid', async (req, res) => {
+  const MemberId = req.params.memberid;
+  const results = await Folder.findAll({
+    where: { MemberId },
+  });
+  res.json({
+    folders: JSON.stringify(results),
+  });  
+});
+// 새로운 폴더 추가
+router.post('/folder', async (req, res) => {
+  const MemberId = req.body.MemberId;
+  const title = req.body.title;
+  const isPublic = req.body.isPublic === 'public' ? true : false;
+  const lists = JSON.parse(req.body.lists);
+  if(!MemberId) {
+    res.redirect('/open/nat/rec/?login=need');
+  }
+  const folder = await Folder.create({
+    title,
+    MemberId,
+    public: isPublic,
+    count: lists.length,
+  });
+  const create = lists.map(async (item) => {
+    await List.create({
+      FolderId: folder.id,
+      title: item.title,
+      author: item.author,
+      img: item.img,
+      MemberId,
+    });
+  });
+  await Promise.all(create);
+  res.json({});
+});
+// 기존 폴더에 추가
+router.post('/exist', async (req, res) => {
+  const MemberId = req.body.MemberId;
+  const FolderId = req.body.FolderId;
+  const lists = JSON.parse(req.body.lists);
+  if(!MemberId) {
+    res.redirect('/open/nat/rec/?login=need');
+  }
+  await Folder.increment('count', {
+    by: lists.length,
+    where: { id: FolderId },
   })
+  const create = lists.map(async (item) => {
+    await List.create({
+      FolderId,
+      title: item.title,
+      author: item.author,
+      img: item.img,
+      MemberId,
+    });
+  });
+  await Promise.all(create);
+  res.json({});
 })
+
 
 module.exports = router;

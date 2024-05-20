@@ -71,5 +71,59 @@
       <div class="api-page-btn" data-dir="last">&gt;&gt;</div>
     </div>
   </section>
+  <section id="folders" hidden class="root">
+    <div class="folders-nav">
+      <div class="folders-title">폴더</div>
+      <div class="folders-cancel-box">
+        <div class="folders-cancel-left"></div>
+        <div class="folders-cancel-right"></div>
+      </div>
+    </div>
+    <div class="folders-main">
+      <div class="folders-main-empty" hidden>
+        <div class="folders-add">
+          <div class="folders-add-folder">폴더 추가</div>
+        </div>
+        <div class="folders-main-text">먼저 폴더를 추가해주세요.</div>
+      </div>
+      <form class="folders-main-form" hidden>
+        <div class="folders-add">
+          <div class="folders-add-folder">폴더 추가</div>
+        </div>
+        <div class="label-box"></div>
+        <label class="folders-main-label clone" hidden>
+          <div class="folders-main-title">
+            <input type="radio" name="folder" value="">
+            <span></span>  
+          </div>
+          <div class="folders-main-count"></div>
+        </label>  
+        <input class="form-submit" type="submit" value="등록">          
+      </form>
+    </div>
+  </section>
+  <section id="add" class="root" hidden>
+    <div class="folders-nav add">
+      <div class="folders-title">폴더 추가 후 등록</div>
+      <div class="folders-cancel-box">
+        <div class="folders-cancel-left"></div>
+        <div class="folders-cancel-right"></div>
+      </div>
+    </div>
+    <form action="" class="folder-add-form">
+      <div class="folder-add-radio">
+        <label>
+          <input id="public" type="radio" name="isPublic" value="public" checked/>
+          <span>PUBLIC</span>
+        </label>
+        <label>
+          <input id="private" type="radio" name="isPublic" value="private"/>
+          <span>PRIVATE</span>
+        </label>  
+      </div>
+      <input class="folder-add-form-input" type="text" placeholder="폴더 이름을 입력하세요" name="folder" maxlength="20">
+      <input class="form-submit" type="submit" value="등록">          
+    </form>
+  </section>
 </body>
 </html>

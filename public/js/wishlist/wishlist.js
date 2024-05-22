@@ -6,7 +6,7 @@ class Wishlist {
     /* ------------------------------------------------------------------------------------------------ */
     // 1. 오른쪽 마우스 클릭할때 폴더에 대한 메뉴 보여줄건지 아니면
     // 폴더 생성 혹은 정렬에 대한 메뉴 보여줄건지
-    this.$area = document.querySelector('.wishlist-contents');
+    this.$area = document.querySelector('.wishlist');
     this.$folderMenu = document.getElementById('folder-menu');
     this.$areaMenu = document.getElementById('area-menu');
     this.$area.oncontextmenu = this.contextmenu.bind(this);

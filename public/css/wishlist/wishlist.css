@@ -3,10 +3,21 @@
   --font-montserrat: "Montserrat", sans-serif;
   --font-poppins: "Poppins", sans-serif;
   --folder-width: 130px;
+  --folder-height: 80px;
   --folder-img-width: 70px;
 }
 
-.wishlist-contents::-webkit-scrollbar {
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+.wishlist::-webkit-scrollbar {
   display: none;
 }
 
@@ -19,7 +30,7 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
 }
 
-.wishlist {
+.wishlist-nav {
   background-color: #039754;
   border-bottom: 1px solid black;
   padding: 0 10px;
@@ -27,19 +38,15 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: space-between;
   height: 25px;
-  box-sizing: border-box;
 }
 
-.wishlist__home {
+.wishlist-home {
   font-size: 1rem;
   letter-spacing: -1px;
   font-family: var(--font-montserrat);
-  margin-right: 10px;
-  text-decoration: none;
-  color: black;
 }
 
-.wishlist__nick {
+.wishlist-nick {
   color: black;
   font-family: var(--font-korean);
   font-size: 1rem;
@@ -49,21 +56,19 @@ body::-webkit-scrollbar {
   text-decoration: none;
 }
 
-.wishlist-contents {
+.wishlist {
   height: calc(100vh - 25px);
-  box-sizing: border-box;
 }
 
-.wishlist-contents.grid {
+.wishlist.grid {
   display: grid;
   grid-template-columns: var(--folder-width) 1fr var(--folder-width);
-  grid-template-rows: repeat(auto-fill, 80px);
+  grid-template-rows: repeat(auto-fill, var(--folder-height));
   padding: 25px 0;
   row-gap: 35px;
 }
 
 .wishlist-empty {
-  box-sizing: border-box;
   height: 100%;
   width: 100%;
   font-family: var(--font-korean);

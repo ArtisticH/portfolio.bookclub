@@ -15,12 +15,12 @@
 </head>
 <body>
   <section id="wishlist" data-total-folder="{{folders.length}}" data-user-id="{{user.id}}">
-    <div class="wishlist">
-      <a href="/" class="wishlist__home">HOME</a>
-      <a href="/member/{{member.id}}" class="wishlist__nick">{{member.nick}}</a>  
+    <div class="wishlist-nav">
+      <a href="/" class="wishlist-home">HOME</a>
+      <a href="/member/{{member.id}}" class="wishlist-nick">{{member.nick}}</a>  
     </div>
     {% if folders.length == 0 %}
-    <div class="wishlist-contents">
+    <div class="wishlist">
       <div class="wishlist-empty">오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
       <a class="wishlist-folder done" hidden>
         <div class="wishlist-folder__img-box">
@@ -38,7 +38,7 @@
       </a>  
     </div> 
     {% else %}
-    <div class="wishlist-contents grid">
+    <div class="wishlist grid">
       {% for folder in folders %}
       <a class="wishlist-folder" data-folder-id="{{folder.id}}" data-public="{{folder.public}}" data-createdat="{{folder.createdAt}}" data-updatedat="{{folder.updatedAt}}">
         <div class="wishlist-folder__img-box">

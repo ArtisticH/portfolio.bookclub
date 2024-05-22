@@ -8,32 +8,13 @@ router.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-// 데이터베이스에 폴더의 분류 방법을 저장
-router.post('/sort', async (req, res) => {
-  const sort = req.body.sort;
-  const MemberId = req.body.MemberId;
-  const order = req.body.order;
-  const result = await Sort.findOne({
-    where: { MemberId },
-  });
-  if(!result) {
-    await Sort.create({
-      sort,
-      order,
-      MemberId
-    });  
-  } else {
-    await Sort.update({
-      sort,
-      order,
-    }, {
-      where: { MemberId },
-    });  
-  }
-  res.json({});  
-});
+
 // 처음에 내려줄때
 router.get('/:memberid', async (req, res) => {
+  // if(!req.user) {
+  //   res.redirect('/?wishlist=login');
+  //   return;
+  // }
   const id = req.params.memberid;
   const member = await Member.findOne({
     where: { id },
@@ -75,7 +56,7 @@ router.get('/:memberid', async (req, res) => {
     where: { MemberId: id },
     attributes: ['count', 'public'],
   });
-  res.render('wishlist', {
+  res.render('wishlist/wishlist', {
     folders,
     done,
     member,
@@ -173,7 +154,30 @@ router.patch('/public', async (req, res) => {
     res.json({ folder });  
   }
 });
-
+// 데이터베이스에 폴더의 분류 방법을 저장
+router.post('/sort', async (req, res) => {
+  const sort = req.body.sort;
+  const MemberId = req.body.MemberId;
+  const order = req.body.order;
+  const result = await Sort.findOne({
+    where: { MemberId },
+  });
+  if(!result) {
+    await Sort.create({
+      sort,
+      order,
+      MemberId
+    });  
+  } else {
+    await Sort.update({
+      sort,
+      order,
+    }, {
+      where: { MemberId },
+    });  
+  }
+  res.json({});  
+});
 
 
 module.exports = router;

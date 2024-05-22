@@ -59,33 +59,36 @@ class Book {
     // 일단 현재 페이지는 항상 1로
     this.$current = [...this.$number][0];
     this.$current.classList.add('clicked');
+    this._direction = null;
+    this._cur = 1;
+    this._ex = null;
     // 더보기 버튼
-    this.$moreBtns = document.querySelectorAll('.review-box__more');
+    this.$moreBtns = document.querySelectorAll('.more-btn');
     [...this.$moreBtns].forEach(btn => {
       btn.addEventListener('click', this.more);
     });
     // 공감 버튼
-    this.$heartBtns = document.querySelectorAll('.review-box__heart');
+    this.$heartBtns = document.querySelectorAll('.heart');
     this.heart = this.heart.bind(this);
     [...this.$heartBtns].forEach(btn => {
       btn.addEventListener('click', this.heart);
     })
-    // 수정
-    this.$editBtns = document.querySelectorAll('.review-box__info__edit');
+    // 수정 버튼
+    this.$editBtns = document.querySelectorAll('.rebox__edit');
     this.edit = this.edit.bind(this);
     [...this.$editBtns].forEach(btn => {
       btn.addEventListener('click', this.edit);
     });
     this.$edit = null;
-    // 삭제
-    this.$deleteBtns = document.querySelectorAll('.review-box__info__delete');
+    // 삭제 버튼
+    this.$deleteBtns = document.querySelectorAll('.rebox__delete');
     this.delete = this.delete.bind(this);
     [...this.$deleteBtns].forEach(btn => {
       btn.addEventListener('click', this.delete);
     });
-    /* --------------------------------------------------------------------------------------------------------- */
-}
-  /* --------------------------------------------------------------------------------------------------------- */
+    this.searchParams = new URL(location.href).searchParams;
+    this.alert = this.alert.bind(this);
+  }
   showForm(e) {
     if(this._userId) {
       // 로그인한 상태
@@ -340,155 +343,192 @@ class Book {
       });  
     }
   }
+
   pagenation(e) {
     const target = e.target;
     if(target.className === 'page-number') {
-      // this.clickNumbers(target);
+      this.direction(target);
+      this.number(target);
     } else if(target === this.$after) {
-      // this.clickAfter(target);
+      this.after(target);
     } else if(target === this.$before) {
-      // this.clickBefore();
+      this.before(target);
     } else if(target === this.$last) {
-      // this.clickLast();
+      this.last();
     } else if(target === this.$first) {
-      // this.clickFirst();
+      this.first();
     }
   }
 
-  async clickNumbers(target) {
-    this.$ex = this.$current;
-    this.$current = target;
-    const before = +this.$ex.textContent;
-    const after = +this.$current.textContent;
-    const direction = after > before ? 'right' : 'left';
-    // 4이상일때부터 4가 가운데로, 오른쪽으로 이동
-    if(direction === 'right' && this.$current.textContent >= 4 && this.$current.textContent <= this._lastPage - 2) {
-      this.middleSetting();
-    } else if(direction === 'left' && this.$current.textContent >= 3 && this.$current.textContent < this._lastPage - 2) {
-      this.middleSetting();
+  direction(target) {
+    this._ex = +this.$current.textContent;
+    this._cur = +target.textContent;
+    this._direction = this._ex < this._cur ? 'right' : 'left';
+  }
+
+  number(target) {
+    if(this._direction === 'right') {
+      this.right(target);
+    } else if(this._direction === 'left') {
+      this.left(target);
     }
-    this.$ex.classList.remove('clicked');
-    this.$current.classList.add('clicked');   
     this.getReviews();
-    this.pageIcons();
   }
 
-  middleSetting() {
-    const middle = +this.$current.textContent;
-    const arr = [
-      middle - 2,
-      middle - 1,
-      middle,
-      middle + 1,
-      middle + 2
-    ];
-    [...this.$number].forEach((item, index) => {
-      item.hidden = false;
-      item.textContent = arr[index];
-    });
-    this.$current = [...this.$number][2];
+  right(target) {
+    this.$ex = this.$current;
+    this.$ex.classList.remove('clicked');
+    if(this._cur >= 4 && this._cur < this._lastPage - 2) {
+      // 4이상 클릭하고, (마지막 페이지 - 2)보다 같거나 작은 경우
+      this.middle(this._cur);
+      this.$current = [...this.$number][2];
+    } else if(this._cur >= this._lastPage - 2 && this._cur <= this._lastPage) {
+      // (마지막 페이지 - 2)보다 크고 마지막 페이지보다 작은 경우
+      const center = this._lastPage - 2;
+      this.middle(center);
+      [...this.$number].forEach((item) => {
+        if(+item.textContent === this._cur) {
+          this.$current = item;
+        }
+      });
+    } else {
+      // 1, 2, 3, 4, 5에서 1, 2, 3 클릭하는 경우
+      this.$current = target;
+    }
+    this.$current.classList.add('clicked');   
+  }
+
+  left(target) {
+    this.$ex = this.$current;
+    this.$ex.classList.remove('clicked');
+    if(this._cur >= 4 && this._cur < this._lastPage - 2) {
+      this.middle(this._cur);
+      this.$current = [...this.$number][2];
+    } else if(this._cur <= 3 && this._cur >= 1) {
+      const center = 3;
+      this.middle(center);
+      [...this.$number].forEach((item) => {
+        if(+item.textContent === this._cur) {
+          this.$current = item;
+        }
+      });
+    } else {
+      this.$current = target;
+    }
+    this.$current.classList.add('clicked');   
+  }
+
+  middle(num) {
+    if(this._lastPage <= 4) {
+      [...this.$number].forEach((item, index) => {
+        if(index + 1 <= this._lastPage) {
+          item.hidden = false;
+          item.textContent = index + 1;  
+        } else {
+          item.hidden = true;
+        }
+      });  
+    } else {
+      const arr = [num - 2, num - 1, num, num + 1, num + 2];
+      [...this.$number].forEach((item, index) => {
+        item.hidden = false;
+        item.textContent = arr[index];
+      });
+    }
   }
 
   async getReviews() {
-    const res = await axios.get(`/review/page/${this._bookId}/${this.$current.textContent}`);
+    const res = await axios.get(`/review/page/${this._bookId}/${this._cur}`);
     const reviews = res.data.reviews;
     [...this.$reivewContainer.children].forEach(item => {
       item.remove();
     });
-    [...reviews].forEach(item => {
+    reviews.forEach(item => {
       this.$reivewContainer.append(this.reviewDOM(this.$clone.cloneNode(true), item));
     });
   }
 
-  pageIcons() {
-    // 1, 2이상이고 현재 페이지가 2이상일때 왼쪽 아이콘 활성화
-    if(this._lastPage >= 2 && this.$current.textContent >= 2) {
-      this.$beforeIcon.hidden = false;
+  right(target) {
+    this.$ex = this.$current;
+    this.$ex.classList.remove('clicked');
+    if(this._cur >= 4 && this._cur < this._lastPage - 2) {
+      // 4이상 클릭하고, (마지막 페이지 - 2)보다 같거나 작은 경우
+      this.middle(this._cur);
+      this.$current = [...this.$number][2];
+    } else if(this._cur >= this._lastPage - 2 && this._cur <= this._lastPage) {
+      // (마지막 페이지 - 2)보다 크고 마지막 페이지보다 작은 경우
+      const center = this._lastPage - 2;
+      this.middle(center);
+      [...this.$number].forEach((item) => {
+        if(+item.textContent === this._cur) {
+          this.$current = item;
+        }
+      });
     } else {
-      this.$beforeIcon.hidden = true;
-    }    
+      // 1, 2, 3, 4, 5에서 1, 2, 3 클릭하는 경우
+      this.$current = target;
+    }
+    this.$current.classList.add('clicked');   
+  }
+
+  after(target) {
     if(this.$current.textContent == this._lastPage) {
-      this.$lastIcon.hidden = true;
-      this.$afterIcon.hidden = true;
-    } else {
-      this.$lastIcon.hidden = false;
-      this.$afterIcon.hidden = false;
+      alert('마지막 페이지입니다');
+      return;
     }
-    if(this._totalReview > 25 && this.$current.textContent >= 4) {
-      this.$firstIcon.hidden = false;
-    } else {
-      this.$firstIcon.hidden = true;
-    }
-  }
-
-  clickAfter() {
-    this.$ex = this.$current;
-    this.$current = this.$ex.nextElementSibling;
-    // 4이상일때부터 4가 가운데로, 
-    if(this.$current.textContent >= 4 && this.$current.textContent <= this._lastPage - 2) {
-      this.middleSetting();
-    } 
-    this.$ex.classList.remove('clicked');
-    this.$current.classList.add('clicked');   
+    target = this.$current.nextElementSibling;
+    this._cur = +target.textContent;
+    this.right(target);
     this.getReviews();
-    this.pageIcons();
   }
 
-  clickBefore() {
-    this.$ex = this.$current;
-    this.$current = this.$ex.previousElementSibling;
-    if(this.$current.textContent >= 3 && this.$current.textContent < this._lastPage - 2) {
-      this.middleSetting();
+  before(target) {
+    if(this.$current.textContent == 1) {
+      alert('첫 페이지입니다');
+      return;
     }
-    this.$ex.classList.remove('clicked');
-    this.$current.classList.add('clicked');   
+    target = this.$current.previousElementSibling;
+    this._cur = +target.textContent;
+    this.left(target);
     this.getReviews();
-    this.pageIcons();
   }
 
-  clickLast() {
+  last() {
+    if(this.$current.textContent == this._lastPage) {
+      alert('마지막 페이지입니다');
+      return;
+    }
     this.$ex = this.$current;
-    const last = this._lastPage;
-    const arr = [
-      last - 4,
-      last - 3,
-      last - 2,
-      last - 1,
-      last,
-    ];
-    [...this.$number].forEach((item, index) => {
-      item.hidden = false;
-      item.textContent = arr[index];
-    });
+    this.$ex.classList.remove('clicked');
+    this.middle(this._lastPage - 2);
     this.$current = [...this.$number][4];
-    this.$ex.classList.remove('clicked');
     this.$current.classList.add('clicked');   
+    this._cur = +this.$current.textContent;
     this.getReviews();
-    this.pageIcons();
   }
 
-  clickFirst() {
+  first() {
+    if(this.$current.textContent == 1) {
+      alert('첫 페이지입니다');
+      return;
+    }
     this.$ex = this.$current;
-    [...this.$number].forEach((item, index) => {
-      item.hidden = false;
-      item.textContent = index + 1;
-    });
-    this.$current = [...this.$number][0];
     this.$ex.classList.remove('clicked');
+    this.middle(3);
+    this.$current = [...this.$number][0];
     this.$current.classList.add('clicked');   
+    this._cur = +this.$current.textContent;
     this.getReviews();
-    this.pageIcons();
   }  
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 6. 더보기
+  // 더보기 버튼
   more(e) {
     // 현재 리뷰 박스
-    const $box = e.target.closest('.review-box');
+    const $box = e.target.closest('.rebox');
     // 더보기가 클릭이 됐다는 건 텍스트가 한도를 넘었다는 뜻, 
     // 그럼 slice버전과 original버전 두개임
     // 텍스트 요소 배열과 화살표 요소
-    const $texts = [...$box.querySelectorAll('.review-box__text')];
-    const $arrow = $box.querySelector('.review-box__more__arrow');
+    const $texts = [...$box.querySelectorAll('.rebox__text')];
+    const $arrow = $box.querySelector('.more-btn__arrow');
     // 두번째 요소가 닫혀있는게 기본값
     // 만약 slice를 보여주고 있다면
     if($texts[1].hidden) {
@@ -505,20 +545,22 @@ class Book {
       $arrow.style.transform = '';
     }
   }
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 7. 공감
+  // 공감
   async heart(e) {
     // 로그인 안했으면 접근 금지
     if(!this._userId) {
       alert('로그인 후 이용해주세요');
       return;
     }
-    const box = e.currentTarget.closest('.review-box');
-    const id = box.dataset.reviewId;
+    const $box = e.currentTarget.closest('.rebox');
+    const id = $box.dataset.reviewId;
     // 위로 올라가는 하트
-    const $img = box.querySelector('.review-box__heart__img');
-    const $like = box.querySelector('.review-box__heart__total');
-    const res = await axios.post(`/review/like`, { id });
+    const $img = $box.querySelector('.heart-img');
+    const $like = $box.querySelector('.heart-total');
+    const res = await axios.post(`/review/like`, {
+      MemberId: this._userId,
+      ReviewId: id,
+    });
     // 서버에서 보내온 클릭해도 되는지 안되는지 여부
     const clickAllowed = res.data.clickAllowed;
     if(clickAllowed) {
@@ -528,19 +570,20 @@ class Book {
       $img.classList.add('back');
     } else {
       // 이미 클릭한 상태라면, 클릭한 거 취소
-      const res = await axios.post(`/review/like/cancel`, { id });
+      const res = await axios.post(`/review/like/cancel`, {
+        MemberId: this._userId,
+        ReviewId: id,  
+      });
       $like.textContent = res.data.like;
       $img.classList.remove('back');
     }
   }
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 9. 수정
+  // 수정
   // 수정 버튼 클릭하면 다시 입력 폼이 나오고, 
   // 그 입력 폼 버튼 클릭하면 수정 내용이 서버에 전송된다.
   async edit(e) {
     // 수정 버튼
-    const target = e.currentTarget;
-    const box = target.closest('.review-box');
+    const box = e.target.closest('.rebox');
     this.$edit = box;
     const reviewId = box.dataset.reviewId;
     // $form에 해당 리뷰 id부여 => 폼 전송시 해당 리뷰 수정하도록,
@@ -552,69 +595,61 @@ class Book {
     // 그 데이터를 리뷰 폼에 입력한 상태로 리뷰 폼 보여주기
     this.$form.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    this.$form.onsubmit = this.submit; 
     this.$inputTitle.value = review.title;
     this.$textarea.value = review.text;
-    if(review.title.length > 0) this._titleCheck = true;
-    if(review.text.length > 0) this._textCheck = true;
+    this._formStar = review.stars;
+    this._textCheck = true;
+    this._titleCheck = true;
     // 텍스트 현재 글자 수 노출
     this.$textareaLength.textContent = review.text.length;
     // 현재 평점 노출
     [...this.$formStars.children].forEach((item, index) => {
-      if(index + 1 <= review.stars) {
+      if(index + 1 <= this._formStar) {
         item.style.opacity = '1';
-      } else if(index + 1 > review.stars) {
+      } else if(index + 1 > this._formStar) {
         item.style.opacity = '';
       }
     });
-    this._formStar = review.stars;
-    // 그리고 수정 후 전송하려면 다시 submit으로 이동 
   }
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 9 - 1. 수정을 요소에 반영
-  // c는 해당 review-box
   editDOM(c, obj) {
     // 제목, 텍스트, overText, stars, updatedAt수정
-    c.querySelector('.review-box__title').textContent = obj.title;
-    // 기존의 class를 review-box__info__stars__star만 남기고 추가해야
-    [...c.querySelectorAll('.review-box__info__stars__star')].forEach((item, index) => {
-      item.className = 'review-box__info__stars__star';
+    c.querySelector('.rebox__title').textContent = obj.title;
+    [...c.querySelectorAll('.rebox__star')].forEach((item, index) => {
+      item.className = 'rebox__star';
       item.classList.add(`${obj.stars[index]}`);
     });
-    c.querySelector('.review-box__info__updatedDate').textContent = obj.updatedAt;
-    c.querySelectorAll('.review-box__text')[0].hidden = false;
-    c.querySelectorAll('.review-box__text')[1].hidden = true;
+    c.querySelector('.rebox__updatedDate').textContent = obj.updatedAt;
+    c.querySelectorAll('.rebox__text')[0].hidden = false;
+    c.querySelectorAll('.rebox__text')[1].hidden = true;
     if(!obj.text.slice) {
       // original 보여준다.
-      c.querySelectorAll('.review-box__text')[0].textContent = obj.text.original;
+      c.querySelectorAll('.rebox__text')[0].textContent = obj.text.original;
     } else {
       // 200자를 넘어서 slice를 보여준다.
-      c.querySelectorAll('.review-box__text')[0].textContent = `${obj.text.slice}...`;
-      c.querySelectorAll('.review-box__text')[1].textContent = obj.text.original;
+      c.querySelectorAll('.rebox__text')[0].textContent = `${obj.text.slice}...`;
+      c.querySelectorAll('.rebox__text')[1].textContent = obj.text.original;
     }
     if(!obj.overText) {
-      c.querySelector('.review-box__more').hidden = true;
+      c.querySelector('.more-btn').hidden = true;
     } else {
-      c.querySelector('.review-box__more').hidden = false;
+      c.querySelector('.more-btn').hidden = false;
     }
   }
   /* --------------------------------------------------------------------------------------------------------- */
-  // 10. 삭제
+  // 삭제
   async delete(e) {
-    const target = e.currentTarget;
-    const box = target.closest('.review-box');
+    const box = e.target.closest('.rebox');
     const reviewId = box.dataset.reviewId;
     box.remove();
     // 삭제
     await axios.delete(`/review/${reviewId}`);
-    this._totalReview--;
-    this.$totalReview.textContent = this._totalReview;
-    const currentPage = this.$current.textContent;
-    // totalReview가 5개 초과면 하나를 추가해야 하지만
-    // 5개 이하면 하나 추가하지 않는다. 
-    console.log(currentPage, this._lastPage)
-    if(this._totalReview > 5 && +currentPage !== this._lastPage) {
-      console.log('??')
-      const res = await axios.get(`/review/delete/${this._bookId}/${currentPage}`);
+    this.$totalReview.textContent = --this._totalReview;
+    // 삭제후 totalReview가 5개 이상이면 하나를 추가해야 하지만
+    // 5개 미만이면 추가하지 않는다. 
+    // 그리고 마지막 페이지에서 삭제했다면 뭘 추가할 필요가 없다. 
+    if(this._totalReview >= 5 && this._cur !== this._lastPage) {
+      const res = await axios.get(`/review/delete/${this._bookId}/${this._cur}`);
       const review = res.data.review;   
       // 가장 마지막에 추가
       this.$reivewContainer.append(this.reviewDOM(this.$clone.cloneNode(true), review));
@@ -622,35 +657,48 @@ class Book {
     // 마지막 페이지에서 삭제하면 요소 추가 없이 그냥 사라지고
     // 마지막 페이지의 단 하나를 삭제했을때
     // 페이지를 그 전으로 전환한다.
-    if(+currentPage === this._lastPage && [...this.$reivewContainer.children].length == 0) {
-      const last = this._lastPage - 1;
-      const arr = [
-        last - 4,
-        last - 3,
-        last - 2,
-        last - 1,
-        last,
-      ];
-      [...this.$number].forEach((item, index) => {
-        item.hidden = false;
-        item.textContent = arr[index];
-      });
-      this.$current = [...this.$number][4];
+    if(this._cur == this._lastPage && [...this.$reivewContainer.children].length == 0) {
+      const num = this._lastPage - 1;
+      this._cur = this._lastPage - 1;
+      if(num <= 4) {
+        [...this.$number].forEach((item, index) => {
+          if(index + 1 <= num) {
+            item.hidden = false;
+            item.textContent = index + 1;  
+          } else {
+            item.hidden = true;
+          }
+        });  
+        this.$current = [...this.$number][num - 1];
+      } else {
+        const arr = [num - 4, num - 3, num - 2, num - 1, num];
+        [...this.$number].forEach((item, index) => {
+          item.hidden = false;
+          item.textContent = arr[index];
+        });  
+        this.$current = [...this.$number][4];
+      }
       this.$ex.classList.remove('clicked');
       this.$current.classList.add('clicked');   
       this.getReviews();
-      this.pageIcons();  
     }
     this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
+    this.showPage();
   }
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 11. 첫 리뷰 등록 후 보이는 화면
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 12. 페이지 버튼 클릭 시
+  alert() {
+    if(this.searchParams.has('login')) {
+      switch(this.searchParams.get('login')) {
+        case 'need':
+          alert('로그인을 다시 진행해주세요');
+          break;
+      }
+    }
+  }
 }
 
 
 const book = new Book();
 book.showPage();
+window.addEventListener('load', book.alert);
 
 

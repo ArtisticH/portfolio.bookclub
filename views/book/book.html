@@ -89,7 +89,15 @@
             <div class="rebox__updatedDate rebox--common">{{review.updatedAt}}</div>
             <!-- 현재 로그인한 회원과 작성 회원이 같다면 -->
             {% if user.id == review.MemberId %} 
-            <div class="rebox__user" >
+            <div class="rebox__user">
+              <div class="rebox__line"></div>
+              <div class="rebox__edit rebox--common">수정</div>
+              <div class="rebox__line"></div>
+              <div class="rebox__delete rebox--common">삭제</div>  
+            </div>
+            {% else %}
+            <!-- 업데이트 시에 -->
+            <div class="rebox__user" hidden>
               <div class="rebox__line"></div>
               <div class="rebox__edit rebox--common">수정</div>
               <div class="rebox__line"></div>
@@ -109,6 +117,11 @@
           <div class="rebox__bottom">
             {% if review.overText %}
             <div class="more-btn">
+              <div class="more-btn__text">더보기</div>
+              <img class="more-btn__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
+            </div>
+            {% else %}
+            <div class="more-btn" hidden>
               <div class="more-btn__text">더보기</div>
               <img class="more-btn__arrow" src="/img/book/review-arrow.png" alt="review-arrow">
             </div>

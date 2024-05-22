@@ -1,9 +1,9 @@
 const express = require('express');
-const Review = require('../models/review');
-const Book = require('../models/book');
-const Member = require('../models/member');
-const db = require('../models');
-const { date, star } = require('../routes/tools');
+const Review = require('../../models/review');
+const Book = require('../../models/book');
+const Member = require('../../models/member');
+const db = require('../../models');
+const { date, star } = require('../middlewares');
 
 const router = express.Router();
 
@@ -15,6 +15,10 @@ router.use((req, res, next) => {
 // 리뷰 등록
 router.post('/', async (req, res) => {
   try {
+    if(!req.user) {
+      res.redirect('/book?login=need');
+      return;
+    }
     // 리뷰 등록
     const created = await Review.create({
       title: req.body.title,
@@ -67,14 +71,15 @@ router.post('/', async (req, res) => {
     console.error(err);
   }
 });
-
+// 좋아요 눌렀을때
 router.post('/like', async (req, res) => {
-  const ReviewId = req.body.id;
+  const ReviewId = req.body.ReviewId;
+  const MemberId = req.body.MemberId
   // 먼저 해당 리뷰 글에 작성자가 하트를 클릭한 적 있는지 검사
   const result = await db.sequelize.models.ReviewLike.findOne({
     where: {
       ReviewId,
-      MemberId: req.user.id,  
+      MemberId,  
     }
   });
   // 클릭한적있다면(결과가있다면) clickAllowed = false이고
@@ -85,7 +90,7 @@ router.post('/like', async (req, res) => {
     // ReviewLike에 관계 추가
     await db.sequelize.models.ReviewLike.create({
       ReviewId,
-      MemberId: req.user.id,
+      MemberId,
     });
     // like값 1 증가
     await Review.increment('like', {
@@ -104,9 +109,10 @@ router.post('/like', async (req, res) => {
     res.json({ clickAllowed });
   }
 });
-
+// 좋아요 취소
 router.post('/like/cancel', async (req, res) => {
-  const ReviewId = req.body.id;
+  const ReviewId = req.body.ReviewId;
+  const MemberId = req.body.MemberId
   // 좋아요 취소
   await Review.decrement('like', {
     by: 1,
@@ -115,7 +121,7 @@ router.post('/like/cancel', async (req, res) => {
   await db.sequelize.models.ReviewLike.destroy({
     where: {
       ReviewId,
-      MemberId: req.user.id,  
+      MemberId, 
     },
   });
   const result = await Review.findOne({
@@ -124,7 +130,6 @@ router.post('/like/cancel', async (req, res) => {
   });
   res.json({ like: result.like });
 });
-
 // 클라이언트에서 수정 버튼 누르면 해당 데이터가 담긴 리뷰 폼을 띄우기 위해
 // 해당 데이터를 보내줘야 한다.
 router.get('/:reviewid', async(req, res) => {
@@ -134,7 +139,6 @@ router.get('/:reviewid', async(req, res) => {
   });
   res.json({ review });  
 });
-
 // 업데이트
 router.patch('/', async (req, res) => {
   try {
@@ -167,7 +171,7 @@ router.patch('/', async (req, res) => {
       title: result.title,
       text,
       overText: result.overText,
-      stars: rate(result.stars),
+      stars: star(result.stars).starArr,
       updatedAt: date(result.updatedAt),
     };
     res.json({ review });  
@@ -175,7 +179,6 @@ router.patch('/', async (req, res) => {
     console.error(err);
   }
 });
-
 // 리뷰 삭제
 router.delete('/:reviewid', async (req, res) => {
   const id = req.params.reviewid;
@@ -184,12 +187,11 @@ router.delete('/:reviewid', async (req, res) => {
   });
   res.json();
 });
-
 // 삭제 후 새로 추가할 요소를 원할때
-router.get('/delete/:bookid/:pagenumber', async(req, res) => {
+router.get('/delete/:bookid/:page', async(req, res) => {
   const id = req.params.bookid;
-  const pageNumber = req.params.pagenumber;
-  const offset = 5 * pageNumber - 1;
+  const page = req.params.page;
+  const offset = (5 * page) - 1;
   const result = await Review.findOne({
     include: [{
       model: Book,
@@ -202,6 +204,7 @@ router.get('/delete/:bookid/:pagenumber', async(req, res) => {
     limit: 1,
     offset,
   });
+  console.log(result);
   let text;
   if(result.text.length > 200) {
     text = {
@@ -220,23 +223,22 @@ router.get('/delete/:bookid/:pagenumber', async(req, res) => {
     text,
     like: result.like,
     overText: result.overText,
-    stars: rate(result.stars),
+    stars: star(result.stars).starArr,
     createdAt: date(result.createdAt),
     updatedAt: date(result.updatedAt),
     MemberId: result.Member.id,
-    type: result.Member.type.toUpperCase(),
+    type: result.Member.type,
     nick: result.Member.nick,
   };  
   res.json({ review });      
 });
-
 // 페이지 버튼 클릭 시
-router.get('/page/:bookid/:pagenumber', async (req, res) => {
+router.get('/page/:bookid/:page', async (req, res) => {
   const bookId = req.params.bookid;
-  const pageNumber = req.params.pagenumber;
+  const page = req.params.page;
   // 만약 페이지 4를 클릭하면 15개를 건너뛰고 그 다음 5개를 가져와야 한다. 
   // 만약 페이지 5를 클릭하면 20개를 건너뛰고 그 다음 5개를 가져와야 한다. 
-  const offset = 5 * (pageNumber - 1);
+  const offset = 5 * (page - 1);
   const results = await Review.findAll({
     include: [{
       model: Book,
@@ -269,11 +271,11 @@ router.get('/page/:bookid/:pagenumber', async (req, res) => {
       text,
       like: item.like,
       overText: item.overText,
-      stars: rate(item.stars),
+      stars: star(item.stars).starArr,
       createdAt: date(item.createdAt),
       updatedAt: date(item.updatedAt),
       MemberId: item.MemberId,
-      type: item.Member.type.toUpperCase(),
+      type: item.Member.type,
       nick: item.Member.nick,  
     }
   });

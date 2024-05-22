@@ -1,8 +1,8 @@
 const express = require('express');
-const Member = require('../models/member');
-const Folder = require('../models/folder');
-const List = require('../models/list');
-const DoneFolder = require('../models/donefolder');
+const Member = require('../../models/member');
+const Folder = require('../../models/folder');
+const List = require('../../models/list');
+const DoneFolder = require('../../models/donefolder');
 const { Op } = require('sequelize');
 const path = require('path');
 const multer = require('multer');

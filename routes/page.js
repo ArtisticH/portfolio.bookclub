@@ -18,7 +18,7 @@ router.get('/books', async (req, res) => {
   const books = await Book.findAll({
     attributes: ['id', 'title', 'author'],
   });
-  res.render('books', { books });
+  res.render('book/books', { books });
 });
 
 router.get('/members', async (req, res) => {
@@ -27,7 +27,7 @@ router.get('/members', async (req, res) => {
   });
   // 멤버인 애들만
   const total = members.length;
-  res.render('members', { total });
+  res.render('member/members', { total });
 });
 
 router.get('/wishlist/null', (req, res) => {
@@ -40,7 +40,7 @@ router.get('/fun', (req, res) => {
 
 router.get('/favorites', async (req, res) => {
   const favorites = await Favorite.findAll({});
-  res.render('favorite', { favorites });
+  res.render('favorite/favorite', { favorites });
 });
 
 module.exports = router;

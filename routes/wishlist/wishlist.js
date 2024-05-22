@@ -1,8 +1,8 @@
 const express = require('express');
-const Member = require('../models/member');
-const Folder = require('../models/folder');
-const Sort = require('../models/sort');
-const DoneFolder = require('../models/donefolder');
+const Member = require('../../models/member');
+const Folder = require('../../models/folder');
+const Sort = require('../../models/sort');
+const DoneFolder = require('../../models/donefolder');
 
 const router = express.Router();
 

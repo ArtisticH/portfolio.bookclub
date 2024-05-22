@@ -1,12 +1,12 @@
 const express = require('express');
-const Favorite = require('../models/favorite');
-const TS = require('../models/ts');
-const POP = require('../models/pop');
-const KPOP = require('../models/kpop');
-const KFC = require('../models/kfc');
-const HFC = require('../models/hfc');
-const HMC = require('../models/hmc');
-const KMC = require('../models/kmc');
+const Favorite = require('../../models/favorite');
+const TS = require('../../models/ts');
+const POP = require('../../models/pop');
+const KPOP = require('../../models/kpop');
+const KFC = require('../../models/kfc');
+const HFC = require('../../models/hfc');
+const HMC = require('../../models/hmc');
+const KMC = require('../../models/kmc');
 
 const router = express.Router();
 

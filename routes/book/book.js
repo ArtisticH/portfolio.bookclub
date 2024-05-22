@@ -1,8 +1,8 @@
 const express = require('express');
-const Book = require('../models/book');
-const Member = require('../models/member');
-const Review = require('../models/review');
-const { date, star } = require('../routes/tools');
+const Book = require('../../models/book');
+const Member = require('../../models/member');
+const Review = require('../../models/review');
+const { date, star } = require('../middlewares');
 
 const router = express.Router();
 
@@ -35,7 +35,7 @@ router.get('/:id', async (req, res) => {
     }, 0);
     sum = Math.floor(sum * 10) / 10;
     // 소수점 0, 0,5단위로 내린 별을 배열로
-    const {starArr, starSum} = star(sum);
+    const { starArr, starSum } = star(sum);
     console.log(starArr)
     // 최신 5개를 보내
     const results = await Review.findAll({
@@ -73,7 +73,7 @@ router.get('/:id', async (req, res) => {
         nick: review.Member.nick,
       }
     });
-    res.render('book', {
+    res.render('book/book', {
       book,
       totalBook: totalBook.length,
       member,

@@ -9,15 +9,15 @@ const passport = require('passport');
 
 dotenv.config();
 const pageRouter = require('./routes/page');
-const bookRouter = require('./routes/book');
-const memberRouter = require('./routes/member');
 const authRouter = require('./routes/auth');
-const reviewRouter = require('./routes/review');
-const wishlistRouter = require('./routes/wishlist');
-const listRouter = require('./routes/list');
-const favoriteRouter = require('./routes/favorite');
+const bookRouter = require('./routes/book/book');
+const reviewRouter = require('./routes/book/review');
+const memberRouter = require('./routes/member');
+const wishlistRouter = require('./routes/wishlist/wishlist');
+const listRouter = require('./routes/wishlist/list');
+const favoriteRouter = require('./routes/favorite/favorite');
+const rankingRouter = require('./routes/favorite/ranking');
 const quotesRouter = require('./routes/quotes');
-const rankingRouter = require('./routes/ranking');
 const openRouter = require('./routes/open');
 
 const { sequelize } = require('./models');
@@ -62,9 +62,9 @@ app.use(passport.session());
 
 app.use('/', pageRouter);
 app.use('/book', bookRouter);
+app.use('/review', reviewRouter);
 app.use('/member', memberRouter);
 app.use('/auth', authRouter);
-app.use('/review', reviewRouter);
 app.use('/wishlist', wishlistRouter);
 app.use('/list', listRouter);
 app.use('/favorite', favoriteRouter);

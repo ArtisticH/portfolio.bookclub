@@ -14,22 +14,21 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="main">
-    <div class="main__top">
-      <div class="main__top-left">
-        <div class="main__top-left__title">Book Club</div>
-        <!-- 로그인 안 한 상태에서 로그인 or 회원가입 버튼 노출 -->
-        <!-- main__top-left__btn는 이벤트 위임을 위해 -->
+  <section id="index">
+    <div id="top">
+      <div class="top-left">
+        <div class="top-left__title">Book Club</div>
+        <!-- 로그인 or 회원가입 버튼 노출 -->
+        <!-- 이벤트 위임 -->
         {% if not user %}
-        <div class="main__top-left__click">
-          <div class="main__top-left__click__login main__top-left__btn" data-form="login">LOG IN</div>
-          <div class="main__top-left__click__signup main__top-left__btn" data-form="signup">SIGN UP</div>
+        <div class="top-left__btns">
+          <div class="top-left__btn" data-form="login">LOG IN</div>
+          <div class="top-left__btn" data-form="signup">SIGN UP</div>
         </div>
         {% endif %}
       </div>
       {% if not user %}
-      <!-- 로그인한 상태가 아니라면 로그인과 회원가입 폼을 노출한다. -->
-      <!-- id는 data-form-type="login"를 위해서 -->
+      <!-- 로그인 폼 -->
       <div id="login" class="form-target">
         <div id="cancel">
           <div class="cancel">
@@ -40,20 +39,15 @@
         <div class="form-target__center">
           <div class="form-target__title">LOG IN</div>
           <form class="login" method="post" action="/auth/login">
-            <div class="login__id">
-              <input class="login__input" name="email" type="email" placeholder="e-mail*">
-            </div>
-            <div class="login__pwd">
-              <input class="login__input" name="password" type="password" placeholder="password*">
-            </div>
-            <div class="login__btn">
-              <input class="login__input__button" type="submit" value="LOG IN">
-            </div>
+            <input class="form__input input--common" name="email" type="email" placeholder="e-mail*">
+            <input class="form__input input--common" name="password" type="password" placeholder="password*">
+            <input class="form__input input--common form__input--button" type="submit" value="LOG IN">
           </form>
-          <a href="/auth/kakao" class="kakao">KAKAO</a>
-          <a href="/auth/naver" class="naver">NAVER</a>    
+          <a href="/auth/kakao" class="kakao input--common">KAKAO</a>
+          <a href="/auth/naver" class="naver input--common">NAVER</a>    
         </div>
       </div> 
+      <!-- 회원가입 폼 -->
       <div id="signup" class="form-target">
         <div id="cancel">
           <div class="cancel">
@@ -64,56 +58,47 @@
         <div class="form-target__center">
           <div class="form-target__title">SIGN UP</div>
           <form class="signup" method="post" action="/auth/signup">
-            <div class="signup__id">
-              <input class="signup__input" type="email" name="email" placeholder="e-mail">
-            </div>
-            <div class="signup__nickname">
-              <input class="signup__input" type="text" name="nick" placeholder="nickname">
-            </div>
-            <div class="signup__pwd">
-              <input class="signup__input" type="password" name="password" placeholder="password">
-            </div>
-            <div class="signup__btn">
-              <input class="signup__input__button" type="submit" value="SIGN UP">
-            </div>
+            <input class="form__input input--common" type="email" name="email" placeholder="e-mail*">
+            <input class="form__input input--common" type="text" name="nick" placeholder="nickname*">
+            <input class="form__input input--common" type="password" name="password" placeholder="password*">
+            <input class="form__input input--common form__input--button" type="submit" value="SIGN UP">
           </form>  
         </div>
       </div> 
       {% endif %}  
-      <div class="main__top-right">
-        <div class="main__top-right__title">
-          <a href="/books" class="main__top-right__title1">Books.</a>
-          <a href="/books" class="main__top-right__title2">Books.</a>  
+      <div class="top-right">
+        <div id="top-right__title">
+          <a href="/books" class="top-right__title">Books.</a>
+          <a href="/books" class="top-right__title top-right__title--italic">Books.</a>  
         </div>
-        <div class="main__top-right__bottom">
-          <a href="/books" class="main__top-right__arrow">
-            <img class="main__top-right__arrow__img" src="/img/main/arrow.png" alt="arrow">
+        <div id="top-right__rest">
+          <a href="/books" class="top-right__arrow">
+            <img class="index-img" src="/img/index/arrow.png" alt="arrow">
           </a>
-          <div class="main__top-right__contents">
-            <div id="main__top-right__contents__number"><span class="main__top-right__currents__number">1</span>&nbsp;/&nbsp;4</div>
-            <div class="main__top-right__contents__scroll">Scroll</div>
+          <div class="top-right__rest">
+            <div id="top-right__number"><span class="top-right__number">1</span>&nbsp;/&nbsp;4</div>
+            <div class="top-right__scroll">Scroll</div>
           </div>  
         </div>
       </div>
     </div>
-    <div class="main__bottom">
-      <div class="main__bottom-left"></div>
-      <div class="main__bottom-right">
-        <div class="main__name">Seo Hanna</div>
-        <div class="main__name">Kim Jungkyung</div>
-        <div class="main__name">Kang Yerim</div>
-        <div class="main__name">Kim Hyuna</div>
+    <div id="bottom">
+      <div class="bottom-left"></div>
+      <div class="bottom-right">
+        <div class="bottom__name">Seo Hanna</div>
+        <div class="bottom__name">Kim Jungkyung</div>
+        <div class="bottom__name">Kang Yerim</div>
+        <div class="bottom__name">Kim Hyuna</div>
       </div>  
     </div>
-    <!-- 로그인한 후 뜨는 명함카드 -->
     {% if user and user.id %}
     <div id="user" data-user-id="{{user.id}}">
       <a href="/member/{{user.id}}" class="user__nick">{{user.nick}}</a>
-      <div class="user__wishlist-box">
+      <div id="user__wishlist">
         <div class="user__wishlist__text">CHECK YOUR WISHLIST</div>
         <a href="/wishlist/{{user.id}}" class="user__wishlist">WISHLIST</a>   
       </div>
-      <div class="user__logout-box">
+      <div id="user__logout">
         <a href="/auth/logout" class="user__logout">LOGOUT</a>   
       </div>
     </div>

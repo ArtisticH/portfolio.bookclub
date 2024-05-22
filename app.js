@@ -51,11 +51,11 @@ app.use(session({
   saveUninitialized: false,
   secret: process.env.COOKIE_SECRET,
   cookie: {
+    expires: new Date(Date.now() + 7200000),
     httpOnly: true,
     secure: false,
-    maxAge: 7200000,
   },
-  name: 'book-club',
+  name: 'BOOKCLUB',
 }));
 app.use(passport.initialize());
 app.use(passport.session());

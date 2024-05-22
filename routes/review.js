@@ -3,7 +3,7 @@ const Review = require('../models/review');
 const Book = require('../models/book');
 const Member = require('../models/member');
 const db = require('../models');
-const { date, rate } = require('../routes/tools');
+const { date, star } = require('../routes/tools');
 
 const router = express.Router();
 
@@ -13,7 +13,6 @@ router.use((req, res, next) => {
 });
 // 클라이언트에서 전송한 리뷰 정보 DB에 저장
 // 리뷰 등록
-// MemberId는 req.user.id 이용
 router.post('/', async (req, res) => {
   try {
     // 리뷰 등록
@@ -22,8 +21,8 @@ router.post('/', async (req, res) => {
       text: req.body.text,
       overText: req.body.overText,
       stars: req.body.stars,
-      BookId: req.body.bookId,
-      MemberId: req.user.id,
+      BookId: req.body.BookId,
+      MemberId: req.body.MemberId,
     });
     // 방금 등록한 컨텐츠 가져오기
     const result = await Review.findOne({
@@ -39,6 +38,7 @@ router.post('/', async (req, res) => {
     });
     let text;
     if(result.overText) {
+      // 글자 수가 많으면 우선 slice가 보여야 한다.
       text = {
         slice: result.text.slice(0, 200),
         original: result.text,
@@ -55,11 +55,11 @@ router.post('/', async (req, res) => {
       text,
       like: result.like,
       overText: result.overText,
-      stars: rate(result.stars),
+      stars: star(result.stars).starArr,
       createdAt: date(result.createdAt),
       updatedAt: date(result.updatedAt),
       MemberId: result.Member.id,
-      type: result.Member.type.toUpperCase(),
+      type: result.Member.type,
       nick: result.Member.nick,
     };
     res.json({ review });  

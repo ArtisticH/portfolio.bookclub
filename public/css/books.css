@@ -3,15 +3,19 @@
   --font-montserrat: "Montserrat", sans-serif;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 0;
   margin: 0;
-  box-sizing: border-box;
 }
 
 a {
   text-decoration: none;
   color: black;
+  display: block;
 }
 
 body::-webkit-scrollbar {
@@ -26,6 +30,8 @@ body::-webkit-scrollbar {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+/* books-left --------------------------------------------------------------------------------------------------------------------------- */
 
 .books-left {
   position: sticky;
@@ -60,24 +66,26 @@ body::-webkit-scrollbar {
   letter-spacing: -1px;
 }
 
-.back__arrow {
+.books-arrow {
   display: block;
   width: 150px;
   cursor: pointer;
   margin-top: 40px;
 }
 
-.back__arrow__img {
+.books-img {
   display: block;
   width: 100%;
 }
+
+/* books-right --------------------------------------------------------------------------------------------------------------------------- */
 
 .books-right {
   padding: 20px;
   overflow: scroll;
 }
 
-.books-right__book {
+.book {
   border: 1px solid black;
   aspect-ratio: 1 / 1.5;
   margin-bottom: 20px;
@@ -87,24 +95,24 @@ body::-webkit-scrollbar {
   cursor: pointer;
 }
 
-.books-right__book__title,
-.books-right__book__author {
+.book__title,
+.book__author {
   font-size: 1rem;
   font-family: var(--font-korean);
   letter-spacing: -1px;
 }
 
-.books-right__book__title {
+.book__title {
   font-weight: 500;
   margin-bottom: 3px;
 }
 
-.books-right__book__author {
+.book__author {
   font-weight: 300;
   margin-bottom: 5px;
 }
 
-.books-right__book__blank {
+.book__blank {
   background-color: #c8e5f4;
 }
 
@@ -119,7 +127,7 @@ body::-webkit-scrollbar {
     gap: 20px;
   }  
 
-  .books-right__book {
+  .book {
     margin-bottom: 0;
   }
 }
@@ -134,16 +142,4 @@ body::-webkit-scrollbar {
   .books-right {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
-}
-
-@media all and (min-width: 1300px) {    
-  .books-right__book__title {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-  }
-  
-  .books-right__book__author {
-    font-size: 1.2rem;
-    margin-bottom: 7px;
-  }  
 }

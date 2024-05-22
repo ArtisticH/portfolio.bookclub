@@ -6,24 +6,28 @@
   --downDistance: 1700%;
 }
 
-body {
-  padding: 0;
-  margin: 0;
+* {
   box-sizing: border-box;
-  /* 스크롤 효과 위해 */
-  height: 1000vh;
 }
 
 a {
   text-decoration: none;
   color: black;
+  display: block;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  /* 스크롤 효과 위해 */
+  height: 1000vh;
 }
 
 body::-webkit-scrollbar {
   display: none;
 }
 
-#main {
+#index {
   height: 100vh;
   /* sticky 덕분에 스크롤 효과 구현 */
   position: sticky;
@@ -31,9 +35,9 @@ body::-webkit-scrollbar {
   left: 0;
 }
 
-/* main__top --------------------------------------------------------------------------------------------------------------------------- */
+/* top --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__top {
+#top {
   height: 70%;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -41,17 +45,15 @@ body::-webkit-scrollbar {
   position: relative;
 }
 
-/* main__top-left --------------------------------------------------------------------------------------------------------------------------- */
+/* top-left --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__top-left {
-  /* .main__top-left__click에 대해 */
-  position: relative;
+.top-left {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.main__top-left__title {
+.top-left__title {
   height: 45%;
   display: flex;
   align-items: flex-end;
@@ -62,19 +64,19 @@ body::-webkit-scrollbar {
   letter-spacing: -2px;
 }
 
-.main__top-left__click {
+.top-left__btns {
   box-sizing: border-box;
-  padding: 0 10px;
-  margin-bottom: 10px;
   height: 35px;
   display: grid;
   grid-template-columns: 4fr 6fr;
   gap: 10px;
+  margin: 0 10px 10px 10px;
+  max-width: 250px;
 }
 
-.main__top-left__click__login,
-.main__top-left__click__signup {
+.top-left__btn {
   background-color: #0c3aa5;
+  border: 0.5px solid black;
   font-family: var(--font-montserrat);
   letter-spacing: -1px;
   font-size: 1.2rem;
@@ -87,23 +89,23 @@ body::-webkit-scrollbar {
   transition: color 0.2s ease-out;
 }
 
-.main__top-left__click__login:hover,
-.main__top-left__click__signup:hover {
+.top-left__btn:hover {
   color: white;
 }
 
 /* .form-target --------------------------------------------------------------------------------------------------------------------------- */
 
 .form-target {
-  /* .main__top에 대해 */
+  /* .top에 대해 */
   position: absolute;
   background-color: white;
   top: 0;
   left: 0;
+  /* 30%로 변할 값 */
   width: 50%;
   height: 100vh;
+  /* 안보임 */
   transform: translate3d(-100%, 0, 0);
-  box-sizing: border-box;
   padding: 20px;
   opacity: 0;
   visibility: hidden;
@@ -152,7 +154,6 @@ body::-webkit-scrollbar {
 
 .form-target__center {
   height: calc(100% - 25px);
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -164,80 +165,51 @@ body::-webkit-scrollbar {
   font-weight: 400;
   font-size: 1.7rem;
   letter-spacing: -1.7px;
-  margin-bottom: 10px;
 }
-
- /* <input>을 담은 <div>들 */
-.login__id,
-.login__pwd,
-.login__btn,
-.signup__id,
-.signup__nickname,
-.signup__pwd,
-.signup__btn {
+/* 공통점 */
+.input--common {
   border: 1px solid black;
-  margin-bottom: 10px;
   cursor: pointer;
   width: 100%;
+  font-family: var(--font-montserrat);
+  font-size: 1.3rem;
+  letter-spacing: -1.3px;
   max-width: 250px;
-}
-
-.login__input,
-.signup__input {
-  outline: none;
-  border: none;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: var(--font-montserrat);
-  font-size: 1.3rem;
-  letter-spacing: -1.3px;
   padding: 10px;
 }
 
-.login__input__button,
-.signup__input__button {
-  width: 100%;
-  letter-spacing: -1.3px;
-  font-size: 1.3rem;
-  font-family: var(--font-montserrat);
-  border: none;
+.form__input {
   outline: none;
-  padding: 10px;
+  display: block;
+  margin: 10px 0;
+}
+
+.form__input::placeholder {
+  font-family: var(--font-montserrat);
+  font-size: 1.3rem;
+  letter-spacing: -1.3px;
+}
+
+.form__input--button {
   background-color: black;
   color: white;
-  cursor: pointer;
-}
-
-.kakao,
-.naver {
-  width: 100%;
-  max-width: 250px;
-  box-sizing: border-box;
-  border: 1px solid black;
-  font-size: 1.3rem;
-  letter-spacing: -1.3px;
-  font-family: var(--font-montserrat);
-  text-align: center;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: 500;
-  display: block;
-  text-decoration: none;
 }
 
 .kakao {
   background-color: #fae100;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .naver {
   background-color: #02bf3a;
   color: white;
+  text-align: center;
 }
 
-/* .main__top-right --------------------------------------------------------------------------------------------------------------------------- */
+/* .top-right --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__top-right {
+.top-right {
   /* 글자가 밖으로 나가는 것에 대해 */
   overflow: hidden;
   border: 1px solid black;
@@ -245,17 +217,15 @@ body::-webkit-scrollbar {
   transition: all 0.3s ease-out;
 }
 
-.main__top-right__title {
+#top-right__title {
   height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: end;
   align-items: flex-start;
-  overflow: hidden;
 }
 
-.main__top-right__title1,
-.main__top-right__title2 {
+.top-right__title {
   margin-left: -15px;
   font-family: var(--font-Merriweather);
   font-size: 5rem;
@@ -263,77 +233,75 @@ body::-webkit-scrollbar {
   line-height: 0.9;
 }
 
-.main__top-right__title2 {
+.top-right__title--italic {
   font-style: italic;
 }
 
-.main__top-right__bottom {
+#top-right__rest {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 50%;
-  box-sizing: border-box;
   /* 타이틀과 화살표 사이 간격 */
   padding-top: 15px;
 }
 
-.main__top-right__arrow {
+.top-right__arrow {
   width: 200px;
-  display: block;
   cursor: pointer;
 }
 
-.main__top-right__arrow__img {
+.index-img {
   width: 100%;
   display: block;
 }
 
-.main__top-right__contents {
+.top-right__rest {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 0 10px 10px;
 }
 
-#main__top-right__contents__number {
+#top-right__number {
   font-family: var(--font-montserrat);
   font-size: 1.4rem;
 }
 
-.main__top-right__contents__scroll {
+.top-right__scroll {
   font-family: var(--font-Merriweather);
   font-size: 1.4rem;
-  animation: main-scroll 1s ease-out infinite alternate;
+  animation: scroll 1s ease-out infinite alternate;
 }
 
 /* 위아래로 살짝 튀어오르는 효과 */
-@keyframes main-scroll {
+@keyframes scroll {
   0% { transform: translateY(0); }
   100% { transform: translateY(-70%); }
 }
 
-/* .main__bottom --------------------------------------------------------------------------------------------------------------------------- */
+/* #bottom --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__bottom {
+#bottom {
   height: 30%;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
-/* .main__bottom-left --------------------------------------------------------------------------------------------------------------------------- */
+/* .bottom-left --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__bottom-left {
+.bottom-left {
   background-color: #0c3aa5;
   border: 1px solid black;
 }
 
-/* .main__bottom-right --------------------------------------------------------------------------------------------------------------------------- */
+/* .bottom-right --------------------------------------------------------------------------------------------------------------------------- */
 
-.main__bottom-right {
+.bottom-right {
   padding: 20px;
 }
 
-.main__name {
+.bottom__name {
   font-family: var(--font-poppins);
   font-size: 1.4rem;
   font-weight: 200;
@@ -354,27 +322,11 @@ body::-webkit-scrollbar {
   bottom: 20%;
   left: 50px;
   background-color: white;
-  box-sizing: border-box;
   padding: 10px;
-  cursor: pointer;
-}
-
-.user__nick,
-.user__logout {
-  color: black;
-}
-
-.user__wishlist {
-  color: #039754;
-  text-decoration: none;
-}
-
-.user__nick:hover,
-.user__logout:hover {
-  font-weight: 600;
 }
 
 .user__nick {
+  cursor: pointer;
   font-family: var(--font-korean);
   font-size: 1.5rem;
   font-weight: 100;
@@ -382,8 +334,8 @@ body::-webkit-scrollbar {
   width: fit-content;
 }
 
-.user__wishlist-box,
-.user__logout-box {
+#user__wishlist,
+#user__logout {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -401,37 +353,45 @@ body::-webkit-scrollbar {
   letter-spacing: -1.9px;
   font-weight: 500;
   line-height: 0.8;
+  color: #039754;
+  cursor: pointer;
 }
 
 .user__logout  {
   font-size: 1.3rem;
   letter-spacing: -1.3px;
   font-weight: 200;
+  cursor: pointer;
+}
+
+.user__nick:hover,
+.user__logout:hover {
+  font-weight: 600;
 }
 
 /* min-width: 650px --------------------------------------------------------------------------------------------------------------------------- */
 
 @media all and (min-width: 650px) {
-  .main__top,
-  .main__bottom {
+  #top,
+  #bottom {
     grid-template-columns: 3fr 7fr;
   }    
 
-  .main__top-right {
-    /* .main__top-right__contents__scroll에 대해서 */
+  .top-right {
+    /* .top-right__scroll에 대해서 */
     position: relative;
   }
   
-  .main__top-right__contents__scroll {
-    /* .main__top-right에 대해서 */
+  .top-right__scroll {
+    /* .top-right에 대해서 */
     position: absolute;
     top: 10px;
     right: 0;
-    animation: main-scroll 4s ease-out infinite;
+    animation: scroll 4s ease-out infinite;
   }
 
   /* 스크롤 텍스트가 낙수 효과처럼 내려옴 */
-  @keyframes main-scroll {
+  @keyframes scroll {
     0% { 
       transform: translateY(0);
       opacity: 1; 

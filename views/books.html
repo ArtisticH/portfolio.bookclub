@@ -18,16 +18,16 @@
         <div class="books-left__title">Books</div>
         <div class="books-left__sub">Total {{books.length}} books.</div> 
       </div>
-      <a href="/" class="back__arrow">
-        <img class="back__arrow__img" src="/img/main/back-arrow-white.png" alt="back-arrow">
+      <a href="/" class="books-arrow">
+        <img class="books-img" src="/img/index/back-arrow-white.png" alt="back-arrow">
       </a> 
     </div>
     <div class="books-right">
       {% for book in books %}
-      <a class="books-right__book" href="/book/{{book.id}}">
-        <div class="books-right__book__title">{{book.title}}</div>
-        <div class="books-right__book__author">{{book.author}}</div>
-        <div class="books-right__book__blank"></div>
+      <a class="book" href="/book/{{book.id}}">
+        <div class="book__title">{{book.title}}</div>
+        <div class="book__author">{{book.author}}</div>
+        <div class="book__blank"></div>
       </a>
       {% endfor %}
     </div>

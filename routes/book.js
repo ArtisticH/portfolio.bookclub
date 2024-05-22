@@ -2,7 +2,7 @@ const express = require('express');
 const Book = require('../models/book');
 const Member = require('../models/member');
 const Review = require('../models/review');
-const { date, rate } = require('../routes/tools');
+const { date, star } = require('../routes/tools');
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.get('/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const book = await Book.findOne({ where: { id }});
-    const totalBook = await Book.findAll({}); // 총 몇 권인지
+    const totalBook = await Book.findAll({}); 
     const member = await Member.findOne({ 
       where: { id: book.MemberId },
       attributes: ['id', 'nick'],
@@ -30,13 +30,14 @@ router.get('/:id', async (req, res) => {
     // 이 책에 대한 총 리뷰 갯수
     const totalReview = stars.length;
     // 평균 구하기
-    let starSum = [...stars].reduce((acc, cur, index, arr) => {
+    let sum = [...stars].reduce((acc, cur, index, arr) => {
       return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
     }, 0);
-    // 소수점 한 자릿수까지
-    starSum = Math.floor(starSum * 10) / 10;
+    sum = Math.floor(sum * 10) / 10;
     // 소수점 0, 0,5단위로 내린 별을 배열로
-    const starShapes = rate(starSum);
+    const {starArr, starSum} = star(sum);
+    console.log(starArr)
+    // 최신 5개를 보내
     const results = await Review.findAll({
       include: [{
         model: Book,
@@ -64,11 +65,11 @@ router.get('/:id', async (req, res) => {
         text,
         like: review.like,
         overText: review.overText,
-        stars: rate(review.stars),
+        stars: star(review.stars).starArr,
         createdAt: date(review.createdAt),
         updatedAt: date(review.updatedAt),
         MemberId: review.Member.id,
-        type: review.Member.type.toUpperCase(),
+        type: review.Member.type,
         nick: review.Member.nick,
       }
     });
@@ -77,7 +78,7 @@ router.get('/:id', async (req, res) => {
       totalBook: totalBook.length,
       member,
       starSum,
-      starShapes,
+      starArr,
       reviews,
       totalReview,
     });  

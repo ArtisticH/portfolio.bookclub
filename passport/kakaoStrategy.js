@@ -1,7 +1,7 @@
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
 
-const Member = require('../models/member');
+const { Member } = require('../models/main');
 
 module.exports = () => {
   passport.use(new KakaoStrategy({

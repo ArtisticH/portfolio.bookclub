@@ -1,7 +1,5 @@
 const express = require('express');
-const Review = require('../../models/review');
-const Book = require('../../models/book');
-const Member = require('../../models/member');
+const { Book, Member, Review } = require('../../models/main');
 const db = require('../../models');
 const { date, star } = require('../middlewares');
 
@@ -19,13 +17,14 @@ router.post('/', async (req, res) => {
       res.redirect('/book?login=need');
       return;
     }
+    const bookId = req.body.BookId;
     // 리뷰 등록
     const created = await Review.create({
       title: req.body.title,
       text: req.body.text,
       overText: req.body.overText,
       stars: req.body.stars,
-      BookId: req.body.BookId,
+      BookId: bookId,
       MemberId: req.body.MemberId,
     });
     // 방금 등록한 컨텐츠 가져오기
@@ -40,6 +39,18 @@ router.post('/', async (req, res) => {
       limit: 1,
       where: { id: created.id },
     });
+    const stars = await Review.findAll({
+      include: [{
+        model: Book,
+        where: { id: bookId },
+      }],
+      attributes: ['stars'],
+    });
+    let sum = [...stars].reduce((acc, cur, index, arr) => {
+      return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
+    }, 0);
+    sum = Math.floor(sum * 10) / 10;
+    const { starArr, starSum } = star(sum);
     let text;
     if(result.overText) {
       // 글자 수가 많으면 우선 slice가 보여야 한다.
@@ -66,7 +77,11 @@ router.post('/', async (req, res) => {
       type: result.Member.type,
       nick: result.Member.nick,
     };
-    res.json({ review });  
+    res.json({
+      review,
+      starArr,
+      starSum,
+    });  
   } catch(err) {
     console.error(err);
   }
@@ -142,6 +157,7 @@ router.get('/:reviewid', async(req, res) => {
 // 업데이트
 router.patch('/', async (req, res) => {
   try {
+    const bookId = req.body.BookId;
     const id = req.body.id;
     await Review.update({
       title: req.body.title,
@@ -151,6 +167,18 @@ router.patch('/', async (req, res) => {
     }, {
       where: { id },
     });
+    const stars = await Review.findAll({
+      include: [{
+        model: Book,
+        where: { id: bookId },
+      }],
+      attributes: ['stars'],
+    });
+    let sum = [...stars].reduce((acc, cur, index, arr) => {
+      return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
+    }, 0);
+    sum = Math.floor(sum * 10) / 10;
+    const { starArr, starSum } = star(sum);
     const result = await Review.findOne({
       where: { id },
     });
@@ -174,19 +202,40 @@ router.patch('/', async (req, res) => {
       stars: star(result.stars).starArr,
       updatedAt: date(result.updatedAt),
     };
-    res.json({ review });  
+    res.json({
+      review,
+      starArr,
+      starSum,
+    });  
   } catch(err) {
     console.error(err);
   }
 });
 // 리뷰 삭제
-router.delete('/:reviewid', async (req, res) => {
+router.delete('/:reviewid/:bookid', async (req, res) => {
   const id = req.params.reviewid;
+  const bookId = req.params.bookid;
   await Review.destroy({
     where: { id },
   });
-  res.json();
+  const stars = await Review.findAll({
+    include: [{
+      model: Book,
+      where: { id: bookId },
+    }],
+    attributes: ['stars'],
+  });
+  let sum = [...stars].reduce((acc, cur, index, arr) => {
+    return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
+  }, 0);
+  sum = Math.floor(sum * 10) / 10;
+  const { starArr, starSum } = star(sum);
+  res.json({
+    starArr,
+    starSum,
+  });
 });
+
 // 삭제 후 새로 추가할 요소를 원할때
 router.get('/delete/:bookid/:page', async(req, res) => {
   const id = req.params.bookid;

@@ -399,7 +399,7 @@ body::-webkit-scrollbar {
   justify-content: center;
 }
 
-.paganation {
+.pagenation {
   padding-top: 30px;
   display: flex;
   align-items: center;

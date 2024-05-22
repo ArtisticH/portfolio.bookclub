@@ -20,6 +20,6 @@ module.exports = class Quote extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Quote.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); // 3. Review의 외래키, 작성자
+    db.Quote.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); 
   }
 }

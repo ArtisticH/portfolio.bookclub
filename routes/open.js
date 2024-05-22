@@ -1,7 +1,6 @@
 const express = require('express');
 const xml2js = require('xml2js');
-const Folder = require('../models/folder');
-const List = require('../models/list');
+const { Folder, List } = require('../models/wishlist')
 
 const router = express.Router();
 

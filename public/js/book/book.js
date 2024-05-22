@@ -46,7 +46,7 @@ class Book {
     this.$clone = document.querySelector('.rebox.clone');
     this.$empty = document.querySelector('.review-empty');
     // 페이지네이션
-    this.$pagenation = document.querySelector('.paganation');
+    this.$pagenation = document.querySelector('.pagenation');
     this.$numbers = document.querySelector('.page-numbers');
     this.$number = document.querySelectorAll('.page-number');
     this.$first = document.querySelector('.page-first');
@@ -88,6 +88,9 @@ class Book {
     });
     this.searchParams = new URL(location.href).searchParams;
     this.alert = this.alert.bind(this);
+    // 등록, 삭제, 업데이트 시 평점 업데이트
+    this.$starArr = document.querySelectorAll('.book-star');
+    this.$starSum = document.querySelector('.book-numbers__current');
   }
   showForm(e) {
     if(this._userId) {
@@ -219,6 +222,9 @@ class Book {
           MemberId: this._userId,
         }); 
         const review = res.data.review;   
+        const starArr = res.data.starArr;
+        const starSum = res.data.starSum;
+        this.star(starArr, starSum);    
         this.$totalReview.textContent = ++this._totalReview;
         // 마지막 페이지 다시 계산
         this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
@@ -245,8 +251,12 @@ class Book {
           text,
           overText,
           stars: this._formStar,
+          BookId: this._bookId,
         }); 
-        const review = res.data.review;   
+        const review = res.data.review;  
+        const starArr = res.data.starArr;
+        const starSum = res.data.starSum;
+        this.star(starArr, starSum);     
         // 수정 분 바로 반영
         // this.$edit은 해당 .review-box
         this.editDOM(this.$edit, review);
@@ -301,9 +311,10 @@ class Book {
   }
   zeroReview() {
     this.$empty.hidden = false;
-    this.$pagenation = true;
+    this.$pagenation.hidden = true;
     this.$numbers.hidden = true;
   }
+  // 얘는 첫 글 보여줄때와 1페이지에서 계속 글을 등록할때만 유효
   showPage() {
     // 첫 글 등록시 
     // 아니면 글을 다 삭제할때
@@ -643,8 +654,21 @@ class Book {
     const reviewId = box.dataset.reviewId;
     box.remove();
     // 삭제
-    await axios.delete(`/review/${reviewId}`);
+    const res = await axios.delete(`/review/${reviewId}/${this._bookId}`);
+    const starArr = res.data.starArr;
+    const starSum = res.data.starSum;
+    console.log(starSum, starArr);
+    this.star(starArr, starSum);
     this.$totalReview.textContent = --this._totalReview;
+    if(this._totalReview > 5) {
+      // 페이지 버튼이 최소 1, 2 두가지 일때
+      this.$after.hidden = false;
+      this.$before.hidden = false;
+    } else {
+      // 페이지 버튼이 1밖에 없을때
+      this.$after.hidden = true;
+      this.$before.hidden = true;
+    }
     // 삭제후 totalReview가 5개 이상이면 하나를 추가해야 하지만
     // 5개 미만이면 추가하지 않는다. 
     // 그리고 마지막 페이지에서 삭제했다면 뭘 추가할 필요가 없다. 
@@ -658,6 +682,11 @@ class Book {
     // 마지막 페이지의 단 하나를 삭제했을때
     // 페이지를 그 전으로 전환한다.
     if(this._cur == this._lastPage && [...this.$reivewContainer.children].length == 0) {
+      if(this._totalReview === 0) {
+        this._lastPage = 0;
+        this.zeroReview();
+        return;
+      }  
       const num = this._lastPage - 1;
       this._cur = this._lastPage - 1;
       if(num <= 4) {
@@ -683,7 +712,6 @@ class Book {
       this.getReviews();
     }
     this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
-    this.showPage();
   }
   alert() {
     if(this.searchParams.has('login')) {
@@ -693,6 +721,13 @@ class Book {
           break;
       }
     }
+  }
+
+  star(arr, sum) {
+    this.$starSum.textContent = sum;
+    [...this.$starArr].forEach((item, index) => {
+      item.className = `book-star ${arr[index]}`;
+    });
   }
 }
 

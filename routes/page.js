@@ -1,7 +1,6 @@
 const express = require('express');
-const Book = require('../models/book');
-const Member = require('../models/member');
-const Favorite = require('../models/favorite');
+const { Book, Member } = require('../models/main');
+const { Favorite } = require('../models/favorite');
 
 const router = express.Router();
 
@@ -23,7 +22,7 @@ router.get('/books', async (req, res) => {
 
 router.get('/members', async (req, res) => {
   const members = await Member.findAll({
-    where: { type: 'member' },
+    where: { type: 'MEMBER' },
   });
   // 멤버인 애들만
   const total = members.length;

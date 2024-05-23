@@ -1,5 +1,5 @@
 const express = require('express');
-const { Book, Member, Attend } = require('../models/main');
+const { Book, Member, Attend } = require('../../models/main');
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get('/:id', async (req, res) => {
   const books = await Book.findAll({ where: { MemberId: id }});
   const bookTotal = await Book.findAll({});
   const attend = await Attend.findAll({ where: { MemberId : id }});
-  res.render('member', {
+  res.render('member/member', {
     member,
     books,
     bookTotal: bookTotal.length,

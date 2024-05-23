@@ -33,14 +33,16 @@ class List {
     this.$addImg.addEventListener('change', this.previewImg);
     this.$default.onclick = this.default.bind(this);
     this.$addForm.onsubmit = this.addSubmit.bind(this);
+    this.$moveForm.onsubmit = this.moveSubmit.bind(this);
     this.$list = document.getElementById('list');
     this._totalList = this.$list.dataset.list;
     this.$totalList = document.querySelector('.list-total');
     this.$clone = document.querySelector('.list-box.clone');
     this.$empty = document.querySelector('.list-empty');
     this.$listContents = document.querySelector('.list-contents');
-    // 폴더 이동
-    this.$moveForm.onsubmit = this.moveSubmit.bind(this);
+    this._addImg = false;
+    this._addTitle = false;
+    this._addAuthor = false;
   }
   clickBox(e) {
     const imgBox = e.currentTarget.querySelector('.list-img-box');
@@ -50,17 +52,32 @@ class List {
     const target = e.target.closest('.list-btn');
     if(!target) return;
     const type = target.dataset.btn;
+    const boxes = [...this.$listBoxes].filter(box => {
+      return box.querySelector('.list-img-box').classList.contains('clicked');
+    }); 
     switch(type) {
       case 'add':
         this.showForm(this.$addForm);
         break;
       case 'delete':
+        if(boxes.length === 0) {
+          alert('먼저 리스트를 추가해주세요');
+          return;
+        }    
         this.delete();
         break;
       case 'move':
+        if(boxes.length === 0) {
+          alert('먼저 리스트를 추가해주세요');
+          return;
+        }    
         this.showForm(this.$moveForm);
         break;
       case 'read':
+        if(boxes.length === 0) {
+          alert('먼저 리스트를 추가해주세요');
+          return;
+        }    
         this.read();
         break;            
     }
@@ -109,6 +126,7 @@ class List {
     this.$preview.style.display = 'block';
     this.$previewImg.src = url;
     this.$url.value = url;
+    this._addImg = true;
   }
   // 기본값 그림 사용
   default() {
@@ -117,11 +135,13 @@ class List {
       this.$previewImg.src = ''
       this.$url.value = ''
       this.$default.classList.remove('clicked');  
+      this._addImg = false;
     } else {
       this.$preview.style.display = 'block';
       this.$previewImg.src = '/img/list/default.jpeg'
       this.$url.value = '/img/list/default.jpeg'
       this.$default.classList.add('clicked');  
+      this._addImg = true;
     }
   }
   async addSubmit(e) {
@@ -129,6 +149,20 @@ class List {
     const img = e.target.url.value;
     const title = e.target.title.value;
     const author = e.target.author.value;
+    if(title.length > 0) {
+      this._addTitle = true;
+    } else {
+      this._addTitle = false;
+    }
+    if(author.length > 0) {
+      this._addAuthor = true;
+    } else {
+      this._addAuthor = false;
+    }
+    if(!this._addImg || !this._addTitle || !this._addAuthor) {
+      alert('요소를 빠짐없이 채워주세요.');
+      return;
+    }
     const MemberId = this._memberId;
     const FolderId = this._folderId;
     const res = await axios.post('/list', {
@@ -187,6 +221,20 @@ class List {
   }
   async moveSubmit(e) {
     e.preventDefault();
+    const radios = document.getElementsByName('listFolder');
+    let isSelected = false;
+    for (const radio of radios) {
+      if (radio.checked) {
+          isSelected = true;
+          break;
+      }
+    }
+    if(!isSelected) {
+      alert('이동할 폴더를 선택해 주세요.');
+      return;
+    }
+    // 이동하고자 하는 폴더의 ID값
+    const targetId = e.target.listFolder.value;
     const targets = [...this.$listBoxes].filter(box => {
       return box.querySelector('.list-img-box').classList.contains('clicked');
     }); 
@@ -195,8 +243,6 @@ class List {
       elemIds[elemIds.length] = target.dataset.listId;
       target.remove();
     }
-    // 이동하고자 하는 폴더의 ID값, radio값
-    const targetId = e.target.listFolder.value;
     this.resetMove();
     const res = await axios.post('/list/move', {
       elemIds: JSON.stringify(elemIds),

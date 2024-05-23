@@ -1,28 +1,30 @@
 class API {
   constructor() {
-    // 페이지네이션
-    // this.$pagenation은 first, before, after, last 버튼 담당
-    this.$pagenation = document.querySelector('.api-pagenation');
-    this.$pagenation.onclick = this.pagenation.bind(this);
-    this._currentPage = 1;
-    // 직접 페이지 입력
-    this.$moveBtn = document.querySelector('.api-page-move');
-    this.$current = document.querySelector('.api-page-current');
-    this._targetPage = null;
-    this.$current.onchange = this.targetPage.bind(this);
-    this.$moveBtn.onclick = this.changePage.bind(this);
-    this.$clone = document.querySelector('.list-box.clone');
-    this.$main = document.querySelector('.api-main');
     this.$api = document.getElementById('api');
     this._userId = this.$api.dataset.userId;
-    this._lastPage = +this.$api.dataset.last;
-    this._type = this.$api.dataset.type;
-    // 리스트 박스 여러 개 클릭 후 => wishlist에 추가작업
+    // 리스트 박스 클릭
     this.$listBoxes = Array.from(document.querySelectorAll('.list-box'));
     this.clickBox = this.clickBox.bind(this);
     this.$listBoxes.forEach(item => {
       item.addEventListener('click', this.clickBox);
     });
+    // 페이지네이션
+    this._type = this.$api.dataset.type;
+    this._current = 1;
+    this._lastPage = +this.$api.dataset.last;
+    this._target = null;
+    this.$main = document.querySelector('.api-main');
+    this.$current = document.querySelector('.page-current');
+    this.$clone = document.querySelector('.list-box.clone');
+    // <<, <, >, >> 클릭 시
+    this.$pagenation = document.querySelector('.pagenation');
+    this.$pagenation.onclick = this.pagenation.bind(this);
+    // 직접 페이지 입력 후 이동 버튼
+    // 페이지 입력하면 targetPage가 바뀐다.
+    this.$current.oninput = this.targetPage.bind(this);
+    this.$moveBtn = document.querySelector('.page-move');
+    this.$moveBtn.onclick = this.inputPage.bind(this);
+    // 위시리스트 버튼 클릭
     this.$wishlist = document.querySelector('.api-wishlist');
     this.$wishlist.onclick = this.wishlist.bind(this);
     this.$folders = document.getElementById('folders');
@@ -48,58 +50,58 @@ class API {
     // 기존 폴더에 추가
     this.$folders.onsubmit = this.existingFolder.bind(this);
   }
+  clickBox(e) {
+    const target = e.currentTarget;
+    target.classList.toggle('clicked', !target.classList.contains('clicked'));
+  }
   pagenation(e) {
-    const target = e.target.closest('.api-page-btn');
+    const target = e.target.closest('.page-btn');
     if(!target) return;
     const type = target.dataset.dir;
     switch(type) {
       case 'first':
-        if(this._currentPage === 1) {
+        if(this._current === 1) {
           alert('첫 페이지입니다');
           return;
         }
-        this._targetPage = 1;
-        this.btnChangePage();
+        this._target = 1;
+        this.dirPage();
         break;
       case 'before':
-        if(this._currentPage === 1) {
+        if(this._current === 1) {
           alert('첫 페이지입니다');
           return;
         }
-        this._targetPage = this._currentPage - 1;
-        this.btnChangePage();
+        this._target = this._current - 1;
+        this.dirPage();
         break;
       case 'after':
-        if(this._currentPage === this._lastPage) {
+        if(this._current === this._lastPage) {
           alert('마지막 페이지입니다');
           return;
         }
-        this._targetPage = this._currentPage + 1;
-        this.btnChangePage();
+        this._target = this._current + 1;
+        this.dirPage();
         break;
       case 'last':
-        if(this._currentPage === this._lastPage) {
+        if(this._current === this._lastPage) {
           alert('마지막 페이지입니다');
           return;
         }
-        this._targetPage = this._lastPage;
-        this.btnChangePage();
+        this._target = this._lastPage;
+        this.dirPage();
         break;
     }
   }
-  // this._targetPage 바꾸자.
-  targetPage(e) {
-    this._targetPage = e.target.value;
-  }
-  async changePage() {
-    if(this._currentPage == this._targetPage) return;
+  async dirPage() {
+    // 해당 페이지 내용을 가져와줘
     const res = await axios.post('/open/list', {
       type: this._type,
-      page: this._targetPage,
+      page: this._target,
     });
     // 내림차순(최신 => 오래된 순)으로 옴
     const lists = JSON.parse(res.data.lists);
-    this._currentPage = this._targetPage;
+    this._current = this._target;
     // 기존의 12개 삭제
     [...this.$main.children].forEach(item => {
       item.remove();
@@ -107,7 +109,8 @@ class API {
     // 새로운 열두개 투입
     lists.forEach(list => {
       this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
-    })
+    });
+    this.$current.value = this._current;
   }
   listDOM(c, obj) {
     c.className = 'list-box';
@@ -121,14 +124,22 @@ class API {
     c.onclick = this.clickBox;
     return c;
   }
-  async btnChangePage() {
+  // this._target 바꾸자.
+  targetPage(e) {
+    // +안하면 문자열로 인식되서 오류
+    this._target = +e.target.value;
+  }
+  async inputPage() {
+    if(this._current == this._target) {
+      alert('현재 페이지입니다.');
+      return;
+    }
     const res = await axios.post('/open/list', {
+      page: this._target,
       type: this._type,
-      page: this._targetPage,
     });
-    // 내림차순(최신 => 오래된 순)으로 옴
     const lists = JSON.parse(res.data.lists);
-    this._currentPage = this._targetPage;
+    this._current = this._target;
     // 기존의 12개 삭제
     [...this.$main.children].forEach(item => {
       item.remove();
@@ -137,11 +148,6 @@ class API {
     lists.forEach(list => {
       this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
     })
-    this.$current.value = this._currentPage;
-  }
-  clickBox(e) {
-    const target = e.currentTarget;
-    target.classList.toggle('clicked', !target.classList.contains('clicked'));
   }
   async wishlist() {
     if(!this._userId) {

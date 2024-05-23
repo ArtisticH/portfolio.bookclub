@@ -1,6 +1,6 @@
 const express = require('express');
 const { Book, Member, Review } = require('../../models/main');
-const { date, star } = require('../middlewares');
+const { date, star } = require('../rest/middlewares');
 
 const router = express.Router();
 

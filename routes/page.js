@@ -34,7 +34,7 @@ router.get('/wishlist/null', (req, res) => {
 });
 
 router.get('/fun', (req, res) => {
-  res.render('fun');
+  res.render('rest/fun');
 });
 
 router.get('/favorites', async (req, res) => {

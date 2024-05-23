@@ -10,10 +10,10 @@ router.use((req, res, next) => {
 });
 
 router.get('/:memberid', async (req, res) => {
-  // if(!req.user) {
-  //   res.redirect('/?wishlist=login');
-  //   return;
-  // }
+  if(!req.user) {
+    res.redirect('/?wishlist=login');
+    return;
+  }
   const id = req.params.memberid;
   const member = await Member.findOne({
     where: { id },

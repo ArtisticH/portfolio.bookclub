@@ -7,6 +7,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -18,8 +22,12 @@ a {
   color: black;
 }
 
-#api {
-  position: relative;
+.api-deco {
+  position: fixed;
+  left: 920px;
+  width: 520px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .api-nav {
@@ -33,7 +41,7 @@ a {
   padding: 0 5px;
   font-weight: 500;
   letter-spacing: -1px;
-  box-sizing: border-box;
+  font-size: 1rem;
 }
 
 .api-title {
@@ -43,8 +51,8 @@ a {
   padding: 0 5px;
   font-family: var(--font-korean);
   font-size: 0.9rem;
+  letter-spacing: -0.5px;
   font-weight: 200;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
 }
@@ -55,6 +63,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: end;
+  margin: 10px 0;
 }
 
 .api-wishlist {
@@ -64,8 +73,6 @@ a {
   font-size: 0.9rem;
   letter-spacing: -0.5px;
   height: 25px;
-  margin-top: 10px;
-  box-sizing: border-box;
   background-color: #039754;
   border: 1px solid black;
   color: white;
@@ -78,13 +85,11 @@ a {
   display: grid;
   grid-template-columns: 220px 220px;
   gap: 10px;
-  padding: 10px 0 10px 10px;
-  margin-bottom: 20px;
+  padding: 0 0 10px 10px;
 }
 
 .list-box {
   border: 2px solid black;
-  box-sizing: border-box;
   padding: 10px;
   background-color: white;
   cursor: pointer;
@@ -107,10 +112,7 @@ a {
   margin: 5px 0;
 }
 
-.list-author,
-.list-publisher,
-.list-date,
-.list-codename {
+.list-common {
   font-family: var(--font-korean);
   font-weight: 300;
   font-size: 0.9rem;
@@ -118,8 +120,8 @@ a {
   line-height: 1.2;
 }
 
-.list-codename {
-  margin-bottom: 5px;
+.list-img-box {
+  margin-top: 5px;
 }
 
 .list-img {
@@ -127,35 +129,24 @@ a {
   display: block;
 }
 
-.api-text {
-  position: fixed;
-  left: 920px;
-  width: 520px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .api-line {
-  margin: 10px 0 10px 10px;
+  margin: 10px 0 20px 10px;
   height: 2px;
   width: 450px;
-  box-sizing: border-box;
   background-color: black;
 }
 
-.api-pagenation {
+.pagenation {
   width: 450px;
-  box-sizing: border-box;
   height: 25px;
   margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
-.api-page-btn {
-  box-sizing: border-box;
+.page-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -168,12 +159,10 @@ a {
   cursor: pointer;
 }
 
-.api-page-current,
-.api-page-last {
+.page-current,
+.page-last {
   display: flex;
-  width: 25px;
   height: 25px;
-  box-sizing: border-box;
   align-items: center;
   justify-content: center;
   font-family: var(--font-montserrat);
@@ -183,21 +172,21 @@ a {
   cursor: pointer;
 }
 
-.api-page-current {
+.page-current {
   border: 1px solid black;
   padding-left: 5px;
+  width: 25px;
 }
 
-.api-page-last {
+.page-last {
   width: 35px;
 }
 
-.api-page-move {
+.page-move {
   cursor: pointer;
   display: flex;
   width: 40px;
   height: 25px;
-  box-sizing: border-box;
   align-items: center;
   justify-content: center;
   font-family: var(--font-korean);
@@ -208,7 +197,8 @@ a {
   border: 1px solid black;
 }
 
-#folders {
+#folders,
+#add {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -218,10 +208,17 @@ a {
   background-color: white;
 }
 
-.folders-nav {
+#folders {
+  width: 400px;
+}
+
+#add {
+  width: 250px;
+}
+
+.nav {
   border-bottom: 1px solid black;
   height: 21px;
-  box-sizing: border-box;
   background-color: #039754;
   display: flex;
   align-items: center;
@@ -229,23 +226,26 @@ a {
   padding: 0 5px;
 }
 
-.folders-title {
+.nav.add {
+  background-color: #edebe1;
+}
+
+.title {
   font-family: var(--font-korean);
   font-size: 0.9rem;
   letter-spacing: -0.5px;
   font-weight: 200;
 }
 
-.folders-cancel-box {
+.cancel {
   width: 21px;
   height: 21px;
-  box-sizing: border-box;
   position: relative;
   cursor: pointer;
 }
 
-.folders-cancel-left,
-.folders-cancel-right {
+.cancel-left,
+.cancel-right {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -254,16 +254,15 @@ a {
   background-color: black;
 }
 
-.folders-cancel-left {
+.cancel-left {
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-.folders-cancel-right {
+.cancel-right {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.folders-main-empty,
-.folders-main-form {
+.folders-form {
   padding: 20px;
 }
 
@@ -273,7 +272,7 @@ a {
   justify-content: end;
 }
 
-.folders-add-folder {
+.add-folder {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -283,13 +282,12 @@ a {
   letter-spacing: -0.5px;
   font-weight: 200;
   height: 22px;
-  box-sizing: border-box;
   padding: 0 10px;
   background-color: #eeebe1;
   border: 1px solid black;
 }
 
-.folders-main-text {
+.empty-text {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -301,11 +299,11 @@ a {
   margin-bottom: 20px;
 }
 
-.label-box {
+.label {
   margin: 15px 0;
 }
 
-.folders-main-label {
+.label-box {
   font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -0.5px;
@@ -316,13 +314,12 @@ a {
   margin-bottom: 10px;
 }
 
-.form-submit {
+.submit {
   font-family: var(--font-korean);
   font-size: 0.8rem;
   letter-spacing: -0.5px;
   font-weight: 300;
   height: 24px;
-  box-sizing: border-box;
   display: block;
   padding: 0 20px;
   margin: 0 auto;
@@ -333,26 +330,11 @@ a {
   cursor: pointer;
 }
 
-#add {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: fixed;
-  width: 250px;
-  border: 2px solid black;
-  background-color: white;
-  box-sizing: border-box;
-}
-
-.folders-nav.add {
-  background-color: #edebe1;
-}
-
-.folder-add-form {
+.add-form {
   padding: 15px;
 }
 
-.folder-add-radio {
+.add-radio {
   display: flex;
   align-items: center;
   font-family: var(--font-korean);
@@ -362,8 +344,8 @@ a {
   margin-bottom: 10px;
 }
 
-.folder-add-form-input,
-.folder-add-form-input::placeholder {
+.add-input,
+.add-input::placeholder {
   font-family: var(--font-korean);
   font-size: 0.9rem;
   letter-spacing: -0.5px;
@@ -379,7 +361,7 @@ a {
   }  
 
   .api-line,
-  .api-pagenation {
+  .pagenation {
     width: 680px;
   }
 }
@@ -394,7 +376,7 @@ a {
   }  
 
   .api-line,
-  .api-pagenation {
+  .pagenation {
     width: 910px;
   }
 }

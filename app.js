@@ -9,16 +9,16 @@ const passport = require('passport');
 
 dotenv.config();
 const pageRouter = require('./routes/page');
-const authRouter = require('./routes/auth');
+const authRouter = require('./routes/rest/auth');
 const bookRouter = require('./routes/book/book');
 const reviewRouter = require('./routes/book/review');
-const memberRouter = require('./routes/member');
+const memberRouter = require('./routes/rest/member');
 const wishlistRouter = require('./routes/wishlist/wishlist');
 const listRouter = require('./routes/wishlist/list');
 const favoriteRouter = require('./routes/favorite/favorite');
 const rankingRouter = require('./routes/favorite/ranking');
-const quotesRouter = require('./routes/quotes');
-const openRouter = require('./routes/open');
+const quotesRouter = require('./routes/rest/quotes');
+const openRouter = require('./routes/rest/open');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');

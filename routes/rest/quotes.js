@@ -18,7 +18,7 @@ const upload = multer({
 });  
 
 router.get('/', (req, res) => {
-  res.render('quotes');
+  res.render('rest/quotes');
 });
 
 router.post('/img', upload.single('image'), (req, res) => {

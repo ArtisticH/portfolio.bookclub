@@ -3,6 +3,16 @@
   --font-korean: "Noto Sans KR", sans-serif;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
 body::-webkit-scrollbar {
   display: none;
 }
@@ -12,52 +22,40 @@ body {
   margin: 0;
 }
 
-a {
-  display: block;
-  text-decoration: none;
-  color: black;
-}
-
 #open {
   height: 100vh;
-  box-sizing: border-box;
+  /* open-text, open-deco */
   position: relative;
 }
 
-.book-home {
-  color: black;
-  border-bottom: 1px solid black;
-  font-family: var(--font-montserrat);
+.open-nav {
   height: 21px;
   display: flex;
   align-items: center;
   padding-left: 5px;
-  font-weight: 500;
-  letter-spacing: -1px;
-  box-sizing: border-box;
   background-color: white;
 }
 
+.book-home {
+  border-bottom: 1px solid black;
+  font-family: var(--font-montserrat);
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: -1px;
+}
+
 .open-title {
-  color: black;
   border-bottom: 0.5px solid black;
   font-family: var(--font-korean);
-  height: 21px;
-  display: flex;
-  align-items: center;
-  padding-left: 5px;
   letter-spacing: -0.5px;
   font-size: 0.9rem;
   font-weight: 200;
-  box-sizing: border-box;
-  background-color: white;
 }
 
 .open-main {
   display: grid;
   grid-template-columns: 250px 250px;
   grid-template-rows: repeat(2, 320px);
-  box-sizing: border-box;
   width: fit-content;
 }
 
@@ -67,15 +65,18 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
   padding: 20px;
   background-color: white;
   cursor: pointer;
+  font-weight: 300;
+}
+
+.open-box:hover {
+  font-weight: 400;
 }
 
 .open-box-title {
   font-family: var(--font-korean);
-  font-weight: 300;
   letter-spacing: -1px;
   margin-bottom: 20px;
   text-align: center;
@@ -95,7 +96,7 @@ a {
 
 .open-deco {
   position: fixed;
-  left: 950px;
+  left: 980px;
   bottom: -10px;
   width: 400px;
 }

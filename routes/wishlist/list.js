@@ -26,10 +26,10 @@ router.use((req, res, next) => {
 });
 
 router.get('/:done/:folderid/:memberid', async (req, res) => {
-  // if(!req.user) {
-  //   res.redirect('/?wishlist=login');
-  //   return;
-  // }
+  if(!req.user) {
+    res.redirect('/?wishlist=login');
+    return;
+  }
   const done = req.params.done;
   if(done === 'true') {
     const MemberId = req.params.memberid;

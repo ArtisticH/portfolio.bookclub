@@ -46,6 +46,7 @@
       </div>
       {% else %}
       <div class="list-contents grid">
+        <div class="list-empty" hidden>리스트를 추가해주세요.</div>
         {% for list in lists %}
         <div class="list-box" data-list-id="{{list.id}}">
           <div class="list-img-box">

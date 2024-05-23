@@ -4,6 +4,16 @@
   --height: 70px;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
 body {
   padding: 0;
   margin: 0;
@@ -15,7 +25,6 @@ body::-webkit-scrollbar {
 
 #fun {
   height: 100vh;
-  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -28,7 +37,6 @@ body::-webkit-scrollbar {
 }
 
 .fun-middle {
-  box-sizing: border-box;
   height: calc(100% - 2 * var(--height));
   display: grid;
   grid-template-columns: var(--height) 1fr;
@@ -36,18 +44,14 @@ body::-webkit-scrollbar {
 }
 
 .fun-middle__left {
-  width: var(--height);
   background-color: #ab181b;
 }
 
 .fun-home {
-  text-decoration: none;
-  color: black;
   font-family: var(--font-montserrat);
   font-size: 1.2rem;
   letter-spacing: -1.7px;
   height: 30px;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
   padding-left: 5px;
@@ -60,38 +64,35 @@ body::-webkit-scrollbar {
   letter-spacing: -4px;
   font-weight: 300;
   color: #ab181b;
-  box-sizing: border-box;
   padding-top: 10px;
 }
 
 .fun-projects {
-  box-sizing: border-box;
   height: calc(100vh - var(--height));
 }
 
 .fun-project {
-  box-sizing: border-box;
   height: 33.3%;
   border-bottom: 1px solid black;
-  display: block;
-  text-decoration: none;
-  color: black;
   display: grid;
   grid-template-rows: 6fr 4fr;
+  cursor: pointer;
 }
 
 .fun-project__title {
+  padding: 5px 0 0 5px;
   font-family: var(--font-montserrat);
   font-size: 4rem;
   letter-spacing: -7px;
   font-weight: 300;
-  box-sizing: border-box;
   line-height: 0.8;
-  padding: 5px 0 0 5px;
+}
+
+.fun-project__title:hover {
+  color: #ab181b;
 }
 
 .fun-project__explanation {
-  box-sizing: border-box;
   font-family: var(--font-korean);
   display: flex;
   align-items: flex-end;

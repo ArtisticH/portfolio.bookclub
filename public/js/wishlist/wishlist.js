@@ -25,8 +25,10 @@ class Wishlist {
     this.$public = document.getElementById('public');
     this.$private = document.getElementById('private');
     this.countText = this.countText.bind(this);
+    this._addCheck = false;
+    this._nameCheck = false;
     this.$addInput.oninput = (e) => {
-      this.countText(e, this.$addLength);
+      this.countText(e, this.$addLength, 'add');
     }
     this.$addForm = document.querySelector('.add-form');
     this.submitAdd = this.submitAdd.bind(this);
@@ -35,7 +37,7 @@ class Wishlist {
     this.$nameLength = document.querySelector('.change-length');
     this.$nameInput = document.querySelector('.change-input');
     this.$nameInput.oninput = (e) => {
-      this.countText(e, this.$nameLength);
+      this.countText(e, this.$nameLength, 'name');
     }
     this.$nameForm = document.querySelector('.change-form');
     this.submitName = this.submitName.bind(this);
@@ -48,6 +50,7 @@ class Wishlist {
     // 전체 폴더 수, 만약 가장 처음에 폴더 수를 추가하면 0에서 1로 업그레이드
     // 그리고 0에서 1이 되면 this.$empty없애고 "첫번째 폴더 + done폴더" 활성화
     this._totalFolder = this.$wishlist.dataset.totalFolder;
+    this._doneCount = this.$wishlist.dataset.doneCount;
     this.$empty = document.querySelector('.empty');
     this.$clone = document.querySelector('.folder.clone');
     this.$done = document.querySelector('.folder.done');
@@ -86,11 +89,11 @@ class Wishlist {
     switch(type) {
       case 'open':
         // 비공개라면 내가 아닌 다른 사람에게 금지
-        // if(this._userId != this._memberId && this.$current.dataset.public === 'true') {
-        //   alert('비공개 폴더입니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId && this.$current.dataset.public === 'true') {
+          alert('비공개 폴더입니다.');
+          this.gone();
+          return;
+        }      
         this.open();
         break;
       case 'name':
@@ -99,11 +102,11 @@ class Wishlist {
           this.gone();
           return;    
         }
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.name();
         break;
       case 'delete':
@@ -112,51 +115,51 @@ class Wishlist {
           this.gone();
           return;    
         }
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.delete();
         break;
       case 'public':
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.public();
         break;
       case 'add':
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.add();
         break;
       case 'sort-name':
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.sortName();
         break;
       case 'sort-updated':
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.sortUpdatedAt();
         break;
       case 'sort-created':
-        // if(this._userId != this._memberId) {
-        //   alert('권한이 없습니다.');
-        //   this.gone();
-        //   return;
-        // }      
+        if(this._userId != this._memberId) {
+          alert('권한이 없습니다.');
+          this.gone();
+          return;
+        }      
         this.sortCreatedAt();
         break;
     }
@@ -207,12 +210,21 @@ class Wishlist {
     }
   }
   // 입력 글자 수 표기
-  countText(e, elem) {
+  countText(e, elem, type) {
     elem.textContent = e.target.value.length;
     if(e.target.value.length > 15) {
       alert('15자 이내로 입력하세요');
       e.target.value = e.target.value.slice(0, 15);
       elem.textContent = e.target.value.length;
+    }
+    if(type === 'add' && e.target.value.length > 0) {
+      this._addCheck = true;
+    } else if(type === 'name' && e.target.value.length > 0) {
+      this._nameCheck = true;
+    } else if (type === 'add' && e.target.value.length === 0) {
+      this._addCheck = false;
+    } else if (type === 'name' && e.target.value.length === 0) {
+      this._nameCheck = false;
     }
   }
   cancelAdd() {
@@ -230,6 +242,10 @@ class Wishlist {
   // 폴더 서버에 전송
   async submitAdd(e) {
     e.preventDefault();
+    if(!this._addCheck) {
+      alert('폴더명을 입력하세요');
+      return;
+    }
     const title = e.target.title.value;
     const isPublic = e.target.isPublic.value;
     const res = await axios.post('/wishlist/folder', {
@@ -248,6 +264,7 @@ class Wishlist {
       this.$done.hidden = false;
       this.$done.dataset.public = done.public;
       this.$done.querySelector('.folder-count').textContent = done.count;
+      this._doneCount = done.count;
       this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
     } else {
       this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
@@ -272,9 +289,14 @@ class Wishlist {
     const oldTitle = this.$current.querySelector('.folder-title').textContent;
     this.$name.querySelector('.change-input').value = oldTitle;
     this.$name.querySelector('.change-length').textContent = oldTitle.length;
+    this._nameCheck = true;
   }
   async submitName(e) {
     e.preventDefault();
+    if(!this._nameCheck) {
+      alert('폴더명을 입력하세요');
+      return;
+    }
     const id = this.$current.dataset.folderId;
     const title = e.target.title.value;
     const res = await axios.patch('/wishlist/folder', {
@@ -292,8 +314,14 @@ class Wishlist {
     if(!answer) return;
     const id = this.$current.dataset.folderId;
     await axios.delete(`/wishlist/${id}/${this._memberId}`);
+    this._totalFolder--;
     this.$current.remove();
     this.$current = null;
+    if(this._totalFolder === 0 && this._doneCount === 0) {
+      this.$empty.hidden = false;
+      this.$area.classList.remove('grid');
+      this.$done.hidden = true;
+    }
   }
   // 공개 / 비공개 전환
   async public() {

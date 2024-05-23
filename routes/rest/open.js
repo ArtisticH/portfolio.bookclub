@@ -25,7 +25,6 @@ const parseXMLToJSON = (xml) => {
       });
   });
 };
-
 // 국립중앙도서관 사서추천도서
 const natLists = [];
 router.get('/nat', async (req, res) => {
@@ -51,10 +50,8 @@ router.get('/nat', async (req, res) => {
   const type = 'nat';
   res.render('api/api', { lists, title, img, last, type });
 });
-
 // 알라딘 베스트셀러 리스트
 const aladinLists = [];
-
 function aladinDate(date) {
   const arr = date.split('-');
   console.log(arr);
@@ -80,8 +77,7 @@ router.get('/aladin', async (req, res) => {
   const lists = aladinLists.slice(0, 12);
   const type = 'aladin';
   res.render('api/api', { lists, title, img, last, type });
-})
-
+});
 // 페이커 독서목록
 const fakerLists = [];
 router.get('/faker', async (req, res) => {
@@ -120,7 +116,6 @@ router.post('/search', async (req, res) => {
   const json = await response.json();
   const lists = [];
   json.result.forEach(item => {
-
     lists[lists.length] = {
       title: item.titleInfo,
       author: item.authorInfo,
@@ -160,24 +155,49 @@ router.post('/list', async (req, res) => {
   });
 });
 // 폴더 내용 불러오기
-router.get('/wishlist/:memberid', async (req, res) => {
+router.get('/folders/:memberid', async (req, res) => {
   const MemberId = req.params.memberid;
   const results = await Folder.findAll({
     where: { MemberId },
+    attributes: ['id', 'title', 'count'],
   });
-  res.json({
-    folders: JSON.stringify(results),
-  });  
+  const folders = [];
+  results.forEach(item => {
+    folders[folders.length] = {
+      id: item.id,
+      title: item.title,
+      count: item.count,
+    }
+  })
+  res.json({ folders });  
+});
+// 기존 폴더에 추가
+router.post('/exist', async (req, res) => {
+  const MemberId = req.body.MemberId;
+  const FolderId = req.body.FolderId;
+  const lists = JSON.parse(req.body.lists);
+  await Folder.increment('count', {
+    by: lists.length,
+    where: { id: FolderId },
+  })
+  const create = lists.map(async (item) => {
+    await List.create({
+      FolderId,
+      title: item.title,
+      author: item.author,
+      img: item.img,
+      MemberId,
+    });
+  });
+  await Promise.all(create);
+  res.json({});
 });
 // 새로운 폴더 추가
-router.post('/folder', async (req, res) => {
+router.post('/add', async (req, res) => {
   const MemberId = req.body.MemberId;
   const title = req.body.title;
   const isPublic = req.body.isPublic === 'public' ? true : false;
   const lists = JSON.parse(req.body.lists);
-  if(!MemberId) {
-    res.redirect('/open/nat/rec/?login=need');
-  }
   const folder = await Folder.create({
     title,
     MemberId,
@@ -196,29 +216,5 @@ router.post('/folder', async (req, res) => {
   await Promise.all(create);
   res.json({});
 });
-// 기존 폴더에 추가
-router.post('/exist', async (req, res) => {
-  const MemberId = req.body.MemberId;
-  const FolderId = req.body.FolderId;
-  const lists = JSON.parse(req.body.lists);
-  if(!MemberId) {
-    res.redirect('/open/nat/rec/?login=need');
-  }
-  await Folder.increment('count', {
-    by: lists.length,
-    where: { id: FolderId },
-  })
-  const create = lists.map(async (item) => {
-    await List.create({
-      FolderId,
-      title: item.title,
-      author: item.author,
-      img: item.img,
-      MemberId,
-    });
-  });
-  await Promise.all(create);
-  res.json({});
-})
 
 module.exports = router;

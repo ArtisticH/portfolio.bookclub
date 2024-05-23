@@ -24,31 +24,30 @@ class API {
     this.$current.oninput = this.targetPage.bind(this);
     this.$moveBtn = document.querySelector('.page-move');
     this.$moveBtn.onclick = this.inputPage.bind(this);
+    this.$cancel = document.querySelectorAll('.cancel');
+    // 폼 취소
+    [...this.$cancel].forEach(item => {
+      item.onclick = this.cancel.bind(this);
+    });
     // 위시리스트 버튼 클릭
     this.$wishlist = document.querySelector('.api-wishlist');
     this.$wishlist.onclick = this.wishlist.bind(this);
+    this.$clicked = null;
     this.$folders = document.getElementById('folders');
-    this.$folderEmpty = document.querySelector('.folders-main-empty');
-    this.$folderCancels = document.querySelectorAll('.folders-cancel-box');
-    [...this.$folderCancels].forEach(item => {
-      item.onclick = this.folderCancel.bind(this);
-    });
-    this.$addFolders = document.querySelectorAll('.folders-add-folder');
-    [...this.$addFolders].forEach(item => {
-      item.onclick = this.showAddForm.bind(this);
-    });
-    this.$folderForm = document.querySelector('.folders-main-form');
-    this.$labelClone = document.querySelector('.folders-main-label.clone');
-    this.$labelBox = document.querySelector('.label-box');
     this.$add = document.getElementById('add');
-    // 새로운 폴더 등록
-    this.$add.onsubmit = this.addFolder.bind(this);
-    this.searchParams = new URL(location.href).searchParams;
-    this.alert = this.alert.bind(this);
-    this.$clickedLists = null;
+    this.$addBtn = document.querySelector('.add-folder');
+    this.$addBtn.onclick = this.showAddForm.bind(this);
+    this.$empty = document.querySelector('.empty-text');
+    this.$label = document.querySelector('.label');
+    this.$labelClone = document.querySelector('.label-box.clone');
+    this.$formFolder = document.querySelector('.folders-form');
+    this.$formAdd = document.querySelector('.add-form');
+    this.$folderSubmit = this.$formFolder.querySelector('.folders .submit');
     this._lists = [];
     // 기존 폴더에 추가
-    this.$folders.onsubmit = this.existingFolder.bind(this);
+    this.$formFolder.onsubmit = this.addFolder.bind(this);
+    // 새로운 폴더에 추가
+    this.$formAdd.onsubmit = this.newFolder.bind(this);
   }
   clickBox(e) {
     const target = e.currentTarget;
@@ -149,124 +148,133 @@ class API {
       this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
     })
   }
+  cancel(e) {
+    const form = e.target.closest('.root');
+    if(form.id === 'add') {
+      form.querySelector('.add-input').value = '';
+      const radios = document.getElementsByName('isPublic');
+      for (const radio of radios) {
+        radio.checked = false;
+      }
+    }
+    form.hidden = true;
+  }
   async wishlist() {
     if(!this._userId) {
       alert('로그인 후 이용 가능합니다');
       return;
     }
-    const children = [...this.$main.children];
-    this.$clickedLists = children.filter(item => {
+    // 클릭 된 애들만 골라
+    this.$clicked = [...this.$main.children].filter(item => {
       return item.classList.contains('clicked');
     });
-    if(this.$clickedLists.length == 0) {
+    if(this.$clicked.length == 0) {
       alert('도서를 클릭해주세요.');
       return;
     }
-    this.$clickedLists.forEach(item => {
+    this._lists = [];
+    this.$clicked.forEach(item => {
       this._lists[this._lists.length] = {
         title: item.querySelector('.list-title').textContent,
         author: item.querySelector('.list-author').textContent,
         img: item.querySelector('.list-img').src,
       }
     });
-    // 데이터베이스에 반영
     // 우선 폴더 목록과 새로운 폴더 생성 폼 보여주기
-    [...this.$labelBox.children].forEach(item => {
-      item.remove();
-    })  
-    this.$folders.hidden = false;
-    const res = await axios.get(`/open/wishlist/${this._userId}`);
-    const folders = JSON.parse(res.data.folders);
+    // 폴더 목록 가져오기
+    const res = await axios.get(`/open/folders/${this._userId}`);
+    const folders = res.data.folders;
     if(folders.length === 0) {
-      this.$folderEmpty.hidden = false;
-      this.$folderForm.hidden = true;
-    } else {  
-      this.$folderForm.hidden = false;
-      this.$folderEmpty.hidden = true;
+      this.$empty.hidden = false;
+      this.$label.hidden = true;
+      this.$folderSubmit.hidden = true;
+    } else {
+      this.$empty.hidden = true;
+      this.$label.hidden = false;
+      this.$folderSubmit.hidden = false;
       folders.forEach(item => {
-        this.$labelBox.append(this.labelDOM(this.$labelClone.cloneNode(true), item));
+        this.$label.append(this.labelDOM(this.$labelClone.cloneNode(true), item));
       });
     }
-  }
-  folderCancel(e) {
-    const form = e.target.closest('.root');
-    if(form.id === 'add') {
-      form.querySelector('.folder-add-form-input').value = '';
-      const labels = form.querySelectorAll('label > input');
-      [...labels].forEach(item => {
-        item.checked = false;
-      });
-    }
-    form.hidden = true;
-  }
-  showAddForm() {
-    this.$add.hidden = false;
-    this.$folders.hidden = true;
+    this.$folders.hidden = false;
   }
   labelDOM(c, obj) {
-    c.className = 'folders-main-label';
+    c.className = 'label-box';
     c.hidden = false;
+    c.querySelector('.label-title > input').value = obj.id;
     c.querySelector('span').textContent = obj.title;
-    c.querySelector('.folders-main-count').textContent = obj.count;
-    c.querySelector('.folders-main-title > input').value = obj.id;
+    c.querySelector('.label-count').textContent = `${obj.count}개`;
     return c;
   }
   async addFolder(e) {
     e.preventDefault();
-    const title = e.target.folder.value;
-    const isPublic = e.target.isPublic.value;
-    // 폴더 추가 후 거기에 저장
-    const res = await axios.post('/open/folder', {
-      MemberId: this._userId,
-      title,
-      isPublic,
-      lists: JSON.stringify(this._lists),
-    });
-    this.$add.querySelector('.folder-add-form-input').value = '';
-    const labels = this.$add.querySelectorAll('label > input');
-    [...labels].forEach(item => {
-      item.checked = false;
-    });
-    this.$add.hidden = true;
-    const children = [...this.$main.children];
-    children.forEach(item => {
-      if(item.classList.contains('clicked')) {
-        item.classList.remove('clicked');
-      };
-    });
-    alert('등록이 완료되었습니다!');
-  }
-  async existingFolder(e) {
-    e.preventDefault();
+    const radios = document.getElementsByName('folder');
+    let isSelected = false;
+    for (const radio of radios) {
+      if (radio.checked) {
+          isSelected = true;
+          break;
+      }
+    }
+    if(!isSelected) {
+      alert('이동할 폴더를 선택해 주세요.');
+      return;
+    }
     const FolderId = e.target.folder.value;
     const res = await axios.post('/open/exist', {
       lists: JSON.stringify(this._lists),
       FolderId,
       MemberId: this._userId,
     });
-    [...this.$labelBox.children].forEach(item => {
-      item.remove();
-    })  
     this.$folders.hidden = true;
-    const children = [...this.$main.children];
-    children.forEach(item => {
-      if(item.classList.contains('clicked')) {
-        item.classList.remove('clicked');
-      };
+    [...this.$label.children].forEach(item => {
+      item.remove();
+    });    
+    [...this.$clicked].forEach(item => {
+      item.classList.remove('clicked');
     });
+    this.$clicked = null;
     alert('등록이 완료되었습니다!');
   }
-  alert() {
-    if(this.searchParams.has('login')) {
-      switch(this.searchParams.get('login')) {
-        case 'need':
-          alert('로그인이 필요합니다.');
+  // 폴더 선택 폼 사라지고 폴더 추가 후 등록 폼 등장
+  showAddForm() {
+    this.$folders.hidden = true;
+    this.$add.hidden = false;
+  }    
+  async newFolder(e) {
+    e.preventDefault();
+    const radios = document.getElementsByName('isPublic');
+    let isSelected = false;
+    for (const radio of radios) {
+      if (radio.checked) {
+          isSelected = true;
           break;
       }
-    } 
+    }
+    if(!isSelected) {
+      alert('공개여부를 선택해주세요.');
+      return;
+    }
+    const title = e.target.title.value;
+    const isPublic = e.target.isPublic.value;
+    if(title.length === 0) {
+      alert('폴더 이름을 입력해주세요.');
+      return;
+    }
+    // 폴더 추가 후 거기에 저장
+    await axios.post('/open/add', {
+      MemberId: this._userId,
+      title,
+      isPublic,
+      lists: JSON.stringify(this._lists),
+    });
+    this.$add.hidden = true;
+    [...this.$clicked].forEach(item => {
+      item.classList.remove('clicked');
+    });
+    this.$clicked = null;
+    alert('등록이 완료되었습니다!');
   }
 }
-
-const api = new API();
-window.addEventListener('load', api.alert);
+new API();
 

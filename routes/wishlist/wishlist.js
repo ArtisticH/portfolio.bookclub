@@ -1,6 +1,6 @@
 const express = require('express');
 const { Member } = require('../../models/main');
-const { Folder, DoneFolder, Sort } = require('../../models/wishlist');
+const { Folder, DoneFolder, Sort, List } = require('../../models/wishlist');
 
 const router = express.Router();
 
@@ -9,7 +9,6 @@ router.use((req, res, next) => {
   next();
 });
 
-// 처음에 내려줄때
 router.get('/:memberid', async (req, res) => {
   // if(!req.user) {
   //   res.redirect('/?wishlist=login');
@@ -60,7 +59,7 @@ router.get('/:memberid', async (req, res) => {
     folders,
     done,
     member,
-  })
+  });
 });
 // 폴더 생성
 router.post('/folder', async (req, res) => {
@@ -93,7 +92,7 @@ router.post('/folder', async (req, res) => {
 router.patch('/folder', async (req, res) => {
   const id = req.body.id;
   const title = req.body.title;
-  await Folder.update({
+  const resul = await Folder.update({
     title,
   }, {
     where: { id },
@@ -108,16 +107,32 @@ router.patch('/folder', async (req, res) => {
   };
   res.json({ folder });
 });
-
 // 폴더 삭제
-router.delete('/:folderid', async (req, res) => {
+router.delete('/:folderid/:memberid', async (req, res) => {
   const id = req.params.folderid;
+  const MemberId = req.params.memberid;
+  const results = await List.findAll({
+    include: [{
+      model: Folder,
+      where: { id },
+    }, {
+      model: Member,
+      where: { id: MemberId },
+    }],
+    attributes: ["id"],
+  });
+  const ids = [];
+  results.forEach(item => {
+    ids[ids.length] = item.id;
+  })
   await Folder.destroy({
     where: { id },
   });
+  await List.destroy({
+    where: { id: ids },
+  });
   res.json({});
 });
-
 // 폴더 공개 / 비공개 변경
 router.patch('/public', async (req, res) => {
   const id = req.body.id;
@@ -129,12 +144,8 @@ router.patch('/public', async (req, res) => {
     }, {
       where: { MemberId: id },
     });
-    const result = await DoneFolder.findOne({
-      where: { MemberId: id },
-      attributes: ['public'],
-    });
     const done = {
-      public: result.public,
+      public: isPublic,
     };
     res.json({ done });  
   } else {
@@ -159,6 +170,7 @@ router.post('/sort', async (req, res) => {
   const sort = req.body.sort;
   const MemberId = req.body.MemberId;
   const order = req.body.order;
+  const updated = req.body.updated;
   const result = await Sort.findOne({
     where: { MemberId },
   });
@@ -176,8 +188,19 @@ router.post('/sort', async (req, res) => {
       where: { MemberId },
     });  
   }
-  res.json({});  
+  // 수정일은 새로 데이터베이스에서 내려줘야 한다.
+  if(updated) {
+    const folders = await Folder.findAll({
+      include: [{
+        model: Member,
+        where: { id: MemberId },
+      }],
+      order: [[sort, order]],
+    }); 
+    res.json({ folders });  
+  } else {
+    res.json({}); 
+  } 
 });
-
 
 module.exports = router;

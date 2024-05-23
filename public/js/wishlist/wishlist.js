@@ -2,210 +2,230 @@ class Wishlist {
   constructor() {
     this._memberId = new URL(location.href).pathname.split('/')[2];
     this.$wishlist = document.getElementById('wishlist');
-    this._userId = this.$wishlist.dataset.userId ;
-    /* ------------------------------------------------------------------------------------------------ */
-    // 1. 오른쪽 마우스 클릭할때 폴더에 대한 메뉴 보여줄건지 아니면
-    // 폴더 생성 혹은 정렬에 대한 메뉴 보여줄건지
+    this._userId = this.$wishlist.dataset.userId;
+    // 오른쪽 마우스 클릭 => 폴더 생성 혹은 정렬에 대한 메뉴 보여줄건지
     this.$area = document.querySelector('.wishlist');
     this.$folderMenu = document.getElementById('folder-menu');
     this.$areaMenu = document.getElementById('area-menu');
+    // 폴더에 오른쪽 마우스를 클릭한 경우 그 폴더가 할당된다.
+    this.$current = null;
     this.$area.oncontextmenu = this.contextmenu.bind(this);
-    /* ------------------------------------------------------------------------------------------------ */
-    // 2. 컨텍스트메뉴를 클릭할때
-    // 이벤트 위임
+    // 컨텍스트메뉴를 클릭할때
     this.$wishlist.onclick = this.click.bind(this);
-    /* ------------------------------------------------------------------------------------------------ */
-    // 3. 정렬 요소를 hover하면 정렬에 대한 서브 메뉴 보여주기
+    // 정렬 메뉴 보여주기
     this.$sortMenu = document.getElementById('sort-menu');
-    this.$sortElem = document.querySelector('[data-menu="sort"]')
+    this.$sortElem = document.querySelector('[data-menu="sort"]');
     this.$sortElem.onpointerenter = this.sort.bind(this);
-    /* ------------------------------------------------------------------------------------------------ */
-    // 4. 폴더 더블클릭 시 이동
-    this.dblclick = this.dblclick.bind(this);
-    this.$area.ondblclick = this.dblclick;
-    /* ------------------------------------------------------------------------------------------------ */
-    // 5. 폴더 생성 창 띄우기
-    this.$addFolder = document.getElementById('add-folder');
-    // 폴더 추가 창 취소
-    this.$cancelBtns = document.querySelectorAll('.cancel');
-    this.cancelForm = this.cancelForm.bind(this);
-    [...this.$cancelBtns].forEach(btn => {
-      btn.addEventListener('click', this.cancelForm);
-    })
-    // 입력 글자 수 표기
-    this.$addText = document.querySelector('.add-folder__length');
-    this.$addInput = document.querySelector('.add-folder__input');
+    // 폴더 더블클릭 시 이동
+    this.$area.ondblclick = this.dblclick.bind(this);
+    // 폴더 생성 창
+    this.$add = document.getElementById('add');
+    this.$addLength = document.querySelector('.add-length');
+    this.$addInput = document.querySelector('.add-input');
     this.$public = document.getElementById('public');
     this.$private = document.getElementById('private');
     this.countText = this.countText.bind(this);
     this.$addInput.oninput = (e) => {
-      this.countText(e, this.$addText);
+      this.countText(e, this.$addLength);
     }
-    this.$addForm = document.querySelector('.add-folder__form');
+    this.$addForm = document.querySelector('.add-form');
     this.submitAdd = this.submitAdd.bind(this);
     this.$addForm.addEventListener('submit', this.submitAdd);
-    // 전체 폴더 수, 만약 가장 처음에 폴더 수를 추가하면 0에서 1로 업그레이드
-    // 그리고 0에서 1이 되면 this.$empty없애고 폴더 + done폴더 활성화
-    this._totalFolder = this.$wishlist.dataset.totalFolder;
-    this.$empty = document.querySelector('.wishlist-empty');
-    // 폴더를 생성할 클론
-    this.$clone = document.querySelector('.wishlist-folder.clone');
-    this.$done = document.querySelector('.wishlist-folder.done');
-    /* ------------------------------------------------------------------------------------------------ */
-    // 6. 폴더 이름 변경
-    this.$currentFolder = null;
-    this.$changeName = document.getElementById('change-name');
-    this.$nameText = document.querySelector('.change-name__length');
-    this.$nameInput = document.querySelector('.change-name__input');
-    this.$nameForm = document.querySelector('.change-name__form');
+    this.$name = document.getElementById('change');
+    this.$nameLength = document.querySelector('.change-length');
+    this.$nameInput = document.querySelector('.change-input');
     this.$nameInput.oninput = (e) => {
-      this.countText(e, this.$nameText);
+      this.countText(e, this.$nameLength);
     }
+    this.$nameForm = document.querySelector('.change-form');
     this.submitName = this.submitName.bind(this);
     this.$nameForm.addEventListener('submit', this.submitName);
+    this.$cancelBtns = document.querySelectorAll('.cancel');
+    this.cancel = this.cancel.bind(this);
+    [...this.$cancelBtns].forEach(btn => {
+      btn.addEventListener('click', this.cancel);
+    })
+    // 전체 폴더 수, 만약 가장 처음에 폴더 수를 추가하면 0에서 1로 업그레이드
+    // 그리고 0에서 1이 되면 this.$empty없애고 "첫번째 폴더 + done폴더" 활성화
+    this._totalFolder = this.$wishlist.dataset.totalFolder;
+    this.$empty = document.querySelector('.empty');
+    this.$clone = document.querySelector('.folder.clone');
+    this.$done = document.querySelector('.folder.done');
   }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 1. 오른쪽 마우스 클릭할때 폴더에 대한 메뉴 보여줄건지 아니면
-  // 폴더 생성 혹은 정렬에 대한 메뉴 보여줄건지
   contextmenu(e) {
     // 폴더를 클릭한 경우와 폴더 외 영역을 클릭한 경우로 나눈다. 
-    const folder = e.target.closest('.wishlist-folder');
+    const folder = e.target.closest('.folder');
     if(folder) {
       // 폴더를 클릭한 경우
-      // 폴더 삭제, 폴더 이름 변경, 폴더 열기
-      this.$currentFolder = folder;
+      // 폴더 삭제, 폴더 이름 변경, 폴더 열기, 공개/비공개
+      this.$current = folder;
       this.$folderMenu.hidden = false;
       this.$areaMenu.hidden = true;
-      this.$folderMenu.style.left = e.clientX + 'px';
-      this.$folderMenu.style.top = e.clientY + 'px';
+      this.locate(e, this.$folderMenu,);
     } else {
       // 그 외의 영역
       // 폴더 추가, 폴더 정렬 - 이름순, 생성일순
       this.$areaMenu.hidden = false;
       this.$folderMenu.hidden = true;
-      this.$areaMenu.style.left = e.clientX + 'px';
-      this.$areaMenu.style.top = e.clientY + 'px';
+      this.locate(e, this.$areaMenu);
     } 
     // 기존 브라우저의 컨텍스트 메뉴 안 보이게
     return false;
   }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 2. 컨텍스트메뉴를 클릭할때
-  async click(e) {
-    const type = e.target.dataset.menu;
-    if(type === 'open') {
-      this.open();
-    } else if(type === 'name') {
-      if(this.$currentFolder.classList[1] == 'done') {
-        alert('이 폴더는 폴더명을 변경할 수 없습니다.');
-        this.$folderMenu.hidden = true;
-        this.$areaMenu.hidden = true;
-        return;    
-      }
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.changeName();
-    } else if(type === 'delete') {
-      if(this.$currentFolder.classList[1] == 'done') {
-        alert('이 폴더는 삭제할 수 없습니다.');
-        this.$folderMenu.hidden = true;
-        this.$areaMenu.hidden = true;
-        return;    
-      }
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.delete();
-    } else if(type === 'public') {
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.public();
-    } else if(type === 'add') {
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.add();
-    } else if(type === 'sort-name') {
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.sortName();
-    } else if(type === 'sort-updated') {
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.sortUpdatedAt();
-    } else if(type === 'sort-created') {
-      if(this._userId != this._memberId) {
-        alert('권한이 없습니다.');
-        return;
-      }  
-      this.sortCreatedAt();
-    } 
+  locate(e, elem) {
+    elem.style.left = e.clientX + 'px';
+    elem.style.top = e.clientY + 'px';
+  }
+  gone() {
     this.$folderMenu.hidden = true;
     this.$areaMenu.hidden = true;
   }
-
-  /* ------------------------------------------------------------------------------------------------ */
-  // 3. 정렬 요소를 hover하면 정렬에 대한 서브 메뉴 보여주기
+  // 클릭 이벤트
+  click(e) {
+    const type = e.target.dataset.menu;
+    switch(type) {
+      case 'open':
+        // 비공개라면 내가 아닌 다른 사람에게 금지
+        // if(this._userId != this._memberId && this.$current.dataset.public === 'true') {
+        //   alert('비공개 폴더입니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.open();
+        break;
+      case 'name':
+        if(this.$current.classList[1] == 'done') {
+          alert('이 폴더는 폴더명을 변경할 수 없습니다.');
+          this.gone();
+          return;    
+        }
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.name();
+        break;
+      case 'delete':
+        if(this.$current.classList[1] == 'done') {
+          alert('이 폴더는 삭제할 수 없습니다.');
+          this.gone();
+          return;    
+        }
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.delete();
+        break;
+      case 'public':
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.public();
+        break;
+      case 'add':
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.add();
+        break;
+      case 'sort-name':
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.sortName();
+        break;
+      case 'sort-updated':
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.sortUpdatedAt();
+        break;
+      case 'sort-created':
+        // if(this._userId != this._memberId) {
+        //   alert('권한이 없습니다.');
+        //   this.gone();
+        //   return;
+        // }      
+        this.sortCreatedAt();
+        break;
+    }
+    this.gone();
+  }
+  // 정렬 요소 호버
   sort(e) {
     this.$sortMenu.hidden = false;
     e.currentTarget.onpointerleave = () => {
       this.$sortMenu.hidden = true;
     }
   }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 4. 폴더 더블클릭 시 이동
+  // 폴더 더블클릭 시 이동
   dblclick(e) {
-    const folder = e.target.closest('.wishlist-folder');
+    const folder = e.target.closest('.folder');
     if(!folder) return;
-    this.$currentFolder = folder;
+    this.$current = folder;
     this.open();
   }
+  // '읽은 것들'폴더와 보통 폴더 구분
+  open() {
+    const MemberId = this._memberId;
+    if(this.$current.classList.contains('done')) {
+      const url = `/list/true/null/${MemberId}`;
+      window.location.href = url;  
+    } else {
+      const FolderId = this.$current.dataset.folderId;
+      const url = `/list/false/${FolderId}/${MemberId}`;
+      window.location.href = url;  
+    }
+  }  
   /* ------------------------------------------------------------------------------------------------ */
-  // 5. 폴더 생성 창 띄우기
+  // 폴더 생성 창 띄우기
+  // 14개 이상 못 만들게끔
   add() {
-    this.$addFolder.hidden = false;
+    if(this._totalFolder === 14) {
+      alert('폴더는 14개까지만 만들 수 있습니다.');
+      return;
+    }
+    this.$add.hidden = false;
   }
-  // 폴더 추가 창 취소
-  // 폴더 이름 변경 취소
-  cancelForm(e) {
+  cancel(e) {
     const root = e.target.closest('.root');
-    if(root.id === 'add-folder') {
+    if(root.id === 'add') {
       this.cancelAdd();
-    } else if(root.id === 'change-name') {
+    } else if(root.id === 'change') {
       this.cancelName();
     }
-  }
-  cancelAdd() {
-    this.$addFolder.hidden = true;
-    this.$addInput.value = '';
-    this.$addText.textContent = 0;
-    this.$private.checked = false;
-    this.$public.checked = true;  
-  }
-
-  cancelName() {
-    this.$changeName.hidden = true;
-    this.$nameInput.value = '';
-    this.$nameText.textContent = 0;  
   }
   // 입력 글자 수 표기
   countText(e, elem) {
     elem.textContent = e.target.value.length;
-    if(e.target.value.length > 10) {
-      alert('10자 이내로 입력하세요');
-      e.target.value = e.target.value.slice(0, 10);
+    if(e.target.value.length > 15) {
+      alert('15자 이내로 입력하세요');
+      e.target.value = e.target.value.slice(0, 15);
       elem.textContent = e.target.value.length;
     }
+  }
+  cancelAdd() {
+    this.$add.hidden = true;
+    this.$addInput.value = '';
+    this.$addLength.textContent = 0;
+    this.$private.checked = false;
+    this.$public.checked = true;  
+  }
+  cancelName() {
+    this.$name.hidden = true;
+    this.$nameInput.value = '';
+    this.$nameLength.textContent = 0;  
   }
   // 폴더 서버에 전송
   async submitAdd(e) {
@@ -220,75 +240,100 @@ class Wishlist {
     this._totalFolder++;
     this.cancelAdd();
     const folder = res.data.folder;
-    const done = res.data.done;
     if(this._totalFolder == 1) {
+      const done = res.data.done;
       // 가장 처음에 폴더를 생성할때
       this.$empty.hidden = true;
       this.$area.classList.add('grid');
       this.$done.hidden = false;
       this.$done.dataset.public = done.public;
-      this.$done.querySelector('.wishlist-folder__count').textContent = done.count;
+      this.$done.querySelector('.folder-count').textContent = done.count;
       this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
     } else {
       this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
     }
   }
-
   folderDOM(c, obj) {
-    c.className = `wishlist-folder`;
+    c.className = `folder`;
     c.hidden = false;
     c.dataset.folderId = obj.id;
     c.dataset.public = obj.public;
     c.dataset.createdat = obj.createdAt;
     c.dataset.updatedat = obj.updatedAt;
-    c.querySelector('.wishlist-folder__count').textContent = obj.count;
-    c.querySelector('.wishlist-folder__title').textContent = obj.title;
+    c.querySelector('.folder-count').textContent = obj.count;
+    c.querySelector('.folder-title').textContent = obj.title;
     c.ondblclick = this.dblclick;
     return c;
   }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 6. 폴더 이름 변경
-  changeName() {
-    this.$changeName.hidden = false;
+  // 폴더 이름 변경
+  name() {
+    this.$name.hidden = false;
     // 원래 이름 표기해주기
-    const oldTitle = this.$currentFolder.querySelector('.wishlist-folder__title').textContent;
-    this.$changeName.querySelector('.change-name__input').value = oldTitle;
-    this.$changeName.querySelector('.change-name__length').textContent = oldTitle.length;
+    const oldTitle = this.$current.querySelector('.folder-title').textContent;
+    this.$name.querySelector('.change-input').value = oldTitle;
+    this.$name.querySelector('.change-length').textContent = oldTitle.length;
   }
   async submitName(e) {
     e.preventDefault();
-    const id = this.$currentFolder.dataset.folderId;
-    const title = e.target.name.value;
+    const id = this.$current.dataset.folderId;
+    const title = e.target.title.value;
     const res = await axios.patch('/wishlist/folder', {
       id,
       title,
     });
+    this.$name.hidden = true;
     const folder = res.data.folder;
-    this.$currentFolder.querySelector('.wishlist-folder__title').textContent = folder.title;
-    this.$currentFolder.dataset.updatedAt = folder.updatedAt;
-    this.$changeName.hidden = true;
+    this.$current.querySelector('.folder-title').textContent = folder.title;
+    this.$current.dataset.updatedat = folder.updatedAt;
   }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 7. 폴더 삭제
+  // 삭제
   async delete() {
-    const answer = confirm('폴더를 삭제하시겠습니까?');
+    const answer = confirm('폴더 내 모든 독서 리스트가 삭제됩니다. 그래도 폴더를 삭제하시겠습니까?');
     if(!answer) return;
-    const id = this.$currentFolder.dataset.folderId;
-    await axios.delete(`/wishlist/${id}`);
-    this.$currentFolder.remove();
-    this.$currentFolder = null;
+    const id = this.$current.dataset.folderId;
+    await axios.delete(`/wishlist/${id}/${this._memberId}`);
+    this.$current.remove();
+    this.$current = null;
   }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 8. 폴더 정렬 - 이름순
+  // 공개 / 비공개 전환
+  async public() {
+    const current = this.$current.dataset.public === 'true' ? '공개' : '비공개';
+    const change = current === '공개' ? '비공개' : '공개';
+    const answer = confirm(`현재 ${current}상태입니다. ${change}상태로 바꾸시겠습니까?`);
+    if(!answer) return;
+    const isPublic = change === '비공개' ? false : true;
+    // done폴더일때와 아닐때 구분
+    if(this.$current.classList[1] == 'done') {
+      const MemberId = this._memberId;
+      const res = await axios.patch('/wishlist/public', {
+        id: MemberId,
+        public: isPublic,
+        done: true,
+      }); 
+      const done = res.data.done;
+      this.$current.dataset.public = done.public;
+    } else {
+      const id = this.$current.dataset.folderId;
+      const res = await axios.patch('/wishlist/public', {
+        id,
+        public: isPublic,
+        done: false,
+      });  
+      const folder = res.data.folder;
+      this.$current.dataset.public = folder.public;
+      this.$current.dataset.updatedat = folder.updatedAt;  
+    }
+  }
+  // 폴더 정렬 - 이름순
   async sortName() {
     // done, clone 걸러내기
-    let $folders = document.querySelectorAll('.wishlist-folder');
+    let $folders = document.querySelectorAll('.folder');
     $folders = [...$folders].filter(item => item.classList.length === 1);
     const names = [];
     // [이름, 원래 인덱스]
-    [...$folders].forEach((fol, index) => {
+    [...$folders].forEach((item, index) => {
       names[names.length] = [
-        fol.querySelector('.wishlist-folder__title').textContent,
+        item.querySelector('.folder-title').textContent,
         index
       ]
     });
@@ -310,17 +355,17 @@ class Wishlist {
       sort: 'title', 
       MemberId: this._memberId,
       order: 'ASC',
+      updated: false,
     });
   }
-  // 8. 폴더 정렬 - 생성일순
-  // 오름차순으로
+  // 생성일 - 오름차순으로
   async sortCreatedAt() {
-    let $folders = document.querySelectorAll('.wishlist-folder');
+    let $folders = document.querySelectorAll('.folder');
     $folders = [...$folders].filter(item => item.classList.length === 1);
     const createdAt = [];
-    [...$folders].forEach((fol, index) => {
+    [...$folders].forEach((item, index) => {
       createdAt[createdAt.length] = [
-        fol.dataset.createdat,
+        item.dataset.createdat,
         index
       ]
     });
@@ -353,97 +398,29 @@ class Wishlist {
       sort: 'createdAt', 
       MemberId: this._memberId,
       order: 'ASC',
+      updated: false,
     });
   }
-  // 8. 폴더 정렬 - 수정일순
+  // 수정일 - 내림차순
+  // 수정일은 기존의 것을 활용하는게아니라
+  // 기존 것 없애고 새로 서버에서 받은 데이터로 채우기
   async sortUpdatedAt() {
-    let $folders = document.querySelectorAll('.wishlist-folder');
+    let $folders = document.querySelectorAll('.folder');
     $folders = [...$folders].filter(item => item.classList.length === 1);
-    const updatedAt = [];
-    [...$folders].forEach((fol, index) => {
-      updatedAt[updatedAt.length] = [
-        fol.dataset.updatedat,
-        index
-      ]
-    });
-    // 내림차순
-    function compareDates(date1, date2) {
-      // Date 객체로 변환
-      const d1 = new Date(date1);
-      const d2 = new Date(date2);
-      // getTime() 메서드를 사용하여 날짜를 밀리초 단위의 숫자로 변환한 후 비교
-      if (d1.getTime() < d2.getTime()) {
-        return 1;
-      } else if (d1.getTime() > d2.getTime()) {
-        return -1;
-      } else {
-        return 0;
-      }
-    }
-    updatedAt.sort(compareDates);
-    const newFolders = [];
-    updatedAt.forEach(date => {
-      newFolders[newFolders.length] = [...$folders][date[1]];
-    });
-    // 원래꺼 삭제
-    [...$folders].forEach((fol) => {
-      fol.remove();
-    });
-    // 새로운 배열 삽입
-    newFolders.forEach(item => {
-      console.log(item);
-      this.$done.before(item);
-    });
-    await axios.post('/wishlist/sort', { 
+    const res = await axios.post('/wishlist/sort', { 
       sort: 'updatedAt', 
       MemberId: this._memberId,
       order: 'DESC',
+      updated: true,
+    });
+    const folders = res.data.folders;
+    [...$folders].forEach((fol) => {
+      fol.remove();
+    });
+    folders.forEach(folder => {
+      this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
     });
   }  
-  /* ------------------------------------------------------------------------------------------------ */
-  // 9. 공개 / 비공개 전환
-  async public() {
-    const current = this.$currentFolder.dataset.public === 'true' ? '공개' : '비공개';
-    const change = current === '공개' ? '비공개' : '공개';
-    const answer = confirm(`현재 ${current}상태입니다. ${change}상태로 바꾸시겠습니까?`);
-    if(!answer) return;
-    const isPublic = change === '비공개' ? false : true;
-    // done폴더일때와 아닐때 구분
-    if(this.$currentFolder.classList[1] == 'done') {
-      const MemberId = this._memberId;
-      const res = await axios.patch('/wishlist/public', {
-        id: MemberId,
-        public: isPublic,
-        done: true,
-      }); 
-      const done = res.data.done;
-      this.$currentFolder.dataset.public = done.public;
-    } else {
-      const id = this.$currentFolder.dataset.folderId;
-      const res = await axios.patch('/wishlist/public', {
-        id,
-        public: isPublic,
-        done: false,
-      });  
-      const folder = res.data.folder;
-      this.$currentFolder.dataset.public = folder.public;
-      this.$currentFolder.dataset.updatedAt = folder.updatedAt;  
-    }
-  }
-  /* ------------------------------------------------------------------------------------------------ */
-  // 10. 폴더 열기
-  // '읽은 것들'과 아닌 것 구분
-  open() {
-    const MemberId = this._memberId;
-    if(this.$currentFolder.classList.contains('done')) {
-      const url = `/list/true/null/${MemberId}`;
-      window.location.href = url;  
-    } else {
-      const FolderId = this.$currentFolder.dataset.folderId;
-      const url = `/list/false/${FolderId}/${MemberId}`;
-      window.location.href = url;  
-    }
-  }
 }
 
 new Wishlist();

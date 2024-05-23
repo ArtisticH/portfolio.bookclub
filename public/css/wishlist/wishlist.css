@@ -27,7 +27,6 @@ body::-webkit-scrollbar {
 
 #wishlist {
   height: 100vh;
-  box-sizing: border-box;
 }
 
 .wishlist-nav {
@@ -47,13 +46,11 @@ body::-webkit-scrollbar {
 }
 
 .wishlist-nick {
-  color: black;
   font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -1px;
   line-height: 0.8;
   font-weight: 300;
-  text-decoration: none;
 }
 
 .wishlist {
@@ -68,7 +65,7 @@ body::-webkit-scrollbar {
   row-gap: 35px;
 }
 
-.wishlist-empty {
+.empty {
   height: 100%;
   width: 100%;
   font-family: var(--font-korean);
@@ -80,42 +77,37 @@ body::-webkit-scrollbar {
   justify-content: center;
 }
 
-.wishlist-folder {
+.folder {
   height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  box-sizing: border-box;
+  justify-content: center;
   width: var(--folder-width);
 }
 
-.wishlist-folder[data-public="false"] .wishlist-folder__count {
+.folder[data-public="false"] .folder-count {
   background-color: black;
 }
 
-.wishlist-folder__img-box {
+.folder-img-box {
   width: var(--folder-img-width);
+  /* .folder-count에 대해서 */
   position: relative;
 }
 
-.wishlist__img {
+.folder-img {
   display: block;
   width: 100%;
 }
 
-.wishlist-folder__title {
-  margin-top: 5px;
-  font-family: var(--font-korean);
-  font-size: 0.8rem;
-  letter-spacing: -0.8px;
-}
-
-.wishlist-folder__count {
+.folder-count {
   font-family: var(--font-montserrat);
   font-size: 0.9rem;
   letter-spacing: -0.9px;
   font-weight: 500;
+  /* .folder-img-box 에 대해서 */
   position: absolute;
   top: 0px;
   right: 0px;
@@ -130,6 +122,13 @@ body::-webkit-scrollbar {
   justify-content: center;
 }
 
+.folder-title {
+  margin-top: 5px;
+  font-family: var(--font-korean);
+  font-size: 0.8rem;
+  letter-spacing: -0.8px;
+}
+
 #folder-menu,
 #area-menu {
   position: fixed;
@@ -139,7 +138,7 @@ body::-webkit-scrollbar {
   border: 1px solid rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 5px;
-  width: 130px;
+  width: 150px;
   padding: 3px;
 }
 
@@ -157,10 +156,17 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* #sort-menu에 대해서 */
   position: relative;
 }
 
+.menu__arrow {
+  width: 6px;
+  display: block;
+}
+
 #sort-menu {
+  /* .menu[data-menu="sort"]에 대해서 */
   position: absolute;
   left: 100%;
   top: -2px;
@@ -170,30 +176,25 @@ body::-webkit-scrollbar {
   border-radius: 5px;
   width: 70px;
   padding: 2px;
-  box-sizing: border-box;
-}
-
-.menu__arrow {
-  width: 6px;
 }
 
 .menu:hover {
   background-color: rgb(39,108,216);
 }
 
-#add-folder {
+#add,
+#change {
   position: fixed;
   width: 350px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border: 1px solid black;
-  box-sizing: border-box;
   background-color: white;
 }
 
-.add-folder__nav,
-.change-name__nav {
+.add-nav,
+.change-nav {
   background-color: #039754;
   display: flex;
   justify-content: space-between;
@@ -202,8 +203,8 @@ body::-webkit-scrollbar {
   margin-bottom: 1px solid black;
 }
 
-.add-folder__title,
-.change-name__title {
+.add-title,
+.change-title {
   font-family: var(--font-korean);
   font-size: 1rem;
   letter-spacing: -1px;
@@ -234,32 +235,32 @@ body::-webkit-scrollbar {
   transform: translateY(-50%) rotate(-45deg)
 }
 
-.add-folder__form,
-.change-name__form {
+.add-form,
+.change-form {
   padding: 15px 10px;
 }
 
-#add-folder__raio span {
+.add-public span {
   font-family: var(--font-poppins);
   font-size: 0.9rem;
   letter-spacing: -0.9px;
   font-weight: 300;
 }
 
-#add-folder__input,
-#change-name__input {
+.add-input-box,
+.change-input-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 20px;
 }
 
-#change-name__input {
+.change-input-box {
   margin-top: 0;
 }
 
-.add-folder__input,
-.change-name__input {
+.add-input,
+.change-input {
   border: none;
   outline: none;
   width: 270px;
@@ -268,22 +269,20 @@ body::-webkit-scrollbar {
   letter-spacing: -0.9px;
 }
 
-#add-folder__length,
-#change-name__length {
+#add-length,
+#change-length {
   font-family: var(--font-poppins);
   font-size: 0.8rem;
   letter-spacing: -0.8px;
   font-weight: 300;
 }
 
-.add-folder__length,
-.change-name__length {
+.add-length,
+.change-length {
   color: #039754;
 }
 
-#add-folder__submit,
-#change-name__submit {
-  box-sizing: border-box;
+.submit {
   border: 1px solid black;
   cursor: pointer;
   font-family: var(--font-korean);
@@ -295,15 +294,4 @@ body::-webkit-scrollbar {
   margin: 20px auto 0 auto;
   display: block;
   padding: 5px 0;
-}
-
-#change-name {
-  position: fixed;
-  width: 350px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid black;
-  box-sizing: border-box;
-  background-color: white;
 }

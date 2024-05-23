@@ -5,8 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/css/list.css">
-  <script defer src="/js/donelist.js"></script>
+  <link rel="stylesheet" href="/css/wishlist/list.css">
+  <script defer src="/js/wishlist/donelist.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,14 +16,14 @@
 <body>
   <section id="donelist" data-donelist="{{doneLists.length}}">
     <div class="donelist">
-      <div id="list-top">
-        <div class="list-block">
-          <a href="/wishlist/{{member.id}}" class="list-back-arrow">
-            <img class="list-img" src="/img/main/back-arrow.png" alt="back-arrow">
+      <div class="list-top">
+        <div class="list-folder">
+          <a href="/wishlist/{{member.id}}" class="list-back">
+            <img class="list-img" src="/img/index/back-arrow.png" alt="back-arrow">
           </a>
-          <div class="list-block-info">
-            <div class="list-block__title">읽은 것들&nbsp;(<span class="list-total">{{count}}</span>)</div>
-            <a href="/member/{{member.id}}" class="list-block__nick">{{member.nick}}</a>  
+          <div>
+            <div class="list-folder-title">읽은 것들&nbsp;(<span class="list-total">{{count}}</span>)</div>
+            <a href="/member/{{member.id}}" class="list-nick">{{member.nick}}</a>  
           </div>
         </div>
         <div class="list-btns">
@@ -40,7 +40,7 @@
         <div class="list-empty" hidden>완독이 필요합니다.</div>
         {% for list in doneLists %}
         <div class="list-box" data-list-id="{{list.id}}">
-          <div class="list-img-box">
+          <div class="donelist-img-box">
             <img class="list-img width" src="{{list.img}}" alt="">
           </div>
           <div class="list-box-title">{{list.title}}</div>

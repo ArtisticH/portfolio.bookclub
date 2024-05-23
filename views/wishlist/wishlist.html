@@ -21,58 +21,59 @@
     </div>
     {% if folders.length == 0 %}
     <div class="wishlist">
-      <div class="wishlist-empty">오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
-      <a class="wishlist-folder done" hidden>
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder-done">
-          <div class="wishlist-folder__count done"></div>
+      <div class="empty">오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
+      <a class="folder done" hidden>
+        <div class="folder-img-box">
+          <img class="folder-img" src="/img/wishlist/green-folder.png" alt="folder">
+          <div class="folder-count done"></div>
         </div>
-        <div class="wishlist-folder__title done">읽은 것들</div>
+        <div class="folder-title done">읽은 것들</div>
       </a>
-      <a class="wishlist-folder clone" hidden>
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count"></div>
+      <a class="folder clone" hidden>
+        <div class="folder-img-box">
+          <img class="folder-img" src="/img/wishlist/green-folder.png" alt="folder">
+          <div class="folder-count"></div>
         </div>
-        <div class="wishlist-folder__title"></div>
+        <div class="folder-title"></div>
       </a>  
     </div> 
     {% else %}
     <div class="wishlist grid">
       {% for folder in folders %}
-      <a class="wishlist-folder" data-folder-id="{{folder.id}}" data-public="{{folder.public}}" data-createdat="{{folder.createdAt}}" data-updatedat="{{folder.updatedAt}}">
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count">{{folder.count}}</div>
+      <a class="folder" data-folder-id="{{folder.id}}" data-public="{{folder.public}}" data-createdat="{{folder.createdAt}}" data-updatedat="{{folder.updatedAt}}">
+        <div class="folder-img-box">
+          <img class="folder-img" src="/img/wishlist/green-folder.png" alt="folder">
+          <div class="folder-count">{{folder.count}}</div>
         </div>
-        <div class="wishlist-folder__title">{{folder.title}}</div>
+        <div class="folder-title">{{folder.title}}</div>
       </a>
       {% endfor %}
-      <a class="wishlist-folder done" data-public="{{done.public}}">
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder-done">
-          <div class="wishlist-folder__count done">{{done.count}}</div>
+      <a class="folder done" data-public="{{done.public}}">
+        <div class="folder-img-box">
+          <img class="folder-img" src="/img/wishlist/green-folder.png" alt="folder-done">
+          <div class="folder-count done">{{done.count}}</div>
         </div>
-        <div class="wishlist-folder__title done">읽은 것들</div>
+        <div class="folder-title done">읽은 것들</div>
       </a>
-      <a class="wishlist-folder clone" hidden>
-        <div class="wishlist-folder__img-box">
-          <img class="wishlist__img" src="/img/wishlist/green-folder.png" alt="folder">
-          <div class="wishlist-folder__count"></div>
+      <a class="folder clone" hidden>
+        <div class="folder-img-box">
+          <img class="folder-img" src="/img/wishlist/green-folder.png" alt="folder">
+          <div class="folder-count"></div>
         </div>
-        <div class="wishlist-folder__title"></div>
+        <div class="folder-title"></div>
       </a>
     </div>
     {% endif %}
-    <div id="folder-menu" hidden>
+    <!-- 이 친구들이 #wishlist 밖에 있으면 클릭 이벤트가 안 먹음 -->
+    <section id="folder-menu" hidden>
       <div class="menu" data-menu="open">열기</div>
       <div class="menu" data-menu="name">이름 변경</div>
       <div class="menu" data-menu="delete">삭제</div>
       <div class="menu" data-menu="public">
         공개&nbsp;/&nbsp;비공개로 전환
       </div>
-    </div>
-    <div id="area-menu" hidden>
+    </section>  
+    <section id="area-menu" hidden>
       <div class="menu" data-menu="add">새로운 폴더</div>
       <div class="menu" data-menu="sort">
         <div>다음으로 정렬</div>
@@ -83,53 +84,53 @@
           <div class="menu" data-menu="sort-created">생성일</div>  
         </div>  
       </div>
+    </section>  
+  </section>
+  <section id="add" class="root" hidden>
+    <div class="add-nav">
+      <div class="add-title">폴더 추가</div>
+      <div class="cancel">
+        <div class="cancel__left"></div>
+        <div class="cancel__right"></div>
+      </div>
     </div>
-    <div id="add-folder" class="root" hidden>
-      <div class="add-folder__nav">
-        <div class="add-folder__title">폴더 추가</div>
-        <div class="cancel">
-          <div class="cancel__left"></div>
-          <div class="cancel__right"></div>
+    <form class="add-form">
+      <div class="add-public">
+        <label>
+          <input id="public" type="radio" name="isPublic" value="public" checked/>
+          <span>PUBLIC</span>
+        </label>
+        <label>
+          <input id="private" type="radio" name="isPublic" value="private"/>
+          <span>PRIVATE</span>
+        </label>
+      </div>
+      <div class="add-input-box">
+        <input type="text" name="title" class="add-input" placeholder="폴더명을 15자 이내로 입력하세요.*">
+        <div id="add-length">
+          <span class="add-length">0</span><span>&nbsp;/&nbsp;15</span>
         </div>
       </div>
-      <form class="add-folder__form">
-        <div id="add-folder__raio">
-          <label>
-            <input id="public" type="radio" name="isPublic" value="public" checked/>
-            <span>PUBLIC</span>
-          </label>
-          <label>
-            <input id="private" type="radio" name="isPublic" value="private"/>
-            <span>PRIVATE</span>
-          </label>
-        </div>
-        <div id="add-folder__input">
-          <input type="text" name="title" class="add-folder__input" placeholder="폴더명을 10자 이내로 입력하세요.">
-          <div id="add-folder__length">
-            <span class="add-folder__length">0</span><span>&nbsp;/&nbsp;10</span>
-          </div>
-        </div>
-        <input id="add-folder__submit" type="submit" value="추가">
-      </form>
+      <input class="submit" type="submit" value="추가">
+    </form>
+  </section>
+  <section id="change" class="root" hidden>
+    <div class="change-nav">
+      <div class="change-title">폴더명을 입력하세요.</div>
+      <div class="cancel">
+        <div class="cancel__left"></div>
+        <div class="cancel__right"></div>
+      </div>
     </div>
-    <div id="change-name" class="root" hidden>
-      <div class="change-name__nav">
-        <div class="change-name__title">폴더명을 입력하세요.</div>
-        <div class="cancel">
-          <div class="cancel__left"></div>
-          <div class="cancel__right"></div>
+    <form class="change-form">
+      <div class="change-input-box">
+        <input type="text" name="title" class="change-input" placeholder="폴더명을 15자 이내로 변경하세요.*">
+        <div id="change-length">
+          <span class="change-length">0</span><span>&nbsp;/&nbsp;15</span>
         </div>
       </div>
-      <form class="change-name__form">
-        <div id="change-name__input">
-          <input type="text" name="name" class="change-name__input" placeholder="폴더명을 10자 이내로 변경하세요.">
-          <div id="change-name__length">
-            <span class="change-name__length">0</span><span>&nbsp;/&nbsp;10</span>
-          </div>
-        </div>
-        <input id="change-name__submit" type="submit" value="추가">
-      </form>
-    </div>
+      <input class="submit" type="submit" value="추가">
+    </form>
   </section>
 </body>
 </html>

@@ -5,8 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/css/list.css">
-  <script defer src="/js/list.js"></script>
+  <link rel="stylesheet" href="/css/wishlist/list.css">
+  <script defer src="/js/wishlist/list.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,14 +16,14 @@
 <body>
   <section id="list" data-list="{{lists.length}}">
     <div class="list">
-      <div id="list-top">
-        <div class="list-block">
-          <a href="/wishlist/{{member.id}}" class="list-back-arrow">
-            <img class="list-img" src="/img/main/back-arrow.png" alt="back-arrow">
+      <div class="list-top">
+        <div class="list-folder">
+          <a href="/wishlist/{{member.id}}" class="list-back">
+            <img class="list-img" src="/img/index/back-arrow.png" alt="back-arrow">
           </a>
-          <div class="list-block-info">
-            <div class="list-block__title">{{currentFolder.title}}&nbsp;(<span class="list-total">{{currentFolder.count}}</span>)</div>
-            <a href="/member/{{member.id}}" class="list-block__nick">{{member.nick}}</a>  
+          <div>
+            <div class="list-folder-title">{{currentFolder.title}}&nbsp;(<span class="list-total">{{currentFolder.count}}</span>)</div>
+            <a href="/member/{{member.id}}" class="list-nick">{{member.nick}}</a>  
           </div>
         </div>
         <div class="list-btns">
@@ -65,62 +65,60 @@
       </div>
       {% endif %}
     </div>
-    <div id="list-add" class="root" hidden>
-      <div class="list-nav">
-        <div class="list-title">
-          리스트 추가
-        </div>
-        <div class="list-cancel-box">
-          <div class="list-cancel-box__left"></div>
-          <div class="list-cancel-box__right"></div>
-        </div>
+  </section>
+  <section id="add" class="root" hidden>
+    <div class="list-nav">
+      <div class="list-title">
+        리스트 추가
       </div>
-      <div class="list-add">
-        <form class="list-add-form" action="post" enctype="multipart/form-data">
-          <label for="add-img" class="add-img-label">
-            <div class="add-img-plus-ver"></div>
-            <div class="add-img-plus-hor"></div>
-            <div class="add-img-preview">
-              <img class="list-img width" src="" alt="preview">
-            </div>  
-          </label>
-          <input id="add-img" name="image" class="add-img-input" type="file" accept="image/*">
-          <input class="add-img-url" type="hidden" name="url">
-          <div class="add-img-default">*기본값 쓰기</div>
-          <input class="add-title" name="title" type="text" maxlength="20" placeholder="책 제목을 입력하세요">
-          <input class="add-author" name="author" type="text" maxlength="10" placeholder="저자를 입력하세요">
-          <input class="form-submit" type="submit" value="등록">
-        </form>
+      <div class="list-cancel">
+        <div class="list-cancel__left"></div>
+        <div class="list-cancel__right"></div>
       </div>
     </div>
-    <div id="list-move" class="root" hidden>
-      <div class="list-nav">
-        <div class="list-title">
-            폴더 이동
-        </div>
-        <div class="list-cancel-box">
-          <div class="list-cancel-box__left"></div>
-          <div class="list-cancel-box__right"></div>
-        </div>
+    <form class="add-form" action="post" enctype="multipart/form-data">
+      <label for="add-img" class="add-label">
+        <div class="add-plus-ver"></div>
+        <div class="add-plus-hor"></div>
+        <div class="add-preview">
+          <img class="list-img width" src="" alt="preview">
+        </div>  
+      </label>
+      <input id="add-img" name="image" class="add-img" type="file" accept="image/*">
+      <input class="add-url" type="hidden" name="url">
+      <div class="add-default">*기본 이미지</div>
+      <input class="add-title" name="title" type="text" maxlength="20" placeholder="책 제목을 입력하세요*">
+      <input class="add-author" name="author" type="text" maxlength="10" placeholder="저자를 입력하세요*">
+      <input class="submit" type="submit" value="등록">
+    </form>
+  </section>
+  <section id="move" class="root" hidden>
+    <div class="list-nav">
+      <div class="list-title">
+          폴더 이동
       </div>
-      <div class="list-move">
-        {% if folders.length == 0 %}
-        <div class="list-move-empty">먼저 폴더를 추가해주세요.</div>
-        {% else %}
-          <form class="list-move-form">
-            {% for folder in folders %}
-            <label class="list-move-label">
-              <div class="list-move-title">
-                <input type="radio" name="listFolder" value="{{folder.id}}">
-                <span>{{folder.title}}</span>  
-              </div>
-              <div class="list-move-count">{{folder.count}}개</div>
-            </label>
-            {% endfor %}
-            <input class="form-submit" type="submit" value="등록">          
-          </form>
-        {% endif %}
+      <div class="list-cancel">
+        <div class="list-cancel__left"></div>
+        <div class="list-cancel__right"></div>
       </div>
+    </div>
+    <div class="list-move">
+      {% if folders.length == 0 %}
+      <div class="list-move-empty">먼저 폴더를 추가해주세요.</div>
+      {% else %}
+      <form class="move-form">
+        {% for folder in folders %}
+        <label class="move-label">
+          <div class="move-title">
+            <input type="radio" name="listFolder" value="{{folder.id}}">
+            <span>{{folder.title}}</span>  
+          </div>
+          <div class="move-count">{{folder.count}}개</div>
+        </label>
+        {% endfor %}
+        <input class="submit" type="submit" value="등록">          
+      </form>
+      {% endif %}
     </div>
   </section>
 </body>

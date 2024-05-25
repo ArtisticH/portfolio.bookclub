@@ -41,6 +41,7 @@ router.get('/:memberid', async (req, res) => {
     }); 
   }
   const folders = [];
+  console.log(folders);
   results.forEach(result => {
     folders[folders.length] = {
       id: result.id,

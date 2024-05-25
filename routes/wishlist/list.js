@@ -25,8 +25,10 @@ router.use((req, res, next) => {
   next();
 });
 
-const totalLists = [];
-const doneTotalLists = [];
+let totalLists = [];
+let doneTotalLists = [];
+let doneTotalLength;
+let totalListLength;
 
 router.get('/:done/:folderid/:memberid', async (req, res) => {
   if(!req.user) {
@@ -49,6 +51,7 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       where: { done: true },
       attributes: ['id', 'img', 'title', 'author'],
     });
+    doneTotalLists = [];
     results.forEach(item => {
       doneTotalLists[doneTotalLists.length] = {
         id: item.id,
@@ -57,6 +60,7 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
         author: item.author,
       }
     });
+    doneTotalLength = doneTotalLists.length;
     const last = count % 15 === 0 ? count / 15 : Math.floor(count / 15) + 1;
     const doneLists = doneTotalLists.slice(0, 15);
     const member = await Member.findOne({
@@ -111,6 +115,7 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
         img: item.img,
       }
     });
+    totalListLength = totalLists.length;
     const totalLength = results.length;
     const last = results.length % 15 === 0 ? results.length / 15 : Math.floor(results.length / 15) + 1;
     const lists = totalLists.slice(0, 15);
@@ -204,6 +209,17 @@ router.post('/read', async (req, res) => {
   const elemIds = JSON.parse(req.body.elemIds);
   const FolderId = req.body.FolderId;
   const MemberId = req.body.MemberId;
+  const deletedCount = elemIds.length;
+  const restCount = 15 - deletedCount;
+  const page = req.body.page;
+  console.log(
+    elemIds,
+    FolderId,
+    MemberId,
+    deletedCount,
+    restCount,
+    page,
+  )
   // done항목을 false => true로 바꾸고
   await List.update({
     done: true,
@@ -226,8 +242,76 @@ router.post('/read', async (req, res) => {
   await DoneFolder.increment('count', {
     by: elemIds.length,
     where: { id: MemberId },
-  })
-  res.json({})
+  });
+  // 읽은 것들 업데이트
+  const doneLists = await List.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }],
+    where: { done: true },
+    attributes: ['id', 'img', 'title', 'author'],
+  });
+  doneTotalLists = [];
+  doneLists.forEach(item => {
+    doneTotalLists[doneTotalLists.length] = {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  totalLists = [];
+  // 현재 폴더 업데이트
+  const updatedLists = await List.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }, {
+      model: Folder,
+      where: { id: FolderId },
+    }],
+    where: { done: false },
+    attributes: ['id', 'img', 'title', 'author'],
+  });
+  updatedLists.forEach(item => {
+    totalLists[totalLists.length] = {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  console.log(totalLists.length, updatedLists.length);
+  doneTotalLength = doneTotalLists.length;
+  totalListLength = totalLists.length;
+  // 빈 자리 메꾸게 보낼 것들
+  const afterDelete = await List.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }, {
+      model: Folder,
+      where: { id: FolderId },
+    }],
+    where: { done: false },
+    // 삭제한 만큼 메꿔주고
+    limit: deletedCount,
+    // 앞에서부터 몇번째의 리스트를 가져와야 하는지
+    offset: (page - 1) * 15 + restCount,
+    attributes: ['id', 'img', 'title', 'author'],
+  });
+  const lists = [];
+  afterDelete.forEach(item => {
+    lists[lists.length] = {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  console.log(lists);
+  res.json({ lists });
 })
 // 완독 해제
 router.post('/back', async (req, res) => {
@@ -306,16 +390,17 @@ router.post('/page', async (req, res) => {
   const page = req.body.page;
   const done = req.body.done;
   const start = (page - 1) * 15;
-  const end = start + 15;
   let lists;
   if(done) {
+    const end = doneTotalLength < start + 15 ? doneTotalLength : start + 15;
     lists = doneTotalLists.slice(start, end);
   } else {
+    const end = totalListLength < start + 15 ? totalListLength : start + 15;
+    console.log(start, end);
     lists = totalLists.slice(start, end);
   }
   res.json({
     lists: JSON.stringify(lists),
   });
 });
-
 module.exports = router;

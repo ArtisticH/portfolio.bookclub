@@ -282,21 +282,29 @@ class List {
     c.querySelector('.move-count').textContent = count;
   }
   async read() {
+    this.$listBoxes = document.querySelectorAll('.list-box');
     const targets = [...this.$listBoxes].filter(box => {
       return box.querySelector('.list-img-box').classList.contains('clicked');
-    }); 
+    });     
     const elemIds = [];
     for(let target of targets) {
       elemIds[elemIds.length] = target.dataset.listId;
+      console.log(target.querySelector('.list-box-title'));
       target.remove();
     }
     // 기존의 list의 done항목을 true로 수정, 
     // 그리고 폴더를 열때 만약 '읽은 것들' 이라면 읽은 애들만 가져와라.
-    await axios.post('/list/read', {
+    const res = await axios.post('/list/read', {
       elemIds: JSON.stringify(elemIds),
       FolderId: this._folderId,
       MemberId: this._memberId,
-    })
+      page: this._current,
+    });
+    const lists = res.data.lists;
+    console.log(lists);
+    lists.forEach(list => {
+      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+    });
     this._totalList -= elemIds.length;
     this.$totalList.textContent = this._totalList;
     if(this._totalList == 0) {

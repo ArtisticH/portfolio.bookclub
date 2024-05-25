@@ -19,10 +19,10 @@
       <a href="/open" class="search-back">BACK</a>
       <a href="/" class="search-back">HOME</a>
     </div>
-    <div class="search-limit">{{explanation}}</div>
+    <div class="search-explanation">{{explanation}}</div>
     <form class="search-box">
-      <div class="search-target-box">
-        <img class="search-select-img" src="/img/open/search-select.png" alt="search-select">
+      <div class="select-box">
+        <img class="select-img search-img" src="/img/open/search-select.png" alt="search-select">
         <select id="targets" name="options">
           <option value="전체">전체</option>
           <option value="제목">제목</option>
@@ -30,24 +30,24 @@
           <option value="발행자">발행자</option>
         </select>
       </div>
-      <div class="search-input-box">
-        <img class="search-input-img" src="/img/open/search-input.png" alt="search-input">
-        <input class="search-input-box__input" type="text" name="kwd" placeholder="검색어를 입력해주세요.">
+      <div class="input-box">
+        <img class="input-img search-img" src="/img/open/search-input.png" alt="search-input">
+        <input class="kwd-input input-none" type="text" name="kwd" placeholder="검색어를 입력해주세요.*">
       </div>
-      <div class="search-button">
-        <img class="search-button-img" src="/img/open/glasses.png" alt="glasses">
-        <input class="search-button__input" type="submit" value="">
+      <div class="search-btn">
+        <img class="search-btn-img search-img" src="/img/open/glasses.png" alt="glasses">
+        <input class="search-input input-none" type="submit" value="">
       </div>
     </form>
   </section>
   <section id="results" hidden>
-    <div class="results-cancel">
-      <div class="results-cancel-box">
-        <div class="results-cancel-left"></div>
-        <div class="results-cancel-right"></div>  
+    <div class="results-nav">
+      <div class="cancel">
+        <div class="cancel-left"></div>
+        <div class="cancel-right"></div>  
       </div>
     </div>
-    <div class="results-title"><span class="results-title-target"></span>&nbsp;:&nbsp;<span class="results-title-kwd"></span>&nbsp;검색결과</div>
+    <div class="results-title"><span class="results-title-select"></span>&nbsp;:&nbsp;<span class="results-title-kwd"></span>&nbsp;검색결과</div>
     <div class="results-line"></div>
     <div class="results-main">
       <div class="results-box clone" hidden>
@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="results-btns">
-          <a class="results-btn" href="">원문 URL</a>
+          <a class="results-btn detail" href="" target="_blank">원문 URL</a>
           <div class="results-btn wishlist">WISHLIST에 추가</div>
         </div>
       </div>
@@ -81,47 +81,42 @@
     <img src="/img/open/line.png" alt="line" class="line-left">
     <img src="/img/open/line.png" alt="line" class="line-right">
   </section>
-  <section id="folders" hidden class="root">
-    <div class="folders-nav">
+  <section id="folders" class="root" hidden>
+    <div class="nav">
       <div class="folders-title">폴더</div>
-      <div class="folders-cancel-box">
-        <div class="folders-cancel-left"></div>
-        <div class="folders-cancel-right"></div>
+      <div class="cangel-box">
+        <div class="cancel-box-left"></div>
+        <div class="cancel-box-right"></div>
       </div>
     </div>
-    <div class="folders-main">
-      <div class="folders-main-empty" hidden>
+    <div class="folders">
+      <form class="folders-form">
         <div class="folders-add">
-          <div class="folders-add-folder">폴더 추가</div>
+          <div class="add-folder">폴더 추가</div>
         </div>
-        <div class="folders-main-text">먼저 폴더를 추가해주세요.</div>
-      </div>
-      <form class="folders-main-form" hidden>
-        <div class="folders-add">
-          <div class="folders-add-folder">폴더 추가</div>
-        </div>
-        <div class="label-box"></div>
-        <label class="folders-main-label clone" hidden>
-          <div class="folders-main-title">
+        <div class="empty-text" hidden>먼저 폴더를 추가해주세요.</div>
+        <div class="label" hidden></div>
+        <label class="label-box clone" hidden>
+          <div class="label-title">
             <input type="radio" name="folder" value="">
             <span></span>  
           </div>
-          <div class="folders-main-count"></div>
-        </label>  
-        <input class="form-submit" type="submit" value="등록">          
+          <div class="label-count"></div>
+        </label> 
+        <input class="submit" type="submit" value="등록" hidden>           
       </form>
     </div>
   </section>
   <section id="add" class="root" hidden>
-    <div class="folders-nav add">
-      <div class="folders-title">폴더 추가 후 등록</div>
-      <div class="folders-cancel-box">
-        <div class="folders-cancel-left"></div>
-        <div class="folders-cancel-right"></div>
+    <div class="nav add">
+      <div class="title">폴더 추가 후 등록</div>
+      <div class="cancel">
+        <div class="cancel-left"></div>
+        <div class="cancel-right"></div>
       </div>
     </div>
-    <form action="" class="folder-add-form">
-      <div class="folder-add-radio">
+    <form action="" class="add-form">
+      <div class="add-radio">
         <label>
           <input id="public" type="radio" name="isPublic" value="public" checked/>
           <span>PUBLIC</span>
@@ -131,8 +126,8 @@
           <span>PRIVATE</span>
         </label>  
       </div>
-      <input class="folder-add-form-input" type="text" placeholder="폴더 이름을 입력하세요" name="folder" maxlength="20">
-      <input class="form-submit" type="submit" value="등록">          
+      <input class="add-input" type="text" placeholder="15자 이내로 폴더 이름을 입력하세요*" name="title" maxlength="15">
+      <input class="submit" type="submit" value="등록">          
     </form>
   </section>
 </body>

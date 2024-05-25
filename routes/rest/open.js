@@ -110,7 +110,7 @@ router.post('/search', async (req, res) => {
   const target = req.body.target;
   const kwd = req.body.kwd;
   const url = `
-  https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
+  https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.NATIONAL_KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
   `;
   const response = await fetch(url);
   const json = await response.json();
@@ -124,7 +124,7 @@ router.post('/search', async (req, res) => {
       call: item.callNo,
       place: item.placeInfo,
       detail: `https://www.nl.go.kr${item.detailLink}`,
-      img: item.imageUrl ? `http://cover.nl.go.kr/${item.imageUrl}` : null,
+      img: item.imageUrl ? `http://cover.nl.go.kr/${item.imageUrl}` : '/img/open/book-default.png',
     }
   })
   res.json({

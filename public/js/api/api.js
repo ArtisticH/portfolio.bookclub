@@ -42,7 +42,7 @@ class API {
     this.$labelClone = document.querySelector('.label-box.clone');
     this.$formFolder = document.querySelector('.folders-form');
     this.$formAdd = document.querySelector('.add-form');
-    this.$folderSubmit = this.$formFolder.querySelector('.folders .submit');
+    this.$folderSubmit = this.$formFolder.querySelector('.submit');
     this._lists = [];
     // 기존 폴더에 추가
     this.$formFolder.onsubmit = this.addFolder.bind(this);

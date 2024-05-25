@@ -43,6 +43,19 @@ class List {
     this._addImg = false;
     this._addTitle = false;
     this._addAuthor = false;
+    // 페이지네이션
+    this._current = 1;
+    this._lastPage = +this.$list.dataset.last;
+    this._target = null;
+    this.$current = document.querySelector('.page-current');
+    // <<, <, >, >> 클릭 시
+    this.$pagenation = document.querySelector('.pagenation');
+    this.$pagenation.onclick = this.pagenation.bind(this);
+    // 직접 페이지 입력 후 이동 버튼
+    // 페이지 입력하면 targetPage가 바뀐다.
+    this.$current.oninput = this.targetPage.bind(this);
+    this.$moveBtn = document.querySelector('.page-move');
+    this.$moveBtn.onclick = this.inputPage.bind(this);
   }
   clickBox(e) {
     const imgBox = e.currentTarget.querySelector('.list-img-box');
@@ -180,7 +193,7 @@ class List {
       this.$empty.hidden = true;
       this.$listContents.classList.add('grid');
     } 
-    this.$clone.before(this.listDOM(this.$clone.cloneNode(true), list));
+    this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
     // 항상 다시 리스트 박스 세팅, 박스 클릭할 수 있으니까
     this.$listBoxes = document.querySelectorAll('.list-box');
   }
@@ -293,6 +306,89 @@ class List {
     this.$listBoxes = document.querySelectorAll('.list-box');
     alert(`"읽은 것들"폴더로 이동했습니다.`);
   }
+  pagenation(e) {
+    const target = e.target.closest('.page-btn');
+    if(!target) return;
+    const type = target.dataset.dir;
+    switch(type) {
+      case 'first':
+        if(this._current === 1) {
+          alert('첫 페이지입니다');
+          return;
+        }
+        this._target = 1;
+        this.dirPage();
+        break;
+      case 'before':
+        if(this._current === 1) {
+          alert('첫 페이지입니다');
+          return;
+        }
+        this._target = this._current - 1;
+        this.dirPage();
+        break;
+      case 'after':
+        if(this._current === this._lastPage) {
+          alert('마지막 페이지입니다');
+          return;
+        }
+        this._target = this._current + 1;
+        this.dirPage();
+        break;
+      case 'last':
+        if(this._current === this._lastPage) {
+          alert('마지막 페이지입니다');
+          return;
+        }
+        this._target = this._lastPage;
+        this.dirPage();
+        break;
+    }
+  }
+  async dirPage() {
+    // 해당 페이지 내용을 가져와줘
+    const res = await axios.post('/list/page', {
+      page: this._target,
+      done: false,
+    });
+    // 내림차순(최신 => 오래된 순)으로 옴
+    const lists = JSON.parse(res.data.lists);
+    this._current = this._target;
+    [...this.$listContents.children].forEach(item => {
+      if(item.className === 'list-box') {
+        item.remove();
+      }
+    });
+    lists.forEach(list => {
+      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+    });
+    this.$current.value = this._current;
+  }
+  // this._target 바꾸자.
+  targetPage(e) {
+    // +안하면 문자열로 인식되서 오류
+    this._target = +e.target.value;
+  }
+  async inputPage() {
+    if(this._current == this._target) {
+      alert('현재 페이지입니다.');
+      return;
+    }
+    const res = await axios.post('/list/page', {
+      page: this._target,
+      done: false,
+    });
+    const lists = JSON.parse(res.data.lists);
+    this._current = this._target;
+    [...this.$listContents.children].forEach(item => {
+      if(item.className === 'list-box') {
+        item.remove();
+      }
+    });
+    lists.forEach(list => {
+      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+    })
+  }
 }
 
-new List();
+const list = new List();

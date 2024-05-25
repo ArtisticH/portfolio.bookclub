@@ -42,7 +42,7 @@ body::-webkit-scrollbar {
 
 .list-top,
 .donelist-top {
-  height: 150px;
+  height: 110px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -105,7 +105,7 @@ body::-webkit-scrollbar {
 }
 
 .list-contents {
-  height: calc(100vh - 160px);
+  height: calc(100vh - 120px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -365,4 +365,69 @@ body::-webkit-scrollbar {
 
 .move-count {
   font-weight: 300;
+}
+
+.pagenation {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 25px;
+  font-family: var(--font-montserrat);
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -3px;
+  cursor: pointer;
+}
+
+.page-current,
+.page-last {
+  display: flex;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  letter-spacing: -2px;
+  line-height: 0.7;
+  cursor: pointer;
+}
+
+.page-current {
+  border: 1px solid black;
+  padding-left: 5px;
+  width: 25px;
+}
+
+.page-last {
+  width: 35px;
+}
+
+.page-move {
+  cursor: pointer;
+  display: flex;
+  width: 40px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-korean);
+  font-size: 1rem;
+  letter-spacing: -1px;
+  background-color: grey;
+  color: white;
+  border: 1px solid black;
+}
+
+@media all and (min-width: 1000px) {
+  .list-contents.grid {
+    grid-template-columns: var(--list-box-width) var(--list-box-width) 1fr var(--list-box-width) var(--list-box-width);
+  }  
 }

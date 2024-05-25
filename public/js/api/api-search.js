@@ -24,7 +24,7 @@ class Search {
     this.$empty = document.querySelector('.empty-text');
     this.$folderSubmit = this.$folders.querySelector('.submit');
     this.$labelClone = document.querySelector('.label-box.clone');
-    this.$cancels = document.querySelectorAll('.cangel-box');
+    this.$cancels = document.querySelectorAll('.cancel-box');
     this.cancel = this.cancel.bind(this);
     [...this.$cancels].forEach(item => {
       item.addEventListener('click', this.cancel);
@@ -97,7 +97,7 @@ class Search {
     };
     this.cancelResults();
     const res = await axios.get(`/open/folders/${this._userId}`);
-    const folders = JSON.parse(res.data.folders);
+    const folders = res.data.folders
     if(folders.length === 0) {
       this.$empty.hidden = false;
       this.$label.hidden = true;
@@ -141,7 +141,11 @@ class Search {
     this.$add.querySelector('.add-input').value = '';
     const radios = document.getElementsByName('isPublic');
     for (const radio of radios) {
-      radio.checked = false;
+      if(radio.id === 'public') {
+        radio.checked = true;
+      } else {
+        radio.checked = false;
+      }
     }
   }
   async addFolder(e) {

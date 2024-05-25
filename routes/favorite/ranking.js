@@ -75,7 +75,7 @@ router.get('/:id', async (req, res) => {
 
   // victoryRate 내림차순
   rankings.sort((a, b) => parseInt(b.victoryRate) - parseInt(a.victoryRate))
-  res.render('ranking', {
+  res.render('favorite/ranking', {
     rankings,
     title,
   })

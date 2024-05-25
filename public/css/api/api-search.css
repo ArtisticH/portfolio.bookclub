@@ -369,7 +369,7 @@ select {
 }
 
 #add {
-  width: 250px;
+  width: 300px;
 }
 
 .nav {
@@ -382,7 +382,7 @@ select {
   padding: 0 5px;
 }
 
-.folders-title {
+.title {
   font-family: var(--font-korean);
   font-size: 0.9rem;
   letter-spacing: -0.5px;

@@ -25,6 +25,9 @@ router.use((req, res, next) => {
   next();
 });
 
+const totalLists = [];
+const doneTotalLists = [];
+
 router.get('/:done/:folderid/:memberid', async (req, res) => {
   if(!req.user) {
     res.redirect('/?wishlist=login');
@@ -38,22 +41,33 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       attributes: ['count'],
     });
     const count = doneFolder.count;
-    const doneLists = await List.findAll({
+    const results = await List.findAll({
       include: [{
         model: Member,
         where: { id: MemberId },
       }],
       where: { done: true },
       attributes: ['id', 'img', 'title', 'author'],
-    })
+    });
+    results.forEach(item => {
+      doneTotalLists[doneTotalLists.length] = {
+        id: item.id,
+        img: item.img,
+        title: item.title,
+        author: item.author,
+      }
+    });
+    const last = count % 15 === 0 ? count / 15 : Math.floor(count / 15) + 1;
+    const doneLists = doneTotalLists.slice(0, 15);
     const member = await Member.findOne({
       where: { id: MemberId },
       attributes: ['id', 'nick'],
-    })
+    });
     res.render('wishlist/donelist', {
       doneLists,
       count,
       member,
+      last, 
     });  
   } else if(done === 'false') {
     const FolderId = req.params.folderid;
@@ -78,7 +92,7 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       where: { id: { [Op.not]: FolderId }},
       attributes: ['id', 'title', 'count'],
     })
-    const lists = await List.findAll({
+    const results = await List.findAll({
       include: [{
         model: Member,
         where: { id: MemberId },
@@ -89,11 +103,24 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       where: { done: false },
       attributes: ['id', 'title', 'author', 'img'],
     });
+    results.forEach(item => {
+      totalLists[totalLists.length] = {
+        id: item.id,
+        title: item.title,
+        author: item.author,
+        img: item.img,
+      }
+    });
+    const totalLength = results.length;
+    const last = results.length % 15 === 0 ? results.length / 15 : Math.floor(results.length / 15) + 1;
+    const lists = totalLists.slice(0, 15);
     res.render('wishlist/list', {
       member,
       lists,
       folders,
+      totalLength,
       currentFolder,
+      last,
     });  
   }
 });
@@ -272,6 +299,22 @@ router.delete('/done', async (req, res) => {
       where: { id: MemberId },
     }],
     where: { id: elemIds },
+  });
+});
+// 페이지네이션
+router.post('/page', async (req, res) => {
+  const page = req.body.page;
+  const done = req.body.done;
+  const start = (page - 1) * 15;
+  const end = start + 15;
+  let lists;
+  if(done) {
+    lists = doneTotalLists.slice(start, end);
+  } else {
+    lists = totalLists.slice(start, end);
+  }
+  res.json({
+    lists: JSON.stringify(lists),
   });
 });
 

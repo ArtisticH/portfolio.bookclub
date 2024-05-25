@@ -38,7 +38,7 @@ router.get('/:id/:round', async (req, res) => {
       finalWin: result.finalWin,
     }
   })
-  res.render('tournament', {
+  res.render('favorite/tournament', {
     original: JSON.stringify(arr),
     model: model.modelName,
     title: model.title,

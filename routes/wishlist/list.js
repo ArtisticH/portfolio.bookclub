@@ -148,7 +148,14 @@ router.post('/', upload2.none(), async(req, res) => {
     author,
     MemberId,
     FolderId,
-  })
+  });
+  totalLists[totalLists.length] = {
+    id: list.id,
+    title: list.title,
+    author: list.author,
+    img: list.img,
+  }
+  totalListLength = totalLists.length;
   // 폴더에서 count추가
   await Folder.increment('count', {
     by: 1,
@@ -160,14 +167,64 @@ router.post('/', upload2.none(), async(req, res) => {
 router.delete('/', async(req, res) => {
   const FolderId = req.body.FolderId;
   const lists = JSON.parse(req.body.id);
+  const deletedCount = lists.length;
+  const restCount = 15 - deletedCount;
+  const MemberId = req.body.MemberId;
+  const page = req.body.page;
   await List.destroy({
     where: { id: lists },
   });
   await Folder.decrement('count', {
     by: lists.length,
     where: { id: FolderId },
-  })
-  res.json({});
+  });
+  const updatedLists = await List.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }, {
+      model: Folder,
+      where: { id: FolderId },
+    }],
+    where: { done: false },
+    attributes: ['id', 'img', 'title', 'author'],
+  });
+  totalLists = [];
+  updatedLists.forEach(item => {
+    totalLists[totalLists.length] = {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  totalListLength = totalLists.length;
+  const last = totalListLength % 15 === 0 ? totalListLength / 15 : Math.floor(totalListLength / 15) + 1;
+  const afterDelete = await List.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }, {
+      model: Folder,
+      where: { id: FolderId },
+    }],
+    where: { done: false },
+    // 삭제한 만큼 메꿔주고
+    limit: deletedCount,
+    // 앞에서부터 몇번째의 리스트를 가져와야 하는지
+    offset: (page - 1) * 15 + restCount,
+    attributes: ['id', 'img', 'title', 'author'],
+  });
+  const afterLists = [];
+  afterDelete.forEach(item => {
+    afterLists[afterLists.length] = {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  res.json({ afterLists, last });
 });
 // 폴더 이동할떄
 router.post('/move', async(req, res) => {
@@ -212,14 +269,6 @@ router.post('/read', async (req, res) => {
   const deletedCount = elemIds.length;
   const restCount = 15 - deletedCount;
   const page = req.body.page;
-  console.log(
-    elemIds,
-    FolderId,
-    MemberId,
-    deletedCount,
-    restCount,
-    page,
-  )
   // done항목을 false => true로 바꾸고
   await List.update({
     done: true,
@@ -282,9 +331,9 @@ router.post('/read', async (req, res) => {
       author: item.author,
     }
   });
-  console.log(totalLists.length, updatedLists.length);
   doneTotalLength = doneTotalLists.length;
   totalListLength = totalLists.length;
+  const last = totalListLength % 15 === 0 ? totalListLength / 15 : Math.floor(totalListLength / 15) + 1;
   // 빈 자리 메꾸게 보낼 것들
   const afterDelete = await List.findAll({
     include: [{
@@ -310,8 +359,7 @@ router.post('/read', async (req, res) => {
       author: item.author,
     }
   });
-  console.log(lists);
-  res.json({ lists });
+  res.json({ lists, last });
 })
 // 완독 해제
 router.post('/back', async (req, res) => {

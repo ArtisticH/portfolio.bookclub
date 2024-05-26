@@ -42,8 +42,6 @@ class Quotes {
     this.$download.onclick = this.download.bind(this);
     this.$output = null;
     this.$link = document.getElementById('capture');
-    this.$register = document.querySelector('.quotes-register');
-    this.$register.onclick = this.register.bind(this);
     this.$quotesSection = document.getElementById('quotes');
     this._userId = this.$quotesSection.dataset.userId;
     // 기본 박스
@@ -248,12 +246,6 @@ class Quotes {
         this.$link.click();
       })
   }
-  register() {
-    if(!this._userId) {
-      alert('로그인 후 이용 가능합니다');
-      return;
-    }
-  }
   // 클라우드
   cloud(e) {
     const target = e.target.closest('.quotes-other-btn');
@@ -384,7 +376,7 @@ class Quotes {
     }
     this.$RQText.textContent = this._rqText[this._readingQuotes];
     this.$RQFrom.textContent = this._rqTextFrom[this._readingQuotes];
-  }
+  }  
 }
 
 const quotes = new Quotes();

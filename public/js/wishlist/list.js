@@ -48,6 +48,7 @@ class List {
     this._lastPage = +this.$list.dataset.last;
     this._target = null;
     this.$current = document.querySelector('.page-current');
+    this.$last = document.querySelector('.page-last');
     // <<, <, >, >> 클릭 시
     this.$pagenation = document.querySelector('.pagenation');
     this.$pagenation.onclick = this.pagenation.bind(this);
@@ -65,6 +66,7 @@ class List {
     const target = e.target.closest('.list-btn');
     if(!target) return;
     const type = target.dataset.btn;
+    this.$listBoxes = document.querySelectorAll('.list-box');
     const boxes = [...this.$listBoxes].filter(box => {
       return box.querySelector('.list-img-box').classList.contains('clicked');
     }); 
@@ -192,8 +194,11 @@ class List {
     if(this._totalList == 1) {
       this.$empty.hidden = true;
       this.$listContents.classList.add('grid');
+      this.$pagenation.hidden = false;
     } 
-    this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+    if(this._totalList < 15) {
+      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+    }
     // 항상 다시 리스트 박스 세팅, 박스 클릭할 수 있으니까
     this.$listBoxes = document.querySelectorAll('.list-box');
   }
@@ -208,6 +213,7 @@ class List {
     return c;
   }
   async delete() {
+    this.$listBoxes = document.querySelectorAll('.list-box');
     // 클릭된 애들만 모아
     const targets = [...this.$listBoxes].filter(box => {
       return box.querySelector('.list-img-box').classList.contains('clicked');
@@ -223,14 +229,24 @@ class List {
     if(this._totalList === 0) {
       this.$empty.hidden = false;
       this.$listContents.classList.remove('grid');
+      this.$pagenation.hidden = true;
     }
-    await axios.delete('/list', {
+    const res = await axios.delete('/list', {
       data: {
         id: JSON.stringify(lists),
         FolderId: this._folderId,  
+        MemberId: this._memberId,
+        page: this._current,  
       }
     });
-    this.$listBoxes = document.querySelectorAll('.list-box');
+    const afterLists = res.data.afterLists;
+    const last = res.data.last;
+    this._lastPage = last;
+    this.$last.innerHTML = `/&nbsp;&nbsp;${this._lastPage}`;
+    afterLists.forEach(list => {
+      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+    });
+    alert('삭제했습니다.');
   }
   async moveSubmit(e) {
     e.preventDefault();
@@ -275,8 +291,8 @@ class List {
     if(this._totalList == 0) {
       this.$empty.hidden = false;
       this.$listContents.classList.remove('grid');
+      this.$pagenation.hidden = true;
     }
-    this.$listBoxes = document.querySelectorAll('.list-box');
   }
   changeLabel(c, count) {
     c.querySelector('.move-count').textContent = count;
@@ -301,7 +317,9 @@ class List {
       page: this._current,
     });
     const lists = res.data.lists;
-    console.log(lists);
+    const last = res.data.last;
+    this._lastPage = last;
+    this.$last.innerHTML = `/&nbsp;&nbsp;${this._lastPage}`;
     lists.forEach(list => {
       this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
     });
@@ -310,8 +328,8 @@ class List {
     if(this._totalList == 0) {
       this.$empty.hidden = false;
       this.$listContents.classList.remove('grid');
+      this.$pagenation.hidden = true;
     }
-    this.$listBoxes = document.querySelectorAll('.list-box');
     alert(`"읽은 것들"폴더로 이동했습니다.`);
   }
   pagenation(e) {
@@ -397,6 +415,12 @@ class List {
       this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
     })
   }
+  showPage() {
+    if(this._totalList > 0) {
+      this.$pagenation.hidden = false;
+    } 
+  }
 }
 
 const list = new List();
+list.showPage();

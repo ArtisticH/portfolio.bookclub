@@ -20,15 +20,6 @@ router.get('/books', async (req, res) => {
   res.render('book/books', { books });
 });
 
-router.get('/members', async (req, res) => {
-  const members = await Member.findAll({
-    where: { type: 'MEMBER' },
-  });
-  // 멤버인 애들만
-  const total = members.length;
-  res.render('member/members', { total });
-});
-
 router.get('/wishlist/null', (req, res) => {
   res.redirect('/?wishlist=login');
 });

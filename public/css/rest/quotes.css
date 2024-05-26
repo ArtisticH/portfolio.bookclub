@@ -421,26 +421,19 @@ input::placeholder {
   transform: rotate3d(0, 1, 0, 180deg);
 }
 
-.quotes-btns {
-  width: var(--width);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.quotes-download {
   font-family: var(--font-vt323);
   font-size: 1.2rem;
-  margin: 20px auto 0 auto;
-}
-
-.quotes-register,
-.quotes-download {
   box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
   height: 30px;
-  padding: 0 10px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #efefef;
   cursor: pointer;
+  width: 120px;
+  margin: 20px auto 0 auto;
 }
 
 @media all and (min-width: 800px) {
@@ -481,7 +474,7 @@ input::placeholder {
     transform: translateY(-50%);
   }  
 
-  .quotes-btns {
+  .quotes-download {
     margin-top: 0;
     position: absolute;
     top: 50%;
@@ -492,11 +485,7 @@ input::placeholder {
     width: max-content;
     align-items: flex-start;
   }
-
-  .quotes-register {
-    margin-bottom: 10px;
-  }
-
+  
   .quotes-other {
     display: block;
     position: absolute;

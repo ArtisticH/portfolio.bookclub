@@ -33,11 +33,15 @@ body::-webkit-scrollbar {
 .list {
   background-color: #e5f403;
   min-height: calc(100vh - 10px);
+  position: relative;
+  padding-bottom: 65px;
 }
 
 .donelist {
   background-color: #039753;
   min-height: calc(100vh - 10px);
+  position: relative;
+  padding-bottom: 65px;
 }
 
 .list-top,
@@ -368,11 +372,14 @@ body::-webkit-scrollbar {
 }
 
 .pagenation {
+  position: absolute;
+  left: 0;
+  bottom: 20px;
   height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
+  width: 100%;
 }
 
 .page-btn {

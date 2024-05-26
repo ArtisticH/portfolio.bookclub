@@ -1,0 +1,140 @@
+:root {
+  --font-korean:"Noto Sans KR", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-merriweather: "Merriweather", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+  display: block;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+#members {  
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff;
+  background-image: linear-gradient(128deg, #ffffff 24%, #FFFB7D 100%);
+}
+
+.members-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  height: 22px;
+  border-bottom: 1px solid black;
+}
+
+.members-title {
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  letter-spacing: -2px;
+  font-weight: 500;
+}
+
+.members-names {
+  font-family: var(--font-korean);
+  font-size: 0.9rem;
+  letter-spacing: -0.5px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.members-name {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.member-books {
+  margin-top: 10px;
+}
+
+.member-book {
+  cursor: pointer;
+  font-family: var(--font-korean);
+  font-size: 1.3rem;
+  letter-spacing: -2px;
+  font-weight: 100;
+  text-align: end;
+  line-height: 1.2;
+}
+
+.members-name.clicked,
+.member-book.clicked {
+  color: #ebb739;
+  font-weight: 500;
+}
+
+.attend {
+  border: 1px solid black;
+  width: 200px;
+  background-color: white;
+  position: fixed;
+  left: 10px;
+  top: 70%;
+  transform: translateY(-50%);
+}
+
+.recommend {
+  border: 1px solid black;
+  width: 250px;
+  background-color: white;
+  position: fixed;
+  left: 40px;
+  bottom: 20px;
+}
+
+.attend-title,
+.recommend-title {
+  font-family: var(--font-korean);
+  font-size: 1rem;
+  letter-spacing: -1px;
+  font-weight: 200;
+  margin-bottom: 40px;
+}
+
+.attend-num,
+.recommend-num {
+  font-family: var(--font-montserrat);
+  font-size: 3rem;
+  letter-spacing: -5px;
+  color: #ebb739;
+  font-weight: 400;
+  text-align: end;
+  margin-right: 3px;
+}
+
+.box {
+  font-family: var(--font-merriweather);
+  font-size: 2rem;
+  letter-spacing: -2px;
+  padding: 5px 10px;
+  border: 1px solid black;
+  width: fit-content;
+}
+
+.home {
+  background-color: #0c3aa5;
+  color: white;
+}
+
+.wishlist {
+  background-color: #039753;
+}
+

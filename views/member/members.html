@@ -5,65 +5,42 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOK CLUB</title>
-  <link rel="stylesheet" href="/css/member/members.css">
+  <link rel="stylesheet" href="/css/rest/members.css">
+  <script defer src="/js/rest/members.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-  <section id="members">
-    <div class="members-left">
-      <div class="members-left__main">
-        <div class="members-left__title">Members</div>
-        <div class="members-left__sub">Total&nbsp;{{total}}&nbsp;member</div>  
+  <section id="members" data-user-id="{{user.id}}" data-book-total="{{bookTotal}}">
+    <div class="members-nav">
+      <div class="members-names">
+        <div class="members-title">MEMBERS</div>
+        {% for member in members %}
+        <div data-id={{member.id}} class="members-name">{{member.nick}}</div>
+        {% endfor %}
       </div>
-      <a href="/" class="back__arrow">
-        <img class="back__arrow__img" src="/img/main/back-arrow.png" alt="back-arrow">
-      </a> 
     </div>
-    <div class="members-right">
-      <a class="members__member" href="/member/1">
-        <div class="member__hangul">
-          ㅅㅓ
-          <br>
-          ㅎㅏㄴ 
-          <br>
-          ㄴㅏ
-        </div>
-        <div class="member__alphabet">Seo Hanna</div>
-      </a>
-      <a class="members__member" href="/member/2">
-        <div class="member__hangul">
-          ㄱㅣㅁ
-          <br>
-          ㅈㅓㅇ 
-          <br>
-          ㄱㅕㅇ
-        </div>
-        <div class="member__alphabet">Kim Jungkyung</div>
-      </a>
-      <a class="members__member" href="/member/3">
-        <div class="member__hangul">
-          ㄱㅏ
-          <br>
-          ㅇㅖ 
-          <br>
-          ㄹㅣㅁ
-        </div>
-        <div class="member__alphabet">Kang Yerim</div>
-      </a>
-      <a class="members__member" href="/member/4">
-        <div class="member__hangul">
-          ㄱㅣㅁ
-          <br>
-          ㅎㅕㄴ 
-          <br>
-          ㅇㅏ
-        </div>
-        <div class="member__alphabet">Kim Hyuna</div>
-      </a>
+    <div class="member-books">
+      {% for book in books %}
+      <a href="/book/{{book.id}}" class="member-book" data-id="{{book.id}}">{{book.title}}</a>
+      {% endfor %}
     </div>
+    <div class="attend" hidden>
+      <div class="attend-title">미팅 참여 횟수 / 총 미팅 횟수</div>
+      <div class="attend-num"><span class="attend-num-count"></span>&nbsp;/&nbsp;<span class="attend-num-total"></span></div>
+    </div>
+    <div class="recommend" hidden>
+      <div class="recommend-title">책 추천 횟수 / 총 미팅 횟수</div>
+      <div class="recommend-num"><span class="recommend-num-count"></span>&nbsp;/&nbsp;<span class="recommend-num-total"></span></div>
+    </div>
+    <a href="/" class="home box">HOME</a>
+    <a href="/open" class="api box">API</a>
+    <a href="/quotes" class="quotes box">Quotes</a>
+    <div class="wishlist box">WISHLIST</div>
+    <a href="/favorites" class="favorite box">Favorite</a>
   </section>
 </body>
 </html>

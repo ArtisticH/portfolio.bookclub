@@ -27,7 +27,7 @@ body::-webkit-scrollbar {
   width: 100%;
   min-height: 100vh;
   background-color: #ffffff;
-  background-image: linear-gradient(128deg, #ffffff 24%, #FFFB7D 100%);
+  background-image: linear-gradient(135deg, #ffffff 25%, #06f304 100%);
 }
 
 .members-nav {
@@ -63,6 +63,9 @@ body::-webkit-scrollbar {
 
 .member-books {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .member-book {
@@ -71,13 +74,13 @@ body::-webkit-scrollbar {
   font-size: 1.3rem;
   letter-spacing: -2px;
   font-weight: 100;
-  text-align: end;
   line-height: 1.2;
+  width: fit-content;
 }
 
 .members-name.clicked,
 .member-book.clicked {
-  color: #ebb739;
+  color: #0c3aa5;
   font-weight: 500;
 }
 
@@ -96,8 +99,8 @@ body::-webkit-scrollbar {
   width: 250px;
   background-color: white;
   position: fixed;
-  left: 40px;
-  bottom: 20px;
+  left: 30px;
+  bottom: 30px;
 }
 
 .attend-title,
@@ -114,10 +117,16 @@ body::-webkit-scrollbar {
   font-family: var(--font-montserrat);
   font-size: 3rem;
   letter-spacing: -5px;
-  color: #ebb739;
+  color: #0c3aa5;
   font-weight: 400;
   text-align: end;
   margin-right: 3px;
+}
+
+.href-box {
+  position: fixed;
+  top: 100px;
+  left: 0;
 }
 
 .box {
@@ -127,6 +136,7 @@ body::-webkit-scrollbar {
   padding: 5px 10px;
   border: 1px solid black;
   width: fit-content;
+  margin-bottom: 5px;
 }
 
 .home {
@@ -134,7 +144,55 @@ body::-webkit-scrollbar {
   color: white;
 }
 
+.api {
+  background-color: #ccf407;
+}
+
+.quotes {
+  background-color: #f00284;
+}
+
 .wishlist {
   background-color: #039753;
 }
 
+.favorite {
+  background-color: #00f402;
+}
+
+@media all and (min-width: 1000px) {
+  .member-book {
+    font-size: 1.7rem;
+    letter-spacing: -3px;
+    line-height: 1.2;
+  }
+
+  .box {
+    margin-bottom: 10px;
+  }  
+
+  .api {
+    margin-left: 15px;
+  }
+
+  .quotes {
+    margin-left: 30px;
+  }
+
+  .wishlist {
+    margin-left: 45px;
+  }
+
+  .favorite {
+    margin-left: 60px;
+  }
+
+  .attend {
+    left: 40px;
+  }
+  
+  .recommend {
+    left: 80px;
+    bottom: 40px;
+  }  
+}

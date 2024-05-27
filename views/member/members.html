@@ -28,6 +28,13 @@
       <a href="/book/{{book.id}}" class="member-book" data-id="{{book.id}}">{{book.title}}</a>
       {% endfor %}
     </div>
+    <div class="href-box">
+      <a href="/" class="home box">HOME</a>
+      <a href="/open" class="api box">API</a>
+      <a href="/quotes" class="quotes box">Quotes</a>
+      <div class="wishlist box">WISHLIST</div>
+      <a href="/favorites" class="favorite box">Favorite</a>  
+    </div>
     <div class="attend" hidden>
       <div class="attend-title">미팅 참여 횟수 / 총 미팅 횟수</div>
       <div class="attend-num"><span class="attend-num-count"></span>&nbsp;/&nbsp;<span class="attend-num-total"></span></div>
@@ -36,11 +43,6 @@
       <div class="recommend-title">책 추천 횟수 / 총 미팅 횟수</div>
       <div class="recommend-num"><span class="recommend-num-count"></span>&nbsp;/&nbsp;<span class="recommend-num-total"></span></div>
     </div>
-    <a href="/" class="home box">HOME</a>
-    <a href="/open" class="api box">API</a>
-    <a href="/quotes" class="quotes box">Quotes</a>
-    <div class="wishlist box">WISHLIST</div>
-    <a href="/favorites" class="favorite box">Favorite</a>
   </section>
 </body>
 </html>

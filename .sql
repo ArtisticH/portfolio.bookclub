@@ -58,10 +58,10 @@ INSERT INTO doneFolders (MemberId, public) VALUES (2, true);
 INSERT INTO doneFolders (MemberId, public) VALUES (3, true);
 INSERT INTO doneFolders (MemberId, public) VALUES (4, true);
 
-UPDATE members SET type = 'member' WHERE id = 1;
-UPDATE members SET type = 'member' WHERE id = 2;
-UPDATE members SET type = 'member' WHERE id = 3;
-UPDATE members SET type = 'member' WHERE id = 4;
+UPDATE members SET type = 'MEMBER' WHERE id = 1;
+UPDATE members SET type = 'MEMBER' WHERE id = 2;
+UPDATE members SET type = 'MEMBER' WHERE id = 3;
+UPDATE members SET type = 'MEMBER' WHERE id = 4;
 
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('Taylor Swift', 'music', '/img/favorite/ts.jpeg', "What's your Favorite Taylor Swift's song?", 'TS', 32);
 INSERT INTO favorite (title, types, img, explanation, modelName, round) VALUES ('POP', 'music2', '/img/favorite/pop.jpeg', "What's your Favorite song in POP?", 'POP', 32);

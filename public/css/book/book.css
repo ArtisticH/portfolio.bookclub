@@ -633,7 +633,7 @@ body::-webkit-scrollbar {
     margin-bottom: 30px;
   }
 
-  .empty-review {
+  .review-empty {
     height: calc(100% - 35px);
     padding: 0;
   }  
@@ -660,6 +660,8 @@ body::-webkit-scrollbar {
 
   .book-contents {
     display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;  
   }  
 
   .book__img-box {

@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body>
   <section id="book" data-user-id="{{user.id}}">
@@ -35,7 +36,7 @@
             <div class="book-title">{{book.title}}</div>
             <div>
               <div class="book-author">{{book.author}}</div>
-              <div id="book-recommender">추천이:&nbsp;<a href="/member/{{member.id}}" class="book-recommender">{{member.nick}}</a></div>
+              <div id="book-recommender">추천이:&nbsp;<a href="/members" class="book-recommender">{{nick}}</a></div>
               <div id="book-date">모임 날짜:&nbsp;<span class="book-date">{{book.meetingDate}}</span></div>        
             </div>
             <div class="book-rate-box">
@@ -64,9 +65,9 @@
       <div class="review-empty">
         <div class="review-empty-text">리뷰를 작성해주세요.</div>
       </div>
-      <div class="review-container"></div>
+      <div class="review-container" hidden></div>
       {% else %}
-      <div class="review-empty">
+      <div class="review-empty" hidden>
         <div class="review-empty-text">리뷰를 작성해주세요.</div>
       </div>
       <div class="review-container">
@@ -82,7 +83,7 @@
             <div class="rebox__line"></div>
             <div class="rebox__type">{{review.type}}</div>
             <div class="rebox__line"></div>
-            <a href="/member/{{review.MemberId}}" class="rebox__nickname rebox--common">{{review.nick}}</a>
+            <a href="/members" class="rebox__nickname rebox--common">{{review.nick}}</a>
             <div class="rebox__line"></div>
             <div class="rebox__date rebox--common">{{review.createdAt}}</div>
             <div class="rebox__line"></div>
@@ -90,14 +91,6 @@
             <!-- 현재 로그인한 회원과 작성 회원이 같다면 -->
             {% if user.id == review.MemberId %} 
             <div class="rebox__user">
-              <div class="rebox__line"></div>
-              <div class="rebox__edit rebox--common">수정</div>
-              <div class="rebox__line"></div>
-              <div class="rebox__delete rebox--common">삭제</div>  
-            </div>
-            {% else %}
-            <!-- 업데이트 시에 -->
-            <div class="rebox__user" hidden>
               <div class="rebox__line"></div>
               <div class="rebox__edit rebox--common">수정</div>
               <div class="rebox__line"></div>
@@ -190,11 +183,11 @@
         <div class="page-first page-btn" hidden>&lt;&lt;</div>
         <div class="page-before page-btn" hidden>&lt;</div>
         <div class="page-numbers" hidden>
-          <div class="page-number" hidden></div>
-          <div class="page-number" hidden></div>
-          <div class="page-number" hidden></div>
-          <div class="page-number" hidden></div>
-          <div class="page-number" hidden></div>
+          <div class="page-number"></div>
+          <div class="page-number"></div>
+          <div class="page-number"></div>
+          <div class="page-number"></div>
+          <div class="page-number"></div>
         </div>
         <div class="page-after page-btn" hidden>&gt;</div>
         <div class="page-last page-btn" hidden>&gt;&gt;</div>  
@@ -210,8 +203,8 @@
       </div>
     </div>
     <div class="form-book">
-      <div class="form__img-box">
-        <img class="form__img" src="{{book.img}}" alt="{{book.title}}">
+      <div class="form-img-box">
+        <img class="book-img" src="{{book.img}}" alt="{{book.title}}">
       </div>
       <div class="form__info">
         <div class="form-book__title">{{book.title}}</div>

@@ -12,12 +12,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body>
   <section id="index">
     <div id="top">
       <div class="top-left">
-        <div class="top-left__title">Book Club</div>
+        <a href="/" class="top-left__title">Book Club</a>
         <!-- 로그인 or 회원가입 버튼 노출 -->
         <!-- 이벤트 위임 -->
         {% if not user %}
@@ -93,7 +94,11 @@
     </div>
     {% if user and user.id %}
     <div id="user" data-user-id="{{user.id}}">
+      {% if user.type == 'MEMBER' %}
       <a href="/member/{{user.id}}" class="user__nick">{{user.nick}}</a>
+      {% else %}
+      <div class="user__nick">{{user.nick}}</div>
+      {% endif %}
       <div id="user__wishlist">
         <div class="user__wishlist__text">CHECK YOUR WISHLIST</div>
         <a href="/wishlist/{{user.id}}" class="user__wishlist">WISHLIST</a>   

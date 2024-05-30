@@ -50,8 +50,15 @@ router.get('/logout', isLoggedIn, (req, res) => {
   });
 });
 
-router.get('/kakao', passport.authenticate('kakao'));
+router.get('/kakao',  passport.authenticate('kakao'));
 router.get('/kakao/callback', passport.authenticate('kakao', {
+  failureRedirect: '/',
+}), (req, res) => {
+  res.redirect('/');
+});
+
+router.get('/naver',  passport.authenticate('naver', { authType: 'reprompt' }));
+router.get('/naver/callback', passport.authenticate('naver', {
   failureRedirect: '/',
 }), (req, res) => {
   res.redirect('/');

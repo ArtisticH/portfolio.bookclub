@@ -1,5 +1,5 @@
 
-class Memebr {
+class Member {
   constructor() {
     // 멤버 클릭
     this.$members = document.getElementById('members');
@@ -12,9 +12,13 @@ class Memebr {
     // 참여 횟수
     this.$attend = document.querySelector('.attend');
     this.$recommend = document.querySelector('.recommend');
+    this._memberId = null;
+    this.$wishlist = document.querySelector('.wishlist');
+    this.$wishlist.onclick = this.wishlist.bind(this);
   }
   async names(e) {
     const target = e.target.closest('.members-name');
+    this._memberId = target.dataset.id;
     if(!target) return;
     [...this.$name].forEach(item => {
       if(item == target) {
@@ -49,6 +53,15 @@ class Memebr {
     this.$recommend.querySelector('.recommend-num-count').textContent = rec;
     this.$recommend.querySelector('.recommend-num-total').textContent = total;
   }
+
+  async wishlist() {
+    if(!this._memberId) {
+      alert('로그인 후 이용 가능합니다.');
+      return;
+    }
+    const url = `wishlist/${this._memberId}`;
+    window.location.href = url;
+  }
 }
 
-new Memebr();
+new Member();

@@ -49,11 +49,10 @@ exports.star = (star) => {
     // 그래서 2.3은 2로 내리고, 3.8은 3.5로 내릴 수 있게,
     if (decimal < 0.5) {
       decimal = 0;
-      starSum = essence;
     } else if (0.5 <= decimal) {
       decimal = 0.5;
-      starSum = essence + decimal;
     }
+    starSum = essence + decimal;
     starArr = Array.from({ length: 5 }, (_, index) => {
       // essence까지는 채우고, 
       if(index + 1 <= essence) {

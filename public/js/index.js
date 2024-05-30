@@ -53,6 +53,7 @@ class Index {
     // 로그인했다면 id, 아니면 null
     // 이렇게 해야 로그인 안 됐을때 오류 없어. this.$user이 없다면 dataset을 읽을 수 없어 멈춤
     this._userId = this.$user && this.$user.dataset.userId;
+    this._loggedIn = !this._userId ? false : true;
     this.dragDrop = this.dragDrop.bind(this);
     this.pointermove = this.pointermove.bind(this);
     this.pointerup = this.pointerup.bind(this);
@@ -96,7 +97,7 @@ class Index {
   }
   change(index) {
     // 로그인 안 한 경우, null이 아닐때
-    if(this.$btn[0]) {
+    if(!this._loggedIn) {
       this.$btn.forEach(item => {
         item.style.backgroundColor = `${this._backgroundColor[index]}`;
       });
@@ -164,7 +165,7 @@ class Index {
       } else if(this.searchParams.get('login') === 'need') {
         alert(`로그인이 필요합니다.`);
       } else if(this.searchParams.get('login') === 'already') {
-        alert(`로그인한 상태입니다`);
+        alert(`이미 로그인한 상태입니다`);
       } else {
         alert(`${this.searchParams.get('login')}`);
       }
@@ -183,5 +184,4 @@ class Index {
 const index = new Index();
 window.addEventListener('scroll', index.scroll);
 window.addEventListener('load', index.alert);
-
 

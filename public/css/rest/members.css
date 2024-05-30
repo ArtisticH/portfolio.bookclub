@@ -43,7 +43,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-montserrat);
   font-size: 1rem;
   letter-spacing: -2px;
-  font-weight: 500;
+  font-weight: 200;
 }
 
 .members-names {
@@ -81,6 +81,7 @@ body::-webkit-scrollbar {
 .members-name.clicked,
 .member-book.clicked {
   color: #0c3aa5;
+  color: black;
   font-weight: 500;
 }
 
@@ -117,7 +118,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-montserrat);
   font-size: 3rem;
   letter-spacing: -5px;
-  color: #0c3aa5;
+  color: #039753;
   font-weight: 400;
   text-align: end;
   margin-right: 3px;
@@ -137,6 +138,7 @@ body::-webkit-scrollbar {
   border: 1px solid black;
   width: fit-content;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 
 .home {

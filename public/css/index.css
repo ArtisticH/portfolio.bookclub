@@ -111,7 +111,7 @@ body::-webkit-scrollbar {
   visibility: hidden;
   transition: all 0.2s ease-out;
   border-right: 0.5px solid black;
-}
+  }
 
 .form-target.show {
   transform: translate3d(0%, 0, 0);

@@ -11,7 +11,6 @@ class Favorite extends Sequelize.Model {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      // 대표 썸네일 사진
       img: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -34,38 +33,6 @@ class Favorite extends Sequelize.Model {
       underscored: false,
       modelName: 'Favorite',
       tableName: 'favorite',
-      paranoid: false,
-      charset: 'utf8',
-      collate: 'utf8_general_ci',
-    })
-  }
-}
-
-class RecordFavortie extends Sequelize.Model {
-  static init(sequelize) {
-    return super.init({
-      MemberId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      FavoriteId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      main: {
-        type: Sequelize.STRING(500),
-        allowNull: false,
-      },
-      sub: {
-        type: Sequelize.STRING(500),
-        allowNull: false,
-      },
-    }, {
-      sequelize,
-      timestamps: false,
-      underscored: false,
-      modelName: 'RecordFavortie',
-      tableName: 'recordFavortie',
       paranoid: false,
       charset: 'utf8',
       collate: 'utf8_general_ci',
@@ -348,7 +315,6 @@ class KMC extends Sequelize.Model {
 
 module.exports = {
   Favorite,
-  RecordFavortie,
   TS,
   POP,
   KPOP,

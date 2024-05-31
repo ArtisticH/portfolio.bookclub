@@ -1,10 +1,10 @@
 class Tournament {
   constructor() {
-    this._id = new URL(location.href).pathname.split('/')[2];
+    // 카테고리 아이디
+    this._id = +new URL(location.href).pathname.split('/')[2];
     // 몇 라운드인지 클릭했는지
     this._round = +new URL(location.href).pathname.split('/')[3];
     this.$tournament = document.getElementById('tournament');
-    this._memberId = this.$tournament.dataset.userId;
     // 서버에서 보내온 배열
     this._original = JSON.parse(this.$tournament.dataset.original);
     // 이미지 경로할때 필요, 오디오 경로할때 필요
@@ -66,7 +66,7 @@ class Tournament {
     this.$round = document.querySelector('.tournament-round');
     // 파이널
     this.$final = document.getElementById('final');
-    this.$finalImg = document.querySelector('.final-img');
+    this.$finalImg = this.$final.querySelector('img');
     this.$finalTitle = document.querySelector('.final-title');
     this.$finalMain = document.querySelector('.final-main');
     this.$finalSub = document.querySelector('.final-sub');

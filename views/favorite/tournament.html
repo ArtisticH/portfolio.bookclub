@@ -15,23 +15,23 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body>
-  <section id="tournament" data-original="{{original}}" data-model="{{model}}" data-types="{{types}}" data-user-id="{{user.id}}">
+  <section id="tournament" data-original="{{original}}" data-model="{{modelName}}" data-types="{{types}}">
     <img class="tournament-background" src="/img/favorite/background.jpeg" alt="background">
     <div class="tournament-title">{{title}}</div>
+    <a href="/" class="tournament-home">HOME</a>
     <div class="tournament">
       <div class="tournament-con icon">
-        {% if types == 'music' or types == 'music2' %}
+        {% if types == 'music' %}
         <div class="tournament-icon">
-          <img class="tournament-icon-img" src="/img/favorite/music-icon.png" alt="music-icon">
+          <img class="tournament-img" src="/img/favorite/music-icon.png" alt="music-icon">
         </div>
         <div class="tournament-icon-text">Click Play & Pause Icon!<br>And Enjoy Music!🤟</div>
         {% else %}
-        <!-- 위 요소가 없을때 텍스트를 아래에 놓기 위한 빈 요소 -->
         <div class="tournament-icon-text">Click Img to Choose Your Favorite! 💖</div>
         {% endif %}
       </div>
       <div class="tournament-con round">
-        <div class="tournament-round"><span class="round-current">1</span>&nbsp;/&nbsp;<span class="round-total">32</span></div>  
+        <div class="tournament-round"><span class="round-current"></span>&nbsp;/&nbsp;<span class="round-total"></span></div>  
         <div class="tournament-explanation">{{explanation}}</div>
       </div>
       <div class="tournament-con top-img">
@@ -40,35 +40,35 @@
         </div>
       </div>
       <div class="tournament-con top-info">
-        {% if types == 'music' or types == 'music2' %}
+        {% if types == 'music' %}
         <audio class="tournament-audio top" src=""></audio>
         <div class="play-btn top">
-          <img class="play-img" src="/img/favorite/play.png" alt="play">
+          <img class="tournament-img" src="/img/favorite/play.png" alt="play">
         </div>
         <div class="pause-btn top" hidden>
-          <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
+          <img class="tournament-img" src="/img/favorite/pause.png" alt="pause">
         </div>
         <div class="tournament-main top"></div>
         <div class="tournament-sub top"></div>
         {% else %}
         <div class="tournament-main top"></div>
-        <div class="tournament-sub top">Celebrity</div>
+        <div class="tournament-sub top"></div>
         {% endif %}
       </div>
       <div class="tournament-con bot-info">
-        {% if types == 'music' or types == 'music2' %}
+        {% if types == 'music' %}
         <audio class="tournament-audio bot" src=""></audio>
         <div class="play-btn bot">
-          <img class="play-img" src="/img/favorite/play.png" alt="play">
+          <img class="tournament-img" src="/img/favorite/play.png" alt="play">
         </div>
         <div class="pause-btn bot" hidden>
-          <img class="pause-img" src="/img/favorite/pause.png" alt="pause">
+          <img class="tournament-img" src="/img/favorite/pause.png" alt="pause">
         </div>
         <div class="tournament-main bot"></div>
         <div class="tournament-sub bot"></div>
         {% else %}
         <div class="tournament-main bot"></div>
-        <div class="tournament-sub bot">Celebrity</div>
+        <div class="tournament-sub bot"></div>
         {% endif %}
       </div>
       <div class="tournament-con bot-img">
@@ -80,7 +80,7 @@
   </section>
   <section id="final" hidden>
     <div class="final-nav">
-      <a href="/favorites" class="final-other">Other Category...</a>
+      <a href="/favorite" class="final-other">Other Category...</a>
       <a href="/" class="final-home">HOME</a>
     </div>
     <div class="final">
@@ -92,12 +92,12 @@
         </div>
       </div>
       <div class="final-img-box">
-        <img class="final-img" src="" alt="final">
+        <img class="tournament-img" src="" alt="final">
       </div>
     </div>
     <div class="final-options">
       <a class="final-option img" href="" download="">Img Download</a>
-      <a class="final-option ranking"  href="/ranking/{{id}}">See Ranking</a>
+      <a class="final-option ranking"  href="/favorite/ranking/{{id}}">See Ranking</a>
     </div>
   </section>
 </body>

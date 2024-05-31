@@ -2,10 +2,21 @@
   --font-montserrat: "Montserrat", sans-serif;
   --font-korean: "Noto Sans KR", sans-serif;
   --font-vt323: "VT323", monospace;
+  --final-width: 280px;
 }
 
 body::-webkit-scrollbar {
   display: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
 }
 
 body {
@@ -15,11 +26,12 @@ body {
 
 #tournament {
   height: 100vh;
-  box-sizing: border-box;
+  /* .tournament-background */
   position: relative;
 }
 
 .tournament-background {
+  /* #tournament */
   position: absolute;
   top: 0;
   left: 0;
@@ -37,6 +49,17 @@ body {
   font-weight: 600;
 }
 
+.tournament-home {
+  font-family: var(--font-montserrat);
+  position: fixed;
+  top: 0;
+  right: 0;
+  line-height: 0.7;
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: -3px;
+}
+
 .tournament {
   display: grid;
   grid-template-areas: 
@@ -49,7 +72,6 @@ body {
 
 .tournament-con {
   border: 0.5px solid black;
-  box-sizing: border-box;
 }
 
 .tournament-con.icon {
@@ -60,17 +82,13 @@ body {
 }
 
 .tournament-icon {
-  width: 30px;
+  width: 35px;
 }
 
-.tournament-icon-img {
-  display: block;
-  width: 100%;
-}
-
-.tournament-icon-text {
+.tournament-icon-text,
+.tournament-explanation {
   font-family: var(--font-vt323);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .tournament-con.round {
@@ -90,15 +108,10 @@ body {
   justify-content: end;
 }
 
-.tournament-explanation {
-  font-family: var(--font-vt323);
-  font-size: 1.2rem;
-}
-
 .tournament-con.top-img {
   grid-area: topimg;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: end;
 }
 
@@ -110,9 +123,9 @@ body {
 }
 
 .tournament-img-box {
-  box-sizing: border-box;
-  width: 220px;
   cursor: pointer;
+  aspect-ratio: 1 / 1;
+  height: 100%;
 }
 
 .tournament-img-box.top {
@@ -125,7 +138,6 @@ body {
 
 .tournament-img {
   display: block;
-  box-sizing: border-box;
   width: 100%;
 }
 
@@ -134,7 +146,6 @@ body {
   flex-direction: column;
   justify-content: end;
   align-items: flex-start;
-  box-sizing: border-box;
   padding: 10px;
   grid-area: topinfo;
 }
@@ -144,12 +155,6 @@ body {
   width: 25px;
   cursor: pointer;
   margin-bottom: 5px;
-}
-
-.play-img,
-.pause-img {
-  display: block;
-  width: 100%;
 }
 
 .tournament-main {
@@ -165,16 +170,9 @@ body {
   line-height: 0.7;
 }
 
-.tournament-main.bot {
-  text-align: end;
-}
-
+.tournament-main.bot,
 .tournament-sub.bot {
   text-align: end;
-  font-family: var(--font-montserrat);
-  font-family: var(--font-vt323);
-  font-size: 2rem;
-  letter-spacing: -2px;
 }
 
 .tournament-con.bot-info {
@@ -182,7 +180,6 @@ body {
   flex-direction: column;
   justify-content: end;
   align-items: flex-end;
-  box-sizing: border-box;
   padding: 10px;
   grid-area: botinfo;
 }
@@ -192,6 +189,11 @@ body {
     font-size: 6rem;
     letter-spacing: -10px;
   }
+
+  .tournament-home {
+    font-size: 2.5rem;
+    letter-spacing: -5px;
+  }  
   
   .tournament {
     grid-template-areas: 
@@ -201,16 +203,12 @@ body {
     grid-template-rows: 250px 250px;
   }  
 
-  .tournament-img-box {
-    width: 250px;
-  }      
-
   .tournament-icon {
     width: 45px;
   }
 
-  .tournament-icon-text {
-    font-family: var(--font-vt323);
+  .tournament-icon-text,
+  .tournament-explanation {
     font-size: 1.4rem;
     letter-spacing: -0.5px;
   }
@@ -219,10 +217,6 @@ body {
     font-size: 5rem;
     letter-spacing: -8px;
   }
-  
-  .tournament-explanation {
-    font-size: 1.4rem;
-  }  
 }
 
 @media all and (min-width: 900px) {
@@ -235,15 +229,12 @@ body {
     grid-template-rows: 320px 320px;
   }  
 
-  .tournament-img-box {
-    width: 320px;
-  }  
-
   .tournament-icon {
     width: 55px;
   }
 
-  .tournament-icon-text {
+  .tournament-icon-text,
+  .tournament-explanation {
     font-size: 1.7rem;
     letter-spacing: -0.7px;
   }
@@ -262,10 +253,6 @@ body {
     font-size: 2.2rem;
     letter-spacing: -1.2px;
   } 
-  
-  .tournament-explanation {
-    font-size: 1.7rem;
-  }  
 }
 
 #final {
@@ -275,7 +262,6 @@ body {
   width: 425px;
   transform: translate(-50%, -50%);
   border: 1px solid black;
-  box-sizing: border-box;
 }
 
 .final-nav {
@@ -286,28 +272,19 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 5px;
-  box-sizing: border-box;
-}
-
-.final-title {
-  font-family: var(--font-vt323);
-  font-size: 1.2rem;
 }
 
 .final-home,
 .final-other {
   font-family: var(--font-vt323);
   font-size: 1.2rem;
-  color: black;
-  text-decoration: none;
 }
 
 .final {
-  display: flex;
   background-color: #efefef;
-  align-items: stretch;
-  justify-content: space-between;
   border-bottom: 1px solid black;
+  display: grid;
+  grid-template-columns: 1fr var(--final-width);
 }
 
 .final-info {
@@ -315,8 +292,12 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  box-sizing: border-box;
   padding: 5px;
+}
+
+.final-title {
+  font-family: var(--font-vt323);
+  font-size: 1.2rem;
 }
 
 .final-main {
@@ -332,13 +313,8 @@ body {
 }
 
 .final-img-box {
-  width: 250px;
+  width: var(--final-width);
   border-left: 1px solid black;
-}
-
-.final-img {
-  display: block;
-  width: 100%;
 }
 
 .final-options {
@@ -350,10 +326,8 @@ body {
 }
 
 .final-option {
-  display: block;
-  text-decoration: none;
-  color: black;
   cursor: pointer;
+  margin: 0 10px;
   font-size: 1.3rem;
   font-family: var(--font-vt323);
   margin-right: 10px;
@@ -365,22 +339,20 @@ body {
 
 @media all and (min-width: 900px) { 
   #final {
-    width: 500px;
+    width: 550px;
   }    
-  
-  .final-img-box {
-    width: 300px;
-  }  
 }
 
 @media all and (min-width: 1200px) { 
-  #final {
-    width: 550px;
-  }    
+  :root {
+    --final-width: 330px;
+  }
   
-  .final-img-box {
-    width: 350px;
-  }  
+  #final {
+    width: 650px;
+  }    
 }
+
+
 
 

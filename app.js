@@ -16,7 +16,6 @@ const memberRouter = require('./routes/rest/members');
 const wishlistRouter = require('./routes/wishlist/wishlist');
 const listRouter = require('./routes/wishlist/list');
 const favoriteRouter = require('./routes/favorite/favorite');
-// const rankingRouter = require('./routes/favorite/ranking');
 const quotesRouter = require('./routes/rest/quotes');
 const openRouter = require('./routes/rest/open');
 
@@ -69,7 +68,6 @@ app.use('/wishlist', wishlistRouter);
 app.use('/list', listRouter);
 app.use('/favorite', favoriteRouter);
 app.use('/quotes', quotesRouter);
-// app.use('/ranking', rankingRouter);
 app.use('/open', openRouter);
 
 app.use((req, res, next) => {

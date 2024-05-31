@@ -60,7 +60,6 @@ body {
   border: 0.5px solid black;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  box-sizing: border-box;
 }
 
 .favorite.KPOP {
@@ -87,7 +86,6 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background-origin: center;
 }
 
 .favorite-info {
@@ -124,6 +122,7 @@ body {
 
 .favorite-img.music {
   width: 30px;
+  display: block;
 }
 
 .favorite-round {
@@ -141,7 +140,6 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   border: 1px solid black;
-  box-sizing: border-box;
 }
 
 .round-nav {

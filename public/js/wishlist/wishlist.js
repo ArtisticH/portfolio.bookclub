@@ -3,6 +3,10 @@ class Wishlist {
     this._memberId = new URL(location.href).pathname.split('/')[2];
     this.$wishlist = document.getElementById('wishlist');
     this._userId = this.$wishlist.dataset.userId;
+    // 폴더 개수 14개 제한
+    this._totalFolder = +this.$wishlist.dataset.totalFolder;
+    // 하나남은 폴더 삭제시 읽은 것들도 리스트가 0개라면 화면을 바꿔야 한다.
+    this._doneCount = +this.$wishlist.dataset.doneCount;
     // 오른쪽 마우스 클릭 => 폴더 생성 혹은 정렬에 대한 메뉴 보여줄건지
     this.$area = document.querySelector('.wishlist');
     this.$folderMenu = document.getElementById('folder-menu');
@@ -22,8 +26,6 @@ class Wishlist {
     this.$add = document.getElementById('add');
     this.$addLength = document.querySelector('.add-length');
     this.$addInput = document.querySelector('.add-input');
-    this.$public = document.getElementById('public');
-    this.$private = document.getElementById('private');
     this.countText = this.countText.bind(this);
     this._addCheck = false;
     this._nameCheck = false;
@@ -31,8 +33,7 @@ class Wishlist {
       this.countText(e, this.$addLength, 'add');
     }
     this.$addForm = document.querySelector('.add-form');
-    this.submitAdd = this.submitAdd.bind(this);
-    this.$addForm.addEventListener('submit', this.submitAdd);
+    this.$addForm.onsubmit = this.submitAdd.bind(this);
     this.$name = document.getElementById('change');
     this.$nameLength = document.querySelector('.change-length');
     this.$nameInput = document.querySelector('.change-input');
@@ -40,17 +41,14 @@ class Wishlist {
       this.countText(e, this.$nameLength, 'name');
     }
     this.$nameForm = document.querySelector('.change-form');
-    this.submitName = this.submitName.bind(this);
-    this.$nameForm.addEventListener('submit', this.submitName);
+    this.$nameForm.onsubmit = this.submitName.bind(this);
     this.$cancelBtns = document.querySelectorAll('.cancel');
     this.cancel = this.cancel.bind(this);
     [...this.$cancelBtns].forEach(btn => {
       btn.addEventListener('click', this.cancel);
-    })
+    });
     // 전체 폴더 수, 만약 가장 처음에 폴더 수를 추가하면 0에서 1로 업그레이드
     // 그리고 0에서 1이 되면 this.$empty없애고 "첫번째 폴더 + done폴더" 활성화
-    this._totalFolder = this.$wishlist.dataset.totalFolder;
-    this._doneCount = this.$wishlist.dataset.doneCount;
     this.$empty = document.querySelector('.empty');
     this.$clone = document.querySelector('.folder.clone');
     this.$done = document.querySelector('.folder.done');
@@ -59,17 +57,15 @@ class Wishlist {
     // 폴더를 클릭한 경우와 폴더 외 영역을 클릭한 경우로 나눈다. 
     const folder = e.target.closest('.folder');
     if(folder) {
-      // 폴더를 클릭한 경우
+      // 폴더를 클릭한 경우 this.$current에 폴더 할당
       // 폴더 삭제, 폴더 이름 변경, 폴더 열기, 공개/비공개
       this.$current = folder;
-      this.$folderMenu.hidden = false;
-      this.$areaMenu.hidden = true;
-      this.locate(e, this.$folderMenu,);
+      this.folderMenu();
+      this.locate(e, this.$folderMenu);
     } else {
       // 그 외의 영역
       // 폴더 추가, 폴더 정렬 - 이름순, 생성일순
-      this.$areaMenu.hidden = false;
-      this.$folderMenu.hidden = true;
+      this.areaMenu();
       this.locate(e, this.$areaMenu);
     } 
     // 기존 브라우저의 컨텍스트 메뉴 안 보이게
@@ -83,13 +79,30 @@ class Wishlist {
     this.$folderMenu.hidden = true;
     this.$areaMenu.hidden = true;
   }
+  areaMenu() {
+    this.$areaMenu.hidden = false;
+    this.$folderMenu.hidden = true;
+  }
+  folderMenu() {
+    this.$folderMenu.hidden = false;
+    this.$areaMenu.hidden = true;
+  }
+  checkDone() {
+    return this.$current.classList[1] == 'done';
+  }
+  checkMe() {
+    return this._userId != this._memberId;
+  }
+  checkPublic() {
+    return this.$current.dataset.public === 'true';
+  }
   // 클릭 이벤트
   click(e) {
     const type = e.target.dataset.menu;
     switch(type) {
       case 'open':
-        // 비공개라면 내가 아닌 다른 사람에게 금지
-        if(this._userId != this._memberId && this.$current.dataset.public === 'true') {
+        // 비공개 + 내가 아닌 다른 유저가 클릭했을때
+        if(this.checkMe() && this.checkPublic()) {
           alert('비공개 폴더입니다.');
           this.gone();
           return;
@@ -97,12 +110,12 @@ class Wishlist {
         this.open();
         break;
       case 'name':
-        if(this.$current.classList[1] == 'done') {
+        if(this.checkDone()) {
           alert('이 폴더는 폴더명을 변경할 수 없습니다.');
           this.gone();
           return;    
         }
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -110,12 +123,12 @@ class Wishlist {
         this.name();
         break;
       case 'delete':
-        if(this.$current.classList[1] == 'done') {
+        if(this.checkDone()) {
           alert('이 폴더는 삭제할 수 없습니다.');
           this.gone();
           return;    
         }
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -123,7 +136,7 @@ class Wishlist {
         this.delete();
         break;
       case 'public':
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -131,7 +144,7 @@ class Wishlist {
         this.public();
         break;
       case 'add':
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -139,7 +152,7 @@ class Wishlist {
         this.add();
         break;
       case 'sort-name':
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -147,7 +160,7 @@ class Wishlist {
         this.sortName();
         break;
       case 'sort-updated':
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -155,7 +168,7 @@ class Wishlist {
         this.sortUpdatedAt();
         break;
       case 'sort-created':
-        if(this._userId != this._memberId) {
+        if(this.checkMe()) {
           alert('권한이 없습니다.');
           this.gone();
           return;
@@ -181,15 +194,14 @@ class Wishlist {
   }
   // '읽은 것들'폴더와 보통 폴더 구분
   open() {
-    const MemberId = this._memberId;
-    if(this.$current.classList.contains('done')) {
-      const url = `/list/true/null/${MemberId}`;
-      window.location.href = url;  
+    let url;
+    const FolderId = this.$current.dataset.folderId;
+    if(this.checkDone()) {
+      url = `/list/true/${FolderId}/${this._memberId}`;
     } else {
-      const FolderId = this.$current.dataset.folderId;
-      const url = `/list/false/${FolderId}/${MemberId}`;
-      window.location.href = url;  
+      url = `/list/false/${FolderId}/${this._memberId}`;
     }
+    window.location.href = url;  
   }  
   /* ------------------------------------------------------------------------------------------------ */
   // 폴더 생성 창 띄우기
@@ -231,8 +243,10 @@ class Wishlist {
     this.$add.hidden = true;
     this.$addInput.value = '';
     this.$addLength.textContent = 0;
-    this.$private.checked = false;
-    this.$public.checked = true;  
+    const radios = document.getElementsByName('isPublic');
+    for(let radio of radios) {
+      radio.checked = false;
+    }
   }
   cancelName() {
     this.$name.hidden = true;
@@ -242,8 +256,15 @@ class Wishlist {
   // 폴더 서버에 전송
   async submitAdd(e) {
     e.preventDefault();
-    if(!this._addCheck) {
-      alert('폴더명을 입력하세요');
+    const radios = document.getElementsByName('isPublic');
+    let selected = false;
+    for(let radio of radios) {
+      if(radio.checked) {
+        selected = true;
+      }
+    }
+    if(!this._addCheck || !selected) {
+      alert('모든 입력 요소를 채워주세요.');
       return;
     }
     const title = e.target.title.value;
@@ -259,16 +280,20 @@ class Wishlist {
     if(this._totalFolder == 1) {
       const done = res.data.done;
       // 가장 처음에 폴더를 생성할때
+      // 읽은 것들 폴더도 만들어주기
       this.$empty.hidden = true;
       this.$area.classList.add('grid');
-      this.$done.hidden = false;
-      this.$done.dataset.public = done.public;
-      this.$done.querySelector('.folder-count').textContent = done.count;
-      this._doneCount = done.count;
-      this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
-    } else {
-      this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
-    }
+      this.showDone(done);
+    } 
+    // 폴더 추가
+    // 항상 읽은 것들 폴더 앞에
+    this.$done.before(this.folderDOM(this.$clone.cloneNode(true), folder));
+  }
+  showDone(obj) {
+    this.$done.hidden = false;
+    this.$done.dataset.public = obj.public;
+    this.$done.querySelector('.folder-count').textContent = obj.count;
+    this._doneCount = obj.count;
   }
   folderDOM(c, obj) {
     c.className = `folder`;
@@ -276,7 +301,6 @@ class Wishlist {
     c.dataset.folderId = obj.id;
     c.dataset.public = obj.public;
     c.dataset.createdat = obj.createdAt;
-    c.dataset.updatedat = obj.updatedAt;
     c.querySelector('.folder-count').textContent = obj.count;
     c.querySelector('.folder-title').textContent = obj.title;
     c.ondblclick = this.dblclick;
@@ -303,10 +327,9 @@ class Wishlist {
       id,
       title,
     });
-    this.$name.hidden = true;
+    this.cancelName();
     const folder = res.data.folder;
     this.$current.querySelector('.folder-title').textContent = folder.title;
-    this.$current.dataset.updatedat = folder.updatedAt;
   }
   // 삭제
   async delete() {
@@ -317,10 +340,13 @@ class Wishlist {
     this._totalFolder--;
     this.$current.remove();
     this.$current = null;
+    this.isZero();
+  }
+  isZero() {
     if(this._totalFolder === 0 && this._doneCount === 0) {
-      this.$empty.hidden = false;
-      this.$area.classList.remove('grid');
       this.$done.hidden = true;
+      this.$area.classList.remove('grid');
+      this.$empty.hidden = false;
     }
   }
   // 공개 / 비공개 전환
@@ -331,26 +357,22 @@ class Wishlist {
     if(!answer) return;
     const isPublic = change === '비공개' ? false : true;
     // done폴더일때와 아닐때 구분
-    if(this.$current.classList[1] == 'done') {
+    if(this.checkDone()) {
       const MemberId = this._memberId;
       const res = await axios.patch('/wishlist/public', {
         id: MemberId,
         public: isPublic,
         done: true,
       }); 
-      const done = res.data.done;
-      this.$current.dataset.public = done.public;
     } else {
-      const id = this.$current.dataset.folderId;
+      const FolderId = this.$current.dataset.folderId;
       const res = await axios.patch('/wishlist/public', {
-        id,
+        id: FolderId,
         public: isPublic,
         done: false,
       });  
-      const folder = res.data.folder;
-      this.$current.dataset.public = folder.public;
-      this.$current.dataset.updatedat = folder.updatedAt;  
     }
+    this.$current.dataset.public = isPublic;
   }
   // 폴더 정렬 - 이름순
   async sortName() {
@@ -368,6 +390,7 @@ class Wishlist {
     // 이름 오름차순으로
     names.sort();
     const newFolders = [];
+    // 인덱스에 따라 노드들을 배치
     names.forEach(name => {
       newFolders[newFolders.length] = [...$folders][name[1]]
     });
@@ -375,7 +398,7 @@ class Wishlist {
     [...$folders].forEach((fol) => {
       fol.remove();
     });
-    // 새로운 배열 삽입
+    // 새로운 노드 삽입
     newFolders.forEach(item => {
       this.$done.before(item);
     });

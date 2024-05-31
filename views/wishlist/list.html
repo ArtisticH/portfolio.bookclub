@@ -15,15 +15,15 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body>
-  <section id="list" data-list="{{totalLength}}" data-last="{{last}}">
-    <div class="list">
+  <section id="list" data-count="{{count}}">
+    <div class="list list-common">
       <div class="list-top">
         <div class="list-folder">
           <a href="/wishlist/{{member.id}}" class="list-back">
             <img class="list-img" src="/img/index/back-arrow.png" alt="back-arrow">
           </a>
           <div>
-            <div class="list-folder-title">{{currentFolder.title}}&nbsp;(<span class="list-total">{{currentFolder.count}}</span>)</div>
+            <div class="list-folder-title">{{title}}&nbsp;(<span class="list-total">{{count}}</span>)</div>
             <a href="/member/{{member.id}}" class="list-nick">{{member.nick}}</a>  
           </div>
         </div>
@@ -63,7 +63,7 @@
         <div class="page-btn" data-dir="first">&lt;&lt;</div>
         <div class="page-btn" data-dir="before">&lt;</div>
         <input type="text" name="targetpage" class="page-current" value="1">
-        <div class="page-last">/&nbsp;&nbsp;{{last}}</div>
+        <div class="page-last"></div>
         <div class="page-move">이동</div>
         <div class="page-btn" data-dir="after">&gt;</div>
         <div class="page-btn" data-dir="last">&gt;&gt;</div>
@@ -91,8 +91,8 @@
       <input id="add-img" name="image" class="add-img" type="file" accept="image/*">
       <input class="add-url" type="hidden" name="url">
       <div class="add-default">*기본 이미지</div>
-      <input class="add-title" name="title" type="text" maxlength="20" placeholder="책 제목을 입력하세요*">
-      <input class="add-author" name="author" type="text" maxlength="10" placeholder="저자를 입력하세요*">
+      <input class="add-title" name="title" type="text" maxlength="50" placeholder="책 제목을 입력하세요*">
+      <input class="add-author" name="author" type="text" maxlength="20" placeholder="저자를 입력하세요*">
       <input class="submit" type="submit" value="등록">
     </form>
   </section>
@@ -107,17 +107,17 @@
       </div>
     </div>
     <div class="list-move">
-      {% if folders.length == 0 %}
+      {% if others.length == 0 %}
       <div class="list-move-empty">먼저 폴더를 추가해주세요.</div>
       {% else %}
       <form class="move-form">
-        {% for folder in folders %}
+        {% for other in others %}
         <label class="move-label">
           <div class="move-title">
-            <input type="radio" name="listFolder" value="{{folder.id}}">
-            <span>{{folder.title}}</span>  
+            <input type="radio" name="listFolder" value="{{other.id}}">
+            <span>{{other.title}}</span>  
           </div>
-          <div class="move-count">{{folder.count}}개</div>
+          <div class="move-count">{{other.count}}개</div>
         </label>
         {% endfor %}
         <input class="submit" type="submit" value="등록">          

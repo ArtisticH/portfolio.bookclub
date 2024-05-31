@@ -40,9 +40,8 @@
     </div> 
     {% else %}
     <div class="wishlist grid">
-      <div class="empty" hidden>오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
       {% for folder in folders %}
-      <a class="folder" data-folder-id="{{folder.id}}" data-public="{{folder.public}}" data-createdat="{{folder.createdAt}}" data-updatedat="{{folder.updatedAt}}">
+      <a class="folder" data-folder-id="{{folder.id}}" data-public="{{folder.public}}" data-createdat="{{folder.createdAt}}">
         <div class="folder-img-box">
           <img class="folder-img" src="/img/wishlist/green-folder.png" alt="folder">
           <div class="folder-count">{{folder.count}}</div>
@@ -64,6 +63,7 @@
         </div>
         <div class="folder-title"></div>
       </a>
+      <div class="empty" hidden>오른쪽 마우스를 클릭해 폴더를 추가해보세요.</div>
     </div>
     {% endif %}
     <!-- 이 친구들이 #wishlist 밖에 있으면 클릭 이벤트가 안 먹음 -->
@@ -99,7 +99,7 @@
     <form class="add-form">
       <div class="add-public">
         <label>
-          <input id="public" type="radio" name="isPublic" value="public" checked/>
+          <input id="public" type="radio" name="isPublic" value="public"/>
           <span>PUBLIC</span>
         </label>
         <label>

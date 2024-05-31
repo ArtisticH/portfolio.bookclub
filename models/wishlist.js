@@ -4,7 +4,7 @@ class Folder extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
       title: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING(15),
         allowNull: false,
       },
       count: {
@@ -27,10 +27,10 @@ class Folder extends Sequelize.Model {
       collate: 'utf8mb4_general_ci',
     })
   }
-
   static associate(db) {
     db.Folder.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'}); 
     db.Folder.hasMany(db.List, { foreignKey: 'FolderId', sourceKey: 'id'}); 
+    db.Folder.hasMany(db.DoneList, { foreignKey: 'FolderId', sourceKey: 'id'}); 
   }
 }
 
@@ -50,11 +50,6 @@ class List extends Sequelize.Model {
         allowNull: false,
         defaultValue: '',
       },
-      done: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false,
-      }
     }, {
       sequelize,
       timestamps: true,
@@ -102,6 +97,40 @@ class DoneFolder extends Sequelize.Model {
   }
 }
 
+class DoneList extends Sequelize.Model {
+  static init(sequelize) {
+    return super.init({
+      title: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      author: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      img: {
+        type: Sequelize.STRING(500),
+        allowNull: false,
+        defaultValue: '',
+      },
+    }, {
+      sequelize,
+      timestamps: true,
+      underscored: false,
+      modelName: 'DoneList',
+      tableName: 'doneList',
+      paranoid: false,
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_general_ci',
+    })
+  }
+
+  static associate(db) {
+    db.DoneList.belongsTo(db.Folder, { foreignKey: 'FolderId', targetKey: 'id'});
+    db.DoneList.belongsTo(db.Member, { foreignKey: 'MemberId', targetKey: 'id'});
+  }
+}
+
 class Sort extends Sequelize.Model {
   static init(sequelize) {
     return super.init({
@@ -134,5 +163,6 @@ module.exports = {
   Folder,
   List,
   DoneFolder,
+  DoneList,
   Sort,
 }

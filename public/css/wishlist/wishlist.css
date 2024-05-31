@@ -26,7 +26,7 @@ body::-webkit-scrollbar {
 }
 
 #wishlist {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .wishlist-nav {
@@ -54,7 +54,7 @@ body::-webkit-scrollbar {
 }
 
 .wishlist {
-  height: calc(100vh - 25px);
+  min-height: calc(100vh - 25px);
 }
 
 .wishlist.grid {

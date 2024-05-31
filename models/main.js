@@ -87,6 +87,7 @@ class Member extends Sequelize.Model {
     db.Member.belongsToMany(db.Review, { through: 'ReviewLike'}); 
     db.Member.hasMany(db.Folder, { foreignKey: 'MemberId', sourceKey: 'id'}); 
     db.Member.hasMany(db.List, { foreignKey: 'MemberId', sourceKey: 'id'}); 
+    db.Member.hasMany(db.DoneList, { foreignKey: 'MemberId', sourceKey: 'id'}); 
     db.Member.hasMany(db.Quote, { foreignKey: 'MemberId', sourceKey: 'id'}); 
   }
 }

@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/:memberid', async (req, res) => {
+router.get('/:memberid', isLoggedIn, async (req, res) => {
   const id = req.params.memberid;
   const member = await Member.findOne({
     where: { id },
@@ -89,7 +89,7 @@ router.post('/folder', async (req, res) => {
 router.patch('/folder', async (req, res) => {
   const id = req.body.id;
   const title = req.body.title;
-  const resul = await Folder.update({
+  await Folder.update({
     title,
   }, {
     where: { id },
@@ -108,6 +108,7 @@ router.patch('/folder', async (req, res) => {
 router.delete('/:folderid/:memberid', async (req, res) => {
   const id = req.params.folderid;
   const MemberId = req.params.memberid;
+  // 리스트 데이터에서 현재 멤버 + 현재 폴더 가진거 추려내기
   const results = await List.findAll({
     include: [{
       model: Folder,
@@ -125,6 +126,7 @@ router.delete('/:folderid/:memberid', async (req, res) => {
   await Folder.destroy({
     where: { id },
   });
+  // 그리고 리스트에서 삭제
   await List.destroy({
     where: { id: ids },
   });
@@ -141,25 +143,14 @@ router.patch('/public', async (req, res) => {
     }, {
       where: { MemberId: id },
     });
-    const done = {
-      public: isPublic,
-    };
-    res.json({ done });  
+    res.json({});  
   } else {
     await Folder.update({
       public: isPublic,
     }, {
       where: { id },
     });
-    const result = await Folder.findOne({
-      where: { id },
-      attributes: ['public', 'updatedAt'],
-    });
-    const folder = {
-      public: result.public,
-      updatedAt: result.updatedAt,
-    };
-    res.json({ folder });  
+    res.json({});  
   }
 });
 // 데이터베이스에 폴더의 분류 방법을 저장
@@ -172,12 +163,14 @@ router.post('/sort', async (req, res) => {
     where: { MemberId },
   });
   if(!result) {
+    // 처음이라면 생성
     await Sort.create({
       sort,
       order,
       MemberId
     });  
   } else {
+    // 아니라면 업데이트
     await Sort.update({
       sort,
       order,
@@ -185,7 +178,7 @@ router.post('/sort', async (req, res) => {
       where: { MemberId },
     });  
   }
-  // 수정일은 새로 데이터베이스에서 내려줘야 한다.
+  // 분류 기준이 수정일이라면 새로 데이터베이스에서 내려줘야 한다.
   if(updated) {
     const folders = await Folder.findAll({
       include: [{

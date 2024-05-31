@@ -3,84 +3,93 @@ class List {
   constructor() {
     this._memberId = new URL(location.href).pathname.split('/')[4];
     this._folderId = new URL(location.href).pathname.split('/')[3];
+    this.$list = document.getElementById('list');
+    this._totalList = +this.$list.dataset.count;
+    this._lastPage = this._totalList % 15 === 0 ? this._totalList / 15 : Math.floor(this._totalList / 15) + 1;
     // 리스트 박스 클릭 시 색깔 변화
     this.$listBoxes = document.querySelectorAll('.list-box');
     this.clickBox = this.clickBox.bind(this);
     [...this.$listBoxes].forEach(box => {
       box.addEventListener('click', this.clickBox);
     });
-    // 버튼 클릭
+    // 메뉴 버튼들 클릭
     this.$addForm = document.getElementById('add');
     this.$moveForm = document.getElementById('move');
     this.$btns = document.querySelector('.list-btns');
     this.$btns.onclick = this.clickBtn.bind(this);
-    // 취소 버튼
+    // 폼 취소 버튼
     this.$cancelBtns = document.querySelectorAll('.list-cancel');
     this.cancelForm = this.cancelForm.bind(this);
     [...this.$cancelBtns].forEach(btn => {
       btn.addEventListener('click', this.cancelForm)
     });
+    // 책 제목, 저자
     this.$addTitle = document.querySelector('.add-title');
     this.$addAuthor = document.querySelector('.add-author');
+    // 올린 이미지 주소
     this.$url = document.querySelector('.add-url');
+    // 기본이미지 버튼
     this.$default = document.querySelector('.add-default');
+    // 프리뷰 박스
     this.$preview = document.querySelector('.add-preview');
+    // 프리뷰 이미지
     this.$previewImg = document.querySelector('.add-preview > img');
-    this.$labels = Array.from(document.querySelectorAll('.move-label'))
     // type="file"인 요소의 change이벤트 캐치
-    this.previewImg = this.previewImg.bind(this);
     this.$addImg = document.querySelector('.add-img');
-    this.$addImg.addEventListener('change', this.previewImg);
+    this.$addImg.onchange = this.previewImg.bind(this);
+    // 기본 이미지 클릭 시
     this.$default.onclick = this.default.bind(this);
-    this.$addForm.onsubmit = this.addSubmit.bind(this);
-    this.$moveForm.onsubmit = this.moveSubmit.bind(this);
-    this.$list = document.getElementById('list');
-    this._totalList = this.$list.dataset.list;
-    this.$totalList = document.querySelector('.list-total');
-    this.$clone = document.querySelector('.list-box.clone');
-    this.$empty = document.querySelector('.list-empty');
-    this.$listContents = document.querySelector('.list-contents');
     this._addImg = false;
     this._addTitle = false;
     this._addAuthor = false;
+    this.$addForm.onsubmit = this.addSubmit.bind(this);
+    this.$totalList = document.querySelector('.list-total');
+    this.$empty = document.querySelector('.list-empty');
+    this.$listContents = document.querySelector('.list-contents');
+    this.$clone = document.querySelector('.list-box.clone');
+    this.$pagenation = document.querySelector('.pagenation');
+    // <<, <, >, >> 클릭 시
+    this.$pagenation.onclick = this.pagenation.bind(this);
     // 페이지네이션
     this._current = 1;
-    this._lastPage = +this.$list.dataset.last;
     this._target = null;
     this.$current = document.querySelector('.page-current');
     this.$last = document.querySelector('.page-last');
-    // <<, <, >, >> 클릭 시
-    this.$pagenation = document.querySelector('.pagenation');
-    this.$pagenation.onclick = this.pagenation.bind(this);
-    // 직접 페이지 입력 후 이동 버튼
-    // 페이지 입력하면 targetPage가 바뀐다.
+    // 직접 페이지 입력 후 이동 버튼, 페이지 입력하면 targetPage가 바뀐다.
     this.$current.oninput = this.targetPage.bind(this);
     this.$moveBtn = document.querySelector('.page-move');
     this.$moveBtn.onclick = this.inputPage.bind(this);
+    // 이동 폼
+    this.$labels = Array.from(document.querySelectorAll('.move-label'))
+    this.$moveForm.onsubmit = this.moveSubmit.bind(this);
   }
   clickBox(e) {
     const imgBox = e.currentTarget.querySelector('.list-img-box');
     imgBox.classList.toggle('clicked', !imgBox.classList.contains('clicked'));
   }
+  // 클릭 된 애들만 모아모아
+  clickedBoxes() {
+    return [...this.$listBoxes].filter(box => box.querySelector('.list-img-box').classList.contains('clicked'));
+  }
   clickBtn(e) {
     const target = e.target.closest('.list-btn');
     if(!target) return;
     const type = target.dataset.btn;
-    this.$listBoxes = document.querySelectorAll('.list-box');
-    const boxes = [...this.$listBoxes].filter(box => {
-      return box.querySelector('.list-img-box').classList.contains('clicked');
-    }); 
+    const boxes = this.clickedBoxes();
     switch(type) {
+      // 리스트 추가
       case 'add':
         this.showForm(this.$addForm);
         break;
+      // 삭제
       case 'delete':
         if(boxes.length === 0) {
           alert('먼저 리스트를 추가해주세요');
           return;
         }    
-        this.delete();
+        this.delete(boxes);
         break;
+      // 다른 폴더로 이동
       case 'move':
         if(boxes.length === 0) {
           alert('먼저 리스트를 추가해주세요');
@@ -88,6 +97,7 @@ class List {
         }    
         this.showForm(this.$moveForm);
         break;
+      // "읽은 것들"폴더로 이동
       case 'read':
         if(boxes.length === 0) {
           alert('먼저 리스트를 추가해주세요');
@@ -111,9 +121,9 @@ class List {
   }
   resetAdd() {
     this.$addForm.hidden = true;
+    this.$url.value = '';
     this.$addTitle.value = '';
     this.$addAuthor.value = ''
-    this.$url.value = '';
     this.$preview.style.display = '';
     this.$previewImg.src = '';
     // 기본값도 리셋
@@ -132,6 +142,7 @@ class List {
   async previewImg(e) {
     // 'change'이벤트가 발생하면, 즉 사진을 선택하면
     // 미리보기로 보여주는 역할
+    // 이미지 인풋
     const target = e.currentTarget;
     const file = target.files[0];
     const formData = new FormData();
@@ -146,6 +157,7 @@ class List {
   // 기본값 그림 사용
   default() {
     if(this.$default.classList[1] === 'clicked') {
+      // 이미지 다시 사라지기
       this.$preview.style.display = 'none';
       this.$previewImg.src = ''
       this.$url.value = ''
@@ -187,20 +199,35 @@ class List {
       MemberId,
       FolderId,
     });
-    const list = res.data.list;
     this.resetAdd();
     this._totalList++;
     this.$totalList.textContent = this._totalList;
     if(this._totalList == 1) {
-      this.$empty.hidden = true;
-      this.$listContents.classList.add('grid');
-      this.$pagenation.hidden = false;
+      this.isNotZero();
     } 
+    // 📍 "현재 페이지"가 15개 미만이면 화면에 추가
     if(this._totalList < 15) {
+      const list = res.data.list;
       this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
     }
-    // 항상 다시 리스트 박스 세팅, 박스 클릭할 수 있으니까
+    // 라스트 페이지 업데이트
+    this.lastPage();
+    // 추가 후에 다시 this.$listBoxes 업데이트
     this.$listBoxes = document.querySelectorAll('.list-box');
+  }
+  lastPage() {
+    this._lastPage = this._totalList % 15 === 0 ? this._totalList / 15 : Math.floor(this._totalList / 15) + 1;
+    this.$last.innerHTML = `/&nbsp;&nbsp;${this._lastPage}`;
+  }
+  isNotZero() {
+    this.$empty.hidden = true;
+    this.$listContents.classList.add('grid');
+    this.$pagenation.hidden = false;
+  }
+  isZero() {
+    this.$empty.hidden = false;
+    this.$listContents.classList.remove('grid');
+    this.$pagenation.hidden = true;
   }
   listDOM(c, obj) {
     c.className = 'list-box';
@@ -212,41 +239,94 @@ class List {
     c.onclick = this.clickBox;
     return c;
   }
-  async delete() {
-    this.$listBoxes = document.querySelectorAll('.list-box');
-    // 클릭된 애들만 모아
-    const targets = [...this.$listBoxes].filter(box => {
-      return box.querySelector('.list-img-box').classList.contains('clicked');
-    }); 
+  async deleteRearrange(ids) {
+    // 삭제, 이동 시 대처
+    if(this._totalList <= 15) {
+      // 15개 이하면 그냥 삭제만
+      await axios.delete('/list', {
+        data: {
+          id: JSON.stringify(ids),
+          FolderId: this._folderId,  
+          MemberId: this._memberId,
+          page: this._current,  
+          count: 0,
+        }
+      });  
+      return undefined;
+    } else if(this._totalList > 15 && this._current !== this._lastPage) {
+      // 15개 초과인데, 현재 페이지가 마지막 페이지가 아닌 경우
+      // 삭제/이동한 만큼 추가
+      const res = await axios.delete('/list', {
+        data: {
+          id: JSON.stringify(ids),
+          FolderId: this._folderId,  
+          MemberId: this._memberId,
+          page: this._current,  
+          // 몇개 내려보내달라 요청
+          count: ids.length,
+        }
+      });  
+      return res;
+    } else if(this._totalList > 15 && this._current === this._lastPage) {
+      // 15개 초과인데, 현재 페이지가 마지막 페이지인 경우
+      // 그냥 삭제
+      // 근데 마지막 하나 남은 경우? 그럼 그 이전 페이지로 이동
+      this.$listBoxes = document.querySelectorAll('.list-box');
+      const length = [...this.$listBoxes].length;
+      if(length === 0) {
+        // 이전 페이지 보여주기
+        const res = await axios.delete('/list', {
+          data: {
+            id: JSON.stringify(ids),
+            FolderId: this._folderId,  
+            MemberId: this._memberId,
+            page: this._current,  
+            // 몇개 내려보내달라 요청
+            count: 15,
+          }
+        });  
+        return res;  
+      } else {
+        await axios.delete('/list', {
+          data: {
+            id: JSON.stringify(ids),
+            FolderId: this._folderId,  
+            MemberId: this._memberId,
+            page: this._current,  
+            count: 0,
+          }
+        });  
+        return undefined;  
+      }
+    }
+  }
+  async delete(targets) {
     const length = targets.length;
-    const lists = [];
+    const ids = [];
+    // 삭제할 애들 아이디 모으기
     for(let target of targets) {
-      lists[lists.length] = target.dataset.listId;
+      ids[ids.length] = target.dataset.listId;
+    }
+    const res = await this.deleteRearrange(ids);
+    const lists = !res ? undefined : res.data.lists;
+    // 삭제하기
+    for(let target of targets) {
       target.remove();
     }
     this._totalList -= length;
     this.$totalList.textContent = this._totalList;
+    this.lastPage();
     if(this._totalList === 0) {
-      this.$empty.hidden = false;
-      this.$listContents.classList.remove('grid');
-      this.$pagenation.hidden = true;
+      this.isZero();
     }
-    const res = await axios.delete('/list', {
-      data: {
-        id: JSON.stringify(lists),
-        FolderId: this._folderId,  
-        MemberId: this._memberId,
-        page: this._current,  
-      }
-    });
-    const afterLists = res.data.afterLists;
-    const last = res.data.last;
-    this._lastPage = last;
-    this.$last.innerHTML = `/&nbsp;&nbsp;${this._lastPage}`;
-    afterLists.forEach(list => {
-      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
-    });
+    if(lists) {
+      lists.forEach(list => {
+        this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
+      });  
+    }
     alert('삭제했습니다.');
+    // 삭제 후에 다시 업데이트
+    this.$listBoxes = document.querySelectorAll('.list-box');
   }
   async moveSubmit(e) {
     e.preventDefault();
@@ -305,7 +385,6 @@ class List {
     const elemIds = [];
     for(let target of targets) {
       elemIds[elemIds.length] = target.dataset.listId;
-      console.log(target.querySelector('.list-box-title'));
       target.remove();
     }
     // 기존의 list의 done항목을 true로 수정, 
@@ -418,6 +497,7 @@ class List {
   showPage() {
     if(this._totalList > 0) {
       this.$pagenation.hidden = false;
+      this.lastPage();
     } 
   }
 }

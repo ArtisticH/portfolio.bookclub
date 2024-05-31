@@ -1,6 +1,7 @@
 const express = require('express');
 const { Member } = require('../../models/main');
-const { Folder, List, DoneFolder } = require('../../models/wishlist');
+const { Folder, List, DoneFolder, DoneList } = require('../../models/wishlist');
+const { isLoggedIn } = require('../rest/middlewares');
 const { Op } = require('sequelize');
 const path = require('path');
 const multer = require('multer');
@@ -24,59 +25,57 @@ router.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-
-let totalLists = [];
-let doneTotalLists = [];
-let doneTotalLength;
-let totalListLength;
-
+// 처음에 내려보낼때
+// 그냥 폴더인지 아니면 읽은 것들인지
 router.get('/:done/:folderid/:memberid', async (req, res) => {
-  if(!req.user) {
-    res.redirect('/?wishlist=login');
-    return;
-  }
   const done = req.params.done;
+  const FolderId = req.params.folderid;
+  const MemberId = req.params.memberid;
   if(done === 'true') {
-    const MemberId = req.params.memberid;
-    const doneFolder = await DoneFolder.findOne({
+    // 카운트, 닉네임, 리스트, 페이지넘버
+    let results = await DoneFolder.findOne({
       where: { MemberId },
       attributes: ['count'],
     });
-    const count = doneFolder.count;
-    const results = await List.findAll({
+    // 카운트
+    const count = results.count;
+    // 처음에 15개 보내, 리스트
+    results = await DoneList.findAll({
       include: [{
         model: Member,
         where: { id: MemberId },
+      }, {
+        model: Folder,
+        where: { id: FolderId },
       }],
-      where: { done: true },
-      attributes: ['id', 'img', 'title', 'author'],
+      limit: 15,
+      attributes: ['id','title', 'author', 'img'],
     });
-    doneTotalLists = [];
+    const done = [];
     results.forEach(item => {
-      doneTotalLists[doneTotalLists.length] = {
+      done[done.length] = {
         id: item.id,
-        img: item.img,
         title: item.title,
         author: item.author,
+        img: item.img,
       }
     });
-    doneTotalLength = doneTotalLists.length;
+    // 페이지 넘버
     const last = count % 15 === 0 ? count / 15 : Math.floor(count / 15) + 1;
-    const doneLists = doneTotalLists.slice(0, 15);
+    // 닉네임
     const member = await Member.findOne({
       where: { id: MemberId },
       attributes: ['id', 'nick'],
     });
     res.render('wishlist/donelist', {
-      doneLists,
+      done,
       count,
       member,
-      last, 
     });  
   } else if(done === 'false') {
-    const FolderId = req.params.folderid;
-    const MemberId = req.params.memberid;
-    const currentFolder = await Folder.findOne({
+    // 카운트, 타이틀, 닉네임, 리스트, 페이지넘버, 다른 폴더들
+    // 카운트, 타이틀
+    let results = await Folder.findOne({
       include: [{
         model: Member,
         where: { id: MemberId },
@@ -85,18 +84,32 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       where: { id: FolderId },
       attributes: ['count', 'title'],
     });
-    const member = currentFolder.Member;
+    const member = results.Member;
+    // 카운트
+    const count = results.count;
+    const title = results.title;
+    // 페이지 넘버
+    const last = count % 15 === 0 ? count / 15 : Math.floor(count / 15) + 1;
     // 해당 유저의 다른 폴더들, 근데 현재 폴더는 제외해야 함.
     // 폴더 이동 폼 클릭 시 보여지는 화면
-    const folders = await Folder.findAll({
+    results = await Folder.findAll({
       include: [{
         model: Member,
         where: { id: MemberId },
       }],
       where: { id: { [Op.not]: FolderId }},
       attributes: ['id', 'title', 'count'],
-    })
-    const results = await List.findAll({
+    });
+    const others = [];
+    results.forEach(item => {
+      others[others.length] = {
+        id: item.id,
+        title: item.title,
+        count: item.count,
+      }
+    });
+    // 15개만
+    results = await List.findAll({
       include: [{
         model: Member,
         where: { id: MemberId },
@@ -104,28 +117,24 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
         model: Folder,
         where: { id: FolderId },
       }],
-      where: { done: false },
+      limit: 15,
       attributes: ['id', 'title', 'author', 'img'],
     });
+    const lists = [];
     results.forEach(item => {
-      totalLists[totalLists.length] = {
+      lists[lists.length] = {
         id: item.id,
         title: item.title,
         author: item.author,
         img: item.img,
       }
     });
-    totalListLength = totalLists.length;
-    const totalLength = results.length;
-    const last = results.length % 15 === 0 ? results.length / 15 : Math.floor(results.length / 15) + 1;
-    const lists = totalLists.slice(0, 15);
     res.render('wishlist/list', {
       member,
       lists,
-      folders,
-      totalLength,
-      currentFolder,
-      last,
+      title,
+      others,
+      count,
     });  
   }
 });
@@ -149,15 +158,12 @@ router.post('/', upload2.none(), async(req, res) => {
     MemberId,
     FolderId,
   });
-  totalLists[totalLists.length] = {
-    id: list.id,
-    title: list.title,
-    author: list.author,
-    img: list.img,
-  }
-  totalListLength = totalLists.length;
   // 폴더에서 count추가
   await Folder.increment('count', {
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }],
     by: 1,
     where: { id: FolderId },
   });
@@ -166,41 +172,42 @@ router.post('/', upload2.none(), async(req, res) => {
 // 리스트 삭제할때
 router.delete('/', async(req, res) => {
   const FolderId = req.body.FolderId;
-  const lists = JSON.parse(req.body.id);
-  const deletedCount = lists.length;
-  const restCount = 15 - deletedCount;
   const MemberId = req.body.MemberId;
+  // 어느 페이지에서 삭제했는지
   const page = req.body.page;
+  // 몇 개 내려보내야 하는지 == 몇 개 삭제했는지
+  // count가 15라면 마지막 페이지에서 남은 하나 삭제 후 이전 페이지의 15개를 보내야 하고, 
+  // 아니라면 최대 삭제한 만큼만의 값을 보내야 한다.
+  const count = +req.body.count;
+  // 삭제할 친구들 아이디
+  const ids = JSON.parse(req.body.id);
+  // 삭제하고
   await List.destroy({
-    where: { id: lists },
+    where: { id: ids },
   });
+  // 줄이고
   await Folder.decrement('count', {
-    by: lists.length,
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }],
+    by: ids.length,
     where: { id: FolderId },
   });
-  const updatedLists = await List.findAll({
-    include: [{
-      model: Member,
-      where: { id: MemberId },
-    }, {
-      model: Folder,
-      where: { id: FolderId },
-    }],
-    where: { done: false },
-    attributes: ['id', 'img', 'title', 'author'],
-  });
-  totalLists = [];
-  updatedLists.forEach(item => {
-    totalLists[totalLists.length] = {
-      id: item.id,
-      img: item.img,
-      title: item.title,
-      author: item.author,
+  function aboutOffset() {
+    let offset;
+    if(count === 15) {
+      offset = (page - 2) * 15;
+    } else {
+      offset = (page - 1) * 15 + (15 - count);
     }
-  });
-  totalListLength = totalLists.length;
-  const last = totalListLength % 15 === 0 ? totalListLength / 15 : Math.floor(totalListLength / 15) + 1;
-  const afterDelete = await List.findAll({
+    return offset;
+  }
+  // 그냥 삭제만 필요한 경우 아무것도 안 보낸다.
+  if(count === 0) {
+    return res.json({});
+  }
+  const results = await List.findAll({
     include: [{
       model: Member,
       where: { id: MemberId },
@@ -208,23 +215,22 @@ router.delete('/', async(req, res) => {
       model: Folder,
       where: { id: FolderId },
     }],
-    where: { done: false },
-    // 삭제한 만큼 메꿔주고
-    limit: deletedCount,
+    // 몇 개 내려보내야 하는지
+    limit: count,
     // 앞에서부터 몇번째의 리스트를 가져와야 하는지
-    offset: (page - 1) * 15 + restCount,
-    attributes: ['id', 'img', 'title', 'author'],
+    offset: aboutOffset(),
+    attributes: ['id', 'title', 'author', 'img'],
   });
-  const afterLists = [];
-  afterDelete.forEach(item => {
-    afterLists[afterLists.length] = {
+  const lists = [];
+  results.forEach(item => {
+    lists[lists.length] = {
       id: item.id,
       img: item.img,
       title: item.title,
       author: item.author,
     }
   });
-  res.json({ afterLists, last });
+  res.json({ lists });
 });
 // 폴더 이동할떄
 router.post('/move', async(req, res) => {

@@ -49,6 +49,17 @@ body {
   line-height: 0.7;
 }
 
+.favorite-home {
+  font-family: var(--font-montserrat);
+  position: fixed;
+  top: 0;
+  right: 0;
+  line-height: 0.7;
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: -3px;
+}
+
 .favorite-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -221,6 +232,11 @@ body {
 }
 
 @media all and (min-width: 990px) {
+  .favorite-home {
+    font-size: 2.5rem;
+    letter-spacing: -5px;
+  }
+  
   .favorite-img.music {
     width: 40px;
   }

@@ -1,7 +1,6 @@
 const express = require('express');
 const { Member } = require('../../models/main');
 const { Folder, List, DoneFolder, DoneList } = require('../../models/wishlist');
-const { isLoggedIn } = require('../rest/middlewares');
 const { Op } = require('sequelize');
 const path = require('path');
 const multer = require('multer');
@@ -395,19 +394,46 @@ router.post('/read', async (req, res) => {
 router.post('/page', async (req, res) => {
   const page = req.body.page;
   const done = req.body.done;
-  const start = (page - 1) * 15;
-  let lists;
+  const MemberId = req.body.MemberId;
+  const FolderId = req.body.FolderId;
+  const offset = (page - 1) * 15;
+  let items;
   if(done) {
-    const end = doneTotalLength < start + 15 ? doneTotalLength : start + 15;
-    lists = doneTotalLists.slice(start, end);
+    items = await DoneList.findAll({
+      include: [{
+        model: Member,
+        where: { id: MemberId },
+      }, {
+        model: Folder,
+        where: { id: FolderId },
+      }],
+      limit: 15,
+      offset,
+      attributes: ['id', 'title', 'author', 'img'],
+    });
   } else {
-    const end = totalListLength < start + 15 ? totalListLength : start + 15;
-    console.log(start, end);
-    lists = totalLists.slice(start, end);
+    items = await List.findAll({
+      include: [{
+        model: Member,
+        where: { id: MemberId },
+      }, {
+        model: Folder,
+        where: { id: FolderId },
+      }],
+      limit: 15,
+      offset,
+      attributes: ['id', 'title', 'author', 'img'],
+    });
   }
-  res.json({
-    lists: JSON.stringify(lists),
+  const lists = items.map(item => {
+    return {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
   });
+  res.json({ lists });
 });
 // 완독 해제
 router.post('/back', async (req, res) => {

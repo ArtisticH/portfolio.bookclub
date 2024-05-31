@@ -286,6 +286,7 @@ class List {
             count: 15,
           }
         });  
+        this.$current.value = this._lastPage - 1;
         return res;  
       } else {
         await axios.delete('/list', {
@@ -374,7 +375,8 @@ class List {
           targetId,
           page: this._current,
           count: 15,
-        });    
+        }); 
+        this.$current.value = this._lastPage - 1;   
       } else {
         res = await axios.post('/list/move', {
           id: JSON.stringify(ids),
@@ -481,6 +483,7 @@ class List {
           page: this._current,
           count: 15,
         });
+        this.$current.value = this._lastPage - 1;
         return res;
       } else {
         await axios.post('/list/read', {
@@ -543,7 +546,7 @@ class List {
           return;
         }
         this._target = 1;
-        this.dirPage();
+        this.movePage();
         break;
       case 'before':
         if(this._current === 1) {
@@ -551,7 +554,7 @@ class List {
           return;
         }
         this._target = this._current - 1;
-        this.dirPage();
+        this.movePage();
         break;
       case 'after':
         if(this._current === this._lastPage) {
@@ -559,7 +562,7 @@ class List {
           return;
         }
         this._target = this._current + 1;
-        this.dirPage();
+        this.movePage();
         break;
       case 'last':
         if(this._current === this._lastPage) {
@@ -567,19 +570,13 @@ class List {
           return;
         }
         this._target = this._lastPage;
-        this.dirPage();
+        this.movePage();
         break;
     }
   }
-  async dirPage() {
-    // 해당 페이지 내용을 가져와줘
-    const res = await axios.post('/list/page', {
-      page: this._target,
-      done: false,
-    });
-    // 내림차순(최신 => 오래된 순)으로 옴
-    const lists = JSON.parse(res.data.lists);
+  pageArrange(lists) {
     this._current = this._target;
+    this.$current.value = this._current;
     [...this.$listContents.children].forEach(item => {
       if(item.className === 'list-box') {
         item.remove();
@@ -588,32 +585,26 @@ class List {
     lists.forEach(list => {
       this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
     });
-    this.$current.value = this._current;
   }
   async movePage() {
-    if(this._current == this._target) {
+    if(this._current === this._target) {
       alert('현재 페이지입니다.');
       return;
     }
     const res = await axios.post('/list/page', {
       page: this._target,
       done: false,
+      MemberId: this._memberId,
+      FolderId: this._folderId,
     });
-    const lists = JSON.parse(res.data.lists);
-    this._current = this._target;
-    [...this.$listContents.children].forEach(item => {
-      if(item.className === 'list-box') {
-        item.remove();
-      }
-    });
-    lists.forEach(list => {
-      this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
-    })
+    const lists = res.data.lists;
+    this.pageArrange(lists);
   }
   showPage() {
     if(this._totalList > 0) {
       this.$pagenation.hidden = false;
       this.lastPage();
+      this.$current.value = this._current;
     } 
   }
 }

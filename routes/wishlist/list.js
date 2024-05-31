@@ -19,6 +19,16 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });  
 
+function aboutOffset() {
+  let offset;
+  if(count === 15) {
+    offset = (page - 2) * 15;
+  } else {
+    offset = (page - 1) * 15 + (15 - count);
+  }
+  return offset;
+}
+
 const router = express.Router();
 
 router.use((req, res, next) => {
@@ -194,15 +204,6 @@ router.delete('/', async(req, res) => {
     by: ids.length,
     where: { id: FolderId },
   });
-  function aboutOffset() {
-    let offset;
-    if(count === 15) {
-      offset = (page - 2) * 15;
-    } else {
-      offset = (page - 1) * 15 + (15 - count);
-    }
-    return offset;
-  }
   // 그냥 삭제만 필요한 경우 아무것도 안 보낸다.
   if(count === 0) {
     return res.json({});
@@ -235,50 +236,88 @@ router.delete('/', async(req, res) => {
 // 폴더 이동할떄
 router.post('/move', async(req, res) => {
   const MemberId = req.body.MemberId;
-  // 현재 폴더 아이디
-  const currentFolderId = req.body.currentFolderId;
-  // 이동할 폴더 아이디
+  // 현재 폴더
+  const FolderId = req.body.FolderId;
+  // 이동할 폴더
   const targetId = req.body.targetId;
-  // 이동할 리스트 아이디
-  const elemIds = JSON.parse(req.body.elemIds);
-  // 먼저 이동할 아이들의 FolderId 바꿔주기
+  const page = req.body.page;
+  const count = req.body.count;
+  const ids = JSON.parse(req.body.id);
+  // 먼저 이동할 아이들을 혹시 몰라 다시 한번 데이터베이스에서 가져오고
+  let items = await List.findAll({
+    include: [{
+      model: Folder,
+      where: { id: FolderId },
+    }, {
+      model: Member,
+      where: { id: MemberId },
+    }],
+    where: { id: ids },
+  });
+  const targetIds = items.map(item => item.id);
+  // 폴더 아이디 바꿔주기
   await List.update({
     FolderId: targetId,
   }, {
-    where: { id: elemIds },
+    where: { id: targetIds },
   });
   // 현재 폴더에서 빠져나간 만큼 빼주기
   await Folder.decrement('count', {
-    by: elemIds.length,
-    where: { id: currentFolderId },
+    by: ids.length,
+    where: { id: FolderId },
   })
   // 이사간 애들만큼 더해주기
   await Folder.increment('count', {
-    by: elemIds.length,
+    by: ids.length,
     where: { id: targetId },
   });
-  const counts = await Folder.findAll({
+  // 그리고 카운트 업데이트된거
+  items = await Folder.findAll({
     include: [{
       model: Member,
       where: { id: MemberId },
     }],
-    where: { id: { [Op.not]: currentFolderId }},
+    where: { id: { [Op.not]: FolderId }},
     attributes: ['count'],
   });
-  res.json({ counts });
+  const counts = items.map(item => item.count);
+  // 그냥 삭제만 필요한 경우 아무것도 안 보낸다.
+  if(count === 0) {
+    return res.json({ counts, lists: null });
+  }
+  items = await List.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }, {
+      model: Folder,
+      where: { id: FolderId },
+    }],
+    // 몇 개 내려보내야 하는지
+    limit: count,
+    // 앞에서부터 몇번째의 리스트를 가져와야 하는지
+    offset: aboutOffset(),
+    attributes: ['id', 'title', 'author', 'img'],
+  });
+  const lists = items.map(item => {
+    return {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  res.json({ counts, lists });
 });
 // 완독버튼
 router.post('/read', async (req, res) => {
-  const elemIds = JSON.parse(req.body.elemIds);
+  const ids = JSON.parse(req.body.id);
   const FolderId = req.body.FolderId;
   const MemberId = req.body.MemberId;
-  const deletedCount = elemIds.length;
-  const restCount = 15 - deletedCount;
+  const count = req.body.count;
   const page = req.body.page;
-  // done항목을 false => true로 바꾸고
-  await List.update({
-    done: true,
-  }, {
+  // 원래 데이터베이스에서 삭제
+  let items = await List.findAll({
     include: [{
       model: Member,
       where: { id: MemberId },
@@ -286,39 +325,49 @@ router.post('/read', async (req, res) => {
       model: Folder,
       where: { id: FolderId },
     }],
-    where: { id: elemIds },
+    where: { id: ids },
   });
-  // 현재 담고 있는 폴더의 count 줄이고, 
+  // List에서 DoneList로 옮기기
+  const moveLists = items.map(item => {
+    return DoneList.create({
+      id: item.id,
+      title: item.title,
+      author: item.author,
+      img: item.img,
+      MemberId: item.MemberId,
+      FolderId: item.FolderId,
+    });
+  });
+  await Promise.all(moveLists);
+  // 원래 있던 곳에서 삭제
+  await List.destroy({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    }, {
+      model: Folder,
+      where: { id: FolderId },
+    }],
+    where: { id: ids },
+  });
+  // 현재 담고 있는 폴더의 카운트 줄이고, 
   await Folder.decrement('count', {
-    by: elemIds.length,
+    include: [{
+      model: Member,
+      where: { id : MemberId },
+    }],
+    by: ids.length,
     where: { id: FolderId },
   })
-  // doneFolder의 count는 늘린다.
+  // doneFolder의 카운트는 늘린다.
   await DoneFolder.increment('count', {
-    by: elemIds.length,
+    by: ids.length,
     where: { id: MemberId },
   });
-  // 읽은 것들 업데이트
-  const doneLists = await List.findAll({
-    include: [{
-      model: Member,
-      where: { id: MemberId },
-    }],
-    where: { done: true },
-    attributes: ['id', 'img', 'title', 'author'],
-  });
-  doneTotalLists = [];
-  doneLists.forEach(item => {
-    doneTotalLists[doneTotalLists.length] = {
-      id: item.id,
-      img: item.img,
-      title: item.title,
-      author: item.author,
-    }
-  });
-  totalLists = [];
-  // 현재 폴더 업데이트
-  const updatedLists = await List.findAll({
+  if(count === 0) {
+    return res.json({});
+  }
+  items = await List.findAll({
     include: [{
       model: Member,
       where: { id: MemberId },
@@ -326,47 +375,40 @@ router.post('/read', async (req, res) => {
       model: Folder,
       where: { id: FolderId },
     }],
-    where: { done: false },
-    attributes: ['id', 'img', 'title', 'author'],
-  });
-  updatedLists.forEach(item => {
-    totalLists[totalLists.length] = {
-      id: item.id,
-      img: item.img,
-      title: item.title,
-      author: item.author,
-    }
-  });
-  doneTotalLength = doneTotalLists.length;
-  totalListLength = totalLists.length;
-  const last = totalListLength % 15 === 0 ? totalListLength / 15 : Math.floor(totalListLength / 15) + 1;
-  // 빈 자리 메꾸게 보낼 것들
-  const afterDelete = await List.findAll({
-    include: [{
-      model: Member,
-      where: { id: MemberId },
-    }, {
-      model: Folder,
-      where: { id: FolderId },
-    }],
-    where: { done: false },
-    // 삭제한 만큼 메꿔주고
-    limit: deletedCount,
+    // 몇 개 내려보내야 하는지
+    limit: count,
     // 앞에서부터 몇번째의 리스트를 가져와야 하는지
-    offset: (page - 1) * 15 + restCount,
-    attributes: ['id', 'img', 'title', 'author'],
+    offset: aboutOffset(),
+    attributes: ['id', 'title', 'author', 'img'],
   });
-  const lists = [];
-  afterDelete.forEach(item => {
-    lists[lists.length] = {
+  const lists = items.map(item => {
+    return {
       id: item.id,
       img: item.img,
       title: item.title,
       author: item.author,
     }
   });
-  res.json({ lists, last });
-})
+  res.json({ lists });
+});
+// 페이지네이션
+router.post('/page', async (req, res) => {
+  const page = req.body.page;
+  const done = req.body.done;
+  const start = (page - 1) * 15;
+  let lists;
+  if(done) {
+    const end = doneTotalLength < start + 15 ? doneTotalLength : start + 15;
+    lists = doneTotalLists.slice(start, end);
+  } else {
+    const end = totalListLength < start + 15 ? totalListLength : start + 15;
+    console.log(start, end);
+    lists = totalLists.slice(start, end);
+  }
+  res.json({
+    lists: JSON.stringify(lists),
+  });
+});
 // 완독 해제
 router.post('/back', async (req, res) => {
   const elemIds = JSON.parse(req.body.elemIds);
@@ -439,22 +481,5 @@ router.delete('/done', async (req, res) => {
     where: { id: elemIds },
   });
 });
-// 페이지네이션
-router.post('/page', async (req, res) => {
-  const page = req.body.page;
-  const done = req.body.done;
-  const start = (page - 1) * 15;
-  let lists;
-  if(done) {
-    const end = doneTotalLength < start + 15 ? doneTotalLength : start + 15;
-    lists = doneTotalLists.slice(start, end);
-  } else {
-    const end = totalListLength < start + 15 ? totalListLength : start + 15;
-    console.log(start, end);
-    lists = totalLists.slice(start, end);
-  }
-  res.json({
-    lists: JSON.stringify(lists),
-  });
-});
+
 module.exports = router;

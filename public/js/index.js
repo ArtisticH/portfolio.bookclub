@@ -62,6 +62,13 @@ class Index {
     /* 5. 회원가입이나 로그인 오류 시 alert함수 */
     this.searchParams = new URL(location.href).searchParams;
     this.alert = this.alert.bind(this);
+    /* --------------------------------------------------------------------------------------------------------- */
+    /* 6. 위시리스트 선택 폼 */
+    this.$wishlist = document.getElementById('wishlist');
+    this.$wishCancel = document.querySelector('.wishlist-cancel');
+    this.$wishCancel.onclick = this.wishCancel.bind(this);
+    this.$wishForm = document.querySelector('.wishlist');
+    this.$wishForm.onsubmit = this.wishlist.bind(this);
   }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -107,20 +114,41 @@ class Index {
       item.textContent = `${this._title[index]}.`;
     });
     if(index === 2) {
-      // wishlist의 경우 /wishlist/1, /wishlist/2처럼...
+      // wishlist...
       this.$title.forEach(item => {
-        item.href = `/${this._title[index].toLowerCase()}/${this._userId}`;
+        item.href = null;
+        item.onclick = this.wishClick.bind(this);
       });
-      this.$arrow.href = `/${this._title[index].toLowerCase()}/${this._userId}`;  
+      this.$arrow.href = null;
     } else {
       this.$title.forEach(item => {
         item.href = `/${this._title[index].toLowerCase()}`;
+        item.onclick = null;
       });
       this.$arrow.href = `/${this._title[index].toLowerCase()}`;  
     }
     this.$number.textContent = index + 1;
     this.$bottomLeft.style.backgroundColor = `${this._backgroundColor[index]}`;
   }
+  // 위시리스트 클릭 시 폼 보여주기
+  wishClick(e) {
+    e.preventDefault();
+    this.$wishlist.hidden = false;
+  }
+  wishCancel() {
+    const radios = document.getElementsByName('wishlist');
+    for(let radio of radios) {
+      radio.checked = false;
+    }
+    this.$wishlist.hidden = true;
+  }
+  wishlist(e) {
+    e.preventDefault();
+    const id = +e.target.wishlist.value;
+    this.wishCancel();
+    window.location.href = `/wishlist/${id}`;
+  }
+
   /* ---------------------------------------------------------------------------------------------------------------------------------------- */
   // user카드 드래그 앤 드롭
   dragDrop(e) {

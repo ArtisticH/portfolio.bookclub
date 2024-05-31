@@ -109,5 +109,25 @@
     </div>
     {% endif %} 
   </section>
+  <section id="wishlist" hidden>
+    <div class="wishlist-nav">
+      <div class="wishlist-title">WISHLIST</div>
+      <div class="wishlist-cancel">
+        <div class="wishlist-cancel-left"></div>
+        <div class="wishlist-cancel-right"></div>
+      </div>
+    </div>
+    <form action="" class="wishlist">
+      <div class="wishlist-select">
+        {% for member in members %}
+        <div class="wishlist-box">
+          <input id="{{member.nick}}" class="radio-input" type="radio" name="wishlist" value="{{member.id}}">
+          <label for="{{member.nick}}" class="radio-label">{{member.nick}}</label>  
+        </div>
+        {% endfor %}   
+      </div>
+      <input type="submit" value="선택" class="wishlist-submit">
+    </form>
+  </section>
 </body>
 </html>

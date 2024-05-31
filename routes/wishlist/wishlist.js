@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/:memberid', isLoggedIn, async (req, res) => {
+router.get('/:memberid', async (req, res) => {
   const id = req.params.memberid;
   const member = await Member.findOne({
     where: { id },
@@ -38,7 +38,6 @@ router.get('/:memberid', isLoggedIn, async (req, res) => {
     }); 
   }
   const folders = [];
-  console.log(folders);
   results.forEach(result => {
     folders[folders.length] = {
       id: result.id,

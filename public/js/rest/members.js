@@ -15,6 +15,11 @@ class Member {
     this._memberId = null;
     this.$wishlist = document.querySelector('.wishlist');
     this.$wishlist.onclick = this.wishlist.bind(this);
+    // 위시리스트
+    this.$wishlist = document.querySelector('.wishlist');
+    // 멤버 타이틀 클릭시
+    this.$title = document.querySelector('.members-title');
+    this.$title.onclick = this.reset.bind(this);
   }
   async names(e) {
     const target = e.target.closest('.members-name');
@@ -27,9 +32,10 @@ class Member {
         item.classList.remove('clicked');
       }
     });
-    const id = target.dataset.id;
-    const res = await axios.get(`/members/${id}`);
+    const res = await axios.get(`/members/${this._memberId}`);
+    // 이 멤버가 추천한 책들 아이디
     const ids = res.data.ids;
+    // 이 멤버가 참여한 미팅 횟수
     const attend = res.data.attend;
     [...this.$books.children].forEach(item => {
       const id = +item.dataset.id;
@@ -43,6 +49,8 @@ class Member {
     this.$recommend.hidden = false;
     this.attend(attend, this._totalBooks);
     this.recommend(ids.length, this._totalBooks);
+    this.$wishlist.style.backgroundColor = '#039753';
+    this.$wishlist.style.cursor = 'pointer';
   }
 
   attend(attend, total) {
@@ -61,6 +69,26 @@ class Member {
     }
     const url = `wishlist/${this._memberId}`;
     window.location.href = url;
+  }
+  reset() {
+    // 책 강조 없애고
+    [...this.$books.children].forEach(item => {
+      if(item.classList.contains('clicked')) {
+        item.classList.remove('clicked');
+      }
+    });
+    // 위시리스트 없애고
+    this.$wishlist.style.backgroundColor = '';
+    this.$wishlist.style.cursor = '';
+    // 횟수 없애고
+    this.$attend.hidden = true;
+    this.$recommend.hidden = true;
+    // 이름 강조 없애
+    [...this.$name].forEach(item => {
+      if(item.classList.contains('clicked')) {
+        item.classList.remove('clicked');
+      }
+    });
   }
 }
 

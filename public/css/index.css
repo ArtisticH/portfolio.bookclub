@@ -369,6 +369,95 @@ body::-webkit-scrollbar {
   font-weight: 600;
 }
 
+/* #wishlist --------------------------------------------------------------------------------------------------------------------------- */
+
+#wishlist {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background-color: white;
+  border: 1px solid black;
+  z-index: 1001;
+}
+
+.wishlist-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  border-bottom: 1px solid black;
+  padding: 0 10px;
+  background-color: #039753;
+}
+
+.wishlist-title {
+  font-family: var(--font-montserrat);
+  font-size: 1rem;
+  letter-spacing: -1.5px;
+  font-weight: 300;
+}
+
+.wishlist-cancel {
+  width: 17px;
+  height: 17px;
+  position: relative;
+  cursor: pointer;
+}
+
+.wishlist-cancel-left,
+.wishlist-cancel-right {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background-color: black;
+}
+
+.wishlist-cancel-left {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.wishlist-cancel-right {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.wishlist {
+  padding: 30px 20px;
+}
+
+.wishlist-select {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.radio-label {
+  font-family: var(--font-korean);
+  font-size: 0.9rem;
+  letter-spacing: -1px;
+  font-weight: 300;
+}
+
+.wishlist-submit {
+  font-family: var(--font-korean);
+  font-size: 0.8rem;
+  letter-spacing: -1px;
+  font-weight: 300;
+  height: 22px;
+  padding: 0 15px;
+  border: none;
+  outline: none;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto 0 auto;
+  cursor: pointer;
+}
+
 /* min-width: 650px --------------------------------------------------------------------------------------------------------------------------- */
 
 @media all and (min-width: 650px) {

@@ -1,5 +1,5 @@
 const express = require('express');
-const { Book } = require('../models/main');
+const { Book, Member } = require('../models/main');
 const { Favorite } = require('../models/favorite');
 
 const router = express.Router();
@@ -9,8 +9,12 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', (req, res) => {
-  res.render('index');
+router.get('/', async (req, res) => {
+  const members = await Member.findAll({
+    where: { type: 'MEMBER' },
+    attributes: ['id', 'nick'],
+  })
+  res.render('index', { members });
 });
 
 router.get('/books', async (req, res) => {

@@ -4,6 +4,11 @@ const { sequelize } = require('../../models');
 
 const router = express.Router();
 
+router.get('/', async (req, res) => {
+  const favorites = await Favorite.findAll({});
+  res.render('favorite/favorite', { favorites });
+});
+
 router.get('/:id/:round', async (req, res) => {
   const id = req.params.id;
   const model = await Favorite.findOne({

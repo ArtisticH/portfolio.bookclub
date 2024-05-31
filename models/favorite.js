@@ -7,9 +7,6 @@ class Favorite extends Sequelize.Model {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      // basic은 그냥 제목만
-      // music은 제목, 음악, 가수가 한 사람일때
-      // music2는 제목, 음악, 가수가 다 다를때
       types: {
         type: Sequelize.STRING(100),
         allowNull: false,

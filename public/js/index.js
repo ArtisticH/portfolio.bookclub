@@ -148,7 +148,6 @@ class Index {
     this.wishCancel();
     window.location.href = `/wishlist/${id}`;
   }
-
   /* ---------------------------------------------------------------------------------------------------------------------------------------- */
   // user카드 드래그 앤 드롭
   dragDrop(e) {
@@ -201,11 +200,7 @@ class Index {
       if(this.searchParams.get('logout') === 'success') {
         alert(`로그아웃 완료!`);
       }
-    } else if(this.searchParams.has('wishlist')) {
-      if(this.searchParams.get('wishlist') === 'login') {
-        alert(`로그인 후 이용 가능합니다.`);
-      }
-    }
+    } 
   }
 }
 

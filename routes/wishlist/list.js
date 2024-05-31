@@ -18,7 +18,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });  
 
-function aboutOffset() {
+function aboutOffset(page, count) {
   let offset;
   if(count === 15) {
     offset = (page - 2) * 15;
@@ -38,7 +38,6 @@ router.use((req, res, next) => {
 // 그냥 폴더인지 아니면 읽은 것들인지
 router.get('/:done/:folderid/:memberid', async (req, res) => {
   const done = req.params.done;
-  const FolderId = req.params.folderid;
   const MemberId = req.params.memberid;
   if(done === 'true') {
     // 카운트, 닉네임, 리스트, 페이지넘버
@@ -53,9 +52,6 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       include: [{
         model: Member,
         where: { id: MemberId },
-      }, {
-        model: Folder,
-        where: { id: FolderId },
       }],
       limit: 15,
       attributes: ['id','title', 'author', 'img'],
@@ -69,8 +65,6 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
         img: item.img,
       }
     });
-    // 페이지 넘버
-    const last = count % 15 === 0 ? count / 15 : Math.floor(count / 15) + 1;
     // 닉네임
     const member = await Member.findOne({
       where: { id: MemberId },
@@ -82,6 +76,7 @@ router.get('/:done/:folderid/:memberid', async (req, res) => {
       member,
     });  
   } else if(done === 'false') {
+    const FolderId = req.params.folderid;
     // 카운트, 타이틀, 닉네임, 리스트, 페이지넘버, 다른 폴더들
     // 카운트, 타이틀
     let results = await Folder.findOne({
@@ -218,7 +213,7 @@ router.delete('/', async(req, res) => {
     // 몇 개 내려보내야 하는지
     limit: count,
     // 앞에서부터 몇번째의 리스트를 가져와야 하는지
-    offset: aboutOffset(),
+    offset: aboutOffset(page, count),
     attributes: ['id', 'title', 'author', 'img'],
   });
   const lists = [];
@@ -295,7 +290,7 @@ router.post('/move', async(req, res) => {
     // 몇 개 내려보내야 하는지
     limit: count,
     // 앞에서부터 몇번째의 리스트를 가져와야 하는지
-    offset: aboutOffset(),
+    offset: aboutOffset(page, count),
     attributes: ['id', 'title', 'author', 'img'],
   });
   const lists = items.map(item => {
@@ -315,7 +310,7 @@ router.post('/read', async (req, res) => {
   const MemberId = req.body.MemberId;
   const count = req.body.count;
   const page = req.body.page;
-  // 원래 데이터베이스에서 삭제
+  // List에서 DoneList로 옮기기
   let items = await List.findAll({
     include: [{
       model: Member,
@@ -326,7 +321,6 @@ router.post('/read', async (req, res) => {
     }],
     where: { id: ids },
   });
-  // List에서 DoneList로 옮기기
   const moveLists = items.map(item => {
     return DoneList.create({
       id: item.id,
@@ -377,7 +371,7 @@ router.post('/read', async (req, res) => {
     // 몇 개 내려보내야 하는지
     limit: count,
     // 앞에서부터 몇번째의 리스트를 가져와야 하는지
-    offset: aboutOffset(),
+    offset: aboutOffset(page, count),
     attributes: ['id', 'title', 'author', 'img'],
   });
   const lists = items.map(item => {
@@ -395,7 +389,6 @@ router.post('/page', async (req, res) => {
   const page = req.body.page;
   const done = req.body.done;
   const MemberId = req.body.MemberId;
-  const FolderId = req.body.FolderId;
   const offset = (page - 1) * 15;
   let items;
   if(done) {
@@ -403,15 +396,13 @@ router.post('/page', async (req, res) => {
       include: [{
         model: Member,
         where: { id: MemberId },
-      }, {
-        model: Folder,
-        where: { id: FolderId },
       }],
       limit: 15,
       offset,
       attributes: ['id', 'title', 'author', 'img'],
     });
   } else {
+    const FolderId = req.body.FolderId;
     items = await List.findAll({
       include: [{
         model: Member,
@@ -437,36 +428,50 @@ router.post('/page', async (req, res) => {
 });
 // 완독 해제
 router.post('/back', async (req, res) => {
-  const elemIds = JSON.parse(req.body.elemIds);
+  const ids = JSON.parse(req.body.id);
   const MemberId = req.body.MemberId;
-  // done항목을 true => false로 바꾸고
-  await List.update({
-    done: false,
-  }, {
+  const count = req.body.count;
+  const page = req.body.page;
+  let items = await DoneList.findAll({
     include: [{
       model: Member,
       where: { id: MemberId },
     }],
-    where: { id: elemIds },
+    where: { id: ids },
   });
-  // 방금 바꾼 녀석들을 다시 불러와
-  // 원래 폴더에 넣어주는 작업
-  const lists = await List.findAll({
+  const moveLists = items.map(item => {
+    return List.create({
+      id: item.id,
+      title: item.title,
+      author: item.author,
+      img: item.img,
+      MemberId: item.MemberId,
+      FolderId: item.FolderId,
+    });
+  });
+  await Promise.all(moveLists);
+  // 원래 있던 곳에서 삭제
+  await DoneList.destroy({
     include: [{
       model: Member,
       where: { id: MemberId },
-    }, {
-      model: Folder,
     }],
-    where: { id: elemIds },
+    where: { id: ids },
   });
-  const FolderId = [];
-  lists.forEach(list => {
-    FolderId[FolderId.length] = list.Folder.id;
+  // doneFolder의 카운트는 줄이고.
+  await DoneFolder.decrement('count', {
+    by: ids.length,
+    where: { id: MemberId },
+  });
+  // DoneList => List로 이동할때, 
+  // 각각 폴더아이디별로 분류해 Folder의 카운트 올려야 한다.
+  const FolderIds = [];
+  items.forEach(item => {
+    FolderIds[FolderIds.length] = item.Folder.id;
   });
   // 그래서 { 폴더ID: 몇개, 폴더ID: 몇개.. }이런 식으로
   const obj = {};
-  FolderId.forEach(id => {
+  FolderIds.forEach(id => {
     obj[id] = (obj[id] == undefined) ? 1 : (obj[id] + 1);
   });
   // 바꿀 폴더 ID 배열
@@ -474,11 +479,6 @@ router.post('/back', async (req, res) => {
   for(let prop in obj) {
     id[id.length] = prop;
   }
-  // doneFolder의 count는 줄이고.
-  await DoneFolder.decrement('count', {
-    by: elemIds.length,
-    where: { id: MemberId },
-  })
   // 기존의 폴더를 찾아가 늘리기
   const increments = id.map(async (folderId) => {
     await Folder.increment('count', {
@@ -487,25 +487,72 @@ router.post('/back', async (req, res) => {
     });
   });
   await Promise.all(increments);
-  res.json({})
-})
+  if(count === 0) {
+    return res.json({});
+  }
+  items = await DoneList.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    },],
+    // 몇 개 내려보내야 하는지
+    limit: count,
+    // 앞에서부터 몇번째의 리스트를 가져와야 하는지
+    offset: aboutOffset(page, count),
+    attributes: ['id', 'title', 'author', 'img'],
+  });
+  const lists = items.map(item => {
+    return {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  res.json({ lists });
+});
 // 읽은 것들에서 삭제
 router.delete('/done', async (req, res) => {
-  const elemIds = JSON.parse(req.body.elemIds);
+  const ids = JSON.parse(req.body.id);
   const MemberId = req.body.MemberId;
+  const count = req.body.count;
+  const page = req.body.page;
   // doneFolder의 count는 줄이고.
   await DoneFolder.decrement('count', {
-    by: elemIds.length,
+    by: ids.length,
     where: { id: MemberId },
   })
   // List에서 삭제하고
-  await List.destroy({
+  await DoneList.destroy({
     include: [{
       model: Member,
       where: { id: MemberId },
     }],
-    where: { id: elemIds },
+    where: { id: ids },
   });
+  if(count === 0) {
+    return res.json({});
+  }
+  items = await DoneList.findAll({
+    include: [{
+      model: Member,
+      where: { id: MemberId },
+    },],
+    // 몇 개 내려보내야 하는지
+    limit: count,
+    // 앞에서부터 몇번째의 리스트를 가져와야 하는지
+    offset: aboutOffset(page, count),
+    attributes: ['id', 'title', 'author', 'img'],
+  });
+  const lists = items.map(item => {
+    return {
+      id: item.id,
+      img: item.img,
+      title: item.title,
+      author: item.author,
+    }
+  });
+  res.json({ lists });
 });
 
 module.exports = router;

@@ -1,9 +1,10 @@
 
 class List {
   constructor() {
-    this._memberId = new URL(location.href).pathname.split('/')[4];
-    this._folderId = new URL(location.href).pathname.split('/')[3];
+    this._memberId = +new URL(location.href).pathname.split('/')[4];
+    this._folderId = +new URL(location.href).pathname.split('/')[3];
     this.$list = document.getElementById('list');
+    this._userId = +this.$list.dataset.userId;
     this._totalList = +this.$list.dataset.count;
     this._lastPage = this._totalList % 15 === 0 ? this._totalList / 15 : Math.floor(this._totalList / 15) + 1;
     // 리스트 박스 클릭 시 색깔 변화
@@ -63,7 +64,14 @@ class List {
     this.$labels = Array.from(document.querySelectorAll('.move-label'))
     this.$moveForm.onsubmit = this.moveSubmit.bind(this);
   }
+  checkMe() {
+    return this._userId !== this._memberId;
+  }
   clickBox(e) {
+    if(this.checkMe()) {
+      alert('권한이 없습니다.');
+      return;
+    }
     const imgBox = e.currentTarget.querySelector('.list-img-box');
     imgBox.classList.toggle('clicked', !imgBox.classList.contains('clicked'));
   }
@@ -72,6 +80,10 @@ class List {
     return [...this.$listBoxes].filter(box => box.querySelector('.list-img-box').classList.contains('clicked'));
   }
   clickBtn(e) {
+    if(this.checkMe()) {
+      alert('권한이 없습니다.');
+      return;
+    }
     const target = e.target.closest('.list-btn');
     if(!target) return;
     const type = target.dataset.btn;

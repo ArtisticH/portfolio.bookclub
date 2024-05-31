@@ -47,6 +47,10 @@ body::-webkit-scrollbar {
   background-color: #ab181b;
 }
 
+.fun-middle__right {
+  padding: 5px 0 0 5px;
+}
+
 .fun-home {
   font-family: var(--font-montserrat);
   font-size: 1.2rem;
@@ -54,17 +58,15 @@ body::-webkit-scrollbar {
   height: 30px;
   display: flex;
   align-items: center;
-  padding-left: 5px;
 }
 
 .fun-title {
-  padding-left: 5px;
   font-family: var(--font-montserrat);
   font-size: 2.5rem;
   letter-spacing: -4px;
   font-weight: 300;
   color: #ab181b;
-  padding-top: 10px;
+  margin-top: 10px;
 }
 
 .fun-projects {
@@ -77,10 +79,10 @@ body::-webkit-scrollbar {
   display: grid;
   grid-template-rows: 6fr 4fr;
   cursor: pointer;
+  padding: 5px 0 5px 5px;
 }
 
 .fun-project__title {
-  padding: 5px 0 0 5px;
   font-family: var(--font-montserrat);
   font-size: 4rem;
   letter-spacing: -7px;
@@ -99,7 +101,6 @@ body::-webkit-scrollbar {
   font-size: 0.9rem;
   letter-spacing: -0.9px;
   font-weight: 300;
-  padding: 0 0 5px 5px;
 }
 
 @media all and (min-width: 1000px) {
@@ -110,7 +111,7 @@ body::-webkit-scrollbar {
   
   .fun-title {
     height: calc(100vh - 30px - 2 * var(--height));
-    padding-top: 0px;
+    margin-top: 0px;
     display: flex;
     justify-content: center;
     align-items: center;

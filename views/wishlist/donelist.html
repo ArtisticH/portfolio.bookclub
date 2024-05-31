@@ -15,7 +15,7 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body>
-  <section id="donelist" data-donelist="{{doneLists.length}}" data-last="{{last}}">
+  <section id="donelist" data-count="{{count}}" data-user-id="{{user.id}}">
     <div class="donelist list-common">
       <div class="list-top">
         <div class="list-folder">
@@ -24,7 +24,7 @@
           </a>
           <div>
             <div class="list-folder-title">읽은 것들&nbsp;(<span class="list-total">{{count}}</span>)</div>
-            <a href="/member/{{member.id}}" class="list-nick">{{member.nick}}</a>  
+            <a href="/members" class="list-nick">{{member.nick}}</a>  
           </div>
         </div>
         <div class="list-btns">
@@ -32,14 +32,13 @@
           <div class="list-btn" data-btn="delete">삭제</div>
         </div>        
       </div>
-      {% if doneLists.length == 0 %}
+      {% if done.length == 0 %}
       <div class="list-contents">
         <div class="list-empty">완독이 필요합니다.</div>
       </div>
       {% else %}
       <div class="list-contents grid">
-        <div class="list-empty" hidden>완독이 필요합니다.</div>
-        {% for list in doneLists %}
+        {% for list in done %}
         <div class="list-box" data-list-id="{{list.id}}">
           <div class="donelist-img-box">
             <img class="list-img width" src="{{list.img}}" alt="">
@@ -48,6 +47,7 @@
           <div class="list-box-author">{{list.author}}</div>
         </div>
         {% endfor %}
+        <div class="list-empty" hidden>완독이 필요합니다.</div>
       {% endif %}
     </div>
     <div class="list-box clone" hidden>
@@ -57,11 +57,11 @@
       <div class="list-box-title"></div>
       <div class="list-box-author"></div>
     </div>
-    <div class="pagenation">
+    <div class="pagenation" hidden>
       <div class="page-btn" data-dir="first">&lt;&lt;</div>
       <div class="page-btn" data-dir="before">&lt;</div>
       <input type="text" name="targetpage" class="page-current" value="1">
-      <div class="page-last">/&nbsp;&nbsp;{{last}}</div>
+      <div class="page-last"></div>
       <div class="page-move">이동</div>
       <div class="page-btn" data-dir="after">&gt;</div>
       <div class="page-btn" data-dir="last">&gt;&gt;</div>

@@ -94,15 +94,14 @@ class Wishlist {
     return this._userId != this._memberId;
   }
   checkPublic() {
-    return this.$current.dataset.public === 'true';
+    return this.$current.dataset.public === 'false';
   }
   // 클릭 이벤트
   click(e) {
     const type = e.target.dataset.menu;
     switch(type) {
       case 'open':
-        // 비공개 + 내가 아닌 다른 유저가 클릭했을때
-        if(this.checkMe() && this.checkPublic()) {
+        if(this.checkPublic()) {
           alert('비공개 폴더입니다.');
           this.gone();
           return;
@@ -190,15 +189,20 @@ class Wishlist {
     const folder = e.target.closest('.folder');
     if(!folder) return;
     this.$current = folder;
+    if(this.checkPublic()) {
+      alert('비공개 폴더입니다.');
+      this.gone();
+      return;
+    }  
     this.open();
   }
   // '읽은 것들'폴더와 보통 폴더 구분
   open() {
     let url;
-    const FolderId = this.$current.dataset.folderId;
     if(this.checkDone()) {
-      url = `/list/true/${FolderId}/${this._memberId}`;
+      url = `/list/true/null/${this._memberId}`;
     } else {
+      const FolderId = this.$current.dataset.folderId;
       url = `/list/false/${FolderId}/${this._memberId}`;
     }
     window.location.href = url;  

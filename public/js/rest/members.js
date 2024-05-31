@@ -64,7 +64,6 @@ class Member {
 
   async wishlist() {
     if(!this._memberId) {
-      alert('로그인 후 이용 가능합니다.');
       return;
     }
     const url = `wishlist/${this._memberId}`;

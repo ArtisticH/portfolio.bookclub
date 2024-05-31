@@ -15,7 +15,7 @@
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body>
-  <section id="list" data-count="{{count}}">
+  <section id="list" data-count="{{count}}" data-user-id="{{user.id}}">
     <div class="list list-common">
       <div class="list-top">
         <div class="list-folder">
@@ -24,7 +24,7 @@
           </a>
           <div>
             <div class="list-folder-title">{{title}}&nbsp;(<span class="list-total">{{count}}</span>)</div>
-            <a href="/member/{{member.id}}" class="list-nick">{{member.nick}}</a>  
+            <a href="/members" class="list-nick">{{member.nick}}</a>  
           </div>
         </div>
         <div class="list-btns">

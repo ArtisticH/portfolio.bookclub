@@ -1,7 +1,6 @@
 const express = require('express');
 const { Member } = require('../../models/main');
 const { Folder, DoneFolder, Sort, List } = require('../../models/wishlist');
-const { isLoggedIn } = require('../rest/middlewares');
 
 const router = express.Router();
 
@@ -10,7 +9,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/:memberid', isLoggedIn, async (req, res) => {
+router.get('/:memberid', async (req, res) => {
   const id = req.params.memberid;
   const member = await Member.findOne({
     where: { id },

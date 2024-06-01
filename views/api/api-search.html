@@ -20,7 +20,7 @@
       <a href="/open" class="search-back">BACK</a>
       <a href="/" class="search-back">HOME</a>
     </div>
-    <div class="search-explanation">{{explanation}}</div>
+    <div class="search-explanation">국립중앙도서관 오프라인 도서 자료 검색 결과를 10건 반환합니다.</div>
     <form class="search-box">
       <div class="select-box">
         <img class="select-img search-img" src="/img/open/search-select.png" alt="search-select">
@@ -33,7 +33,7 @@
       </div>
       <div class="input-box">
         <img class="input-img search-img" src="/img/open/search-input.png" alt="search-input">
-        <input class="kwd-input input-none" type="text" name="kwd" placeholder="검색어를 입력해주세요.*">
+        <input class="kwd-input input-none" type="text" name="kwd" placeholder="검색어를 입력해주세요*">
       </div>
       <div class="search-btn">
         <img class="search-btn-img search-img" src="/img/open/glasses.png" alt="glasses">
@@ -50,31 +50,30 @@
     </div>
     <div class="results-title"><span class="results-title-select"></span>&nbsp;:&nbsp;<span class="results-title-kwd"></span>&nbsp;검색결과</div>
     <div class="results-line"></div>
-    <div class="results-main">
-      <div class="results-box clone" hidden>
-        <div class="results-box-contents">
-          <div class="results-img-box">
-            <img class="results-img" src="" alt="">
-          </div>  
-          <div class="results-info-box">
-            <div class="results-info-title"></div>
-            <div class="results-info">
-              <span class="results-author"></span>
-              <span class="results-ver"></span>
-              <span class="results-pub"></span>
-            </div>
-            <div class="results-info">
-              <span class="results-year"></span>
-              <span class="results-ver"></span>
-              청구기호:&nbsp;<span class="results-call"></span>
-            </div>
-            <div class="results-place-box"><span class="results-place-box-npc">자료이용장소:&nbsp;</span><span class="results-place"></span></div>
+    <div class="results-main"></div>
+    <div class="results-box clone" hidden>
+      <div class="results-box-contents">
+        <div class="results-img-box">
+          <img class="results-img" src="" alt="">
+        </div>  
+        <div class="results-info-box">
+          <div class="results-info-title"></div>
+          <div class="results-info">
+            <span class="results-author"></span>
+            <span class="results-ver"></span>
+            <span class="results-pub"></span>
           </div>
+          <div class="results-info">
+            <span class="results-year"></span>
+            <span class="results-ver"></span>
+            청구기호:&nbsp;<span class="results-call"></span>
+          </div>
+          <div class="results-place-box"><span class="results-place-box-npc">자료이용장소:&nbsp;</span><span class="results-place"></span></div>
         </div>
-        <div class="results-btns">
-          <a class="results-btn detail" href="" target="_blank">원문 URL</a>
-          <div class="results-btn wishlist">WISHLIST에 추가</div>
-        </div>
+      </div>
+      <div class="results-btns">
+        <a class="results-btn detail" href="" target="_blank">원문 URL</a>
+        <div class="results-btn wishlist">WISHLIST에 추가</div>
       </div>
     </div>
     <img src="/img/open/line.png" alt="line" class="line-top">

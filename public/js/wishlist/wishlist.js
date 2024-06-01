@@ -101,7 +101,7 @@ class Wishlist {
     const type = e.target.dataset.menu;
     switch(type) {
       case 'open':
-        if(this.checkPublic()) {
+        if(this.checkPublic() && this.checkMe()) {
           alert('비공개 폴더입니다.');
           this.gone();
           return;

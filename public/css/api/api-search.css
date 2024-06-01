@@ -29,7 +29,6 @@ a {
 
 #apisearch {
   height: 100vh;
-  box-sizing: border-box;
 }
 
 .search-nav {
@@ -77,6 +76,7 @@ a {
 }
 
 .search-img {
+  /* .select-box */
   position: absolute;
   display: block;
   top: 50%;
@@ -88,7 +88,6 @@ a {
 .select-img {
   width: 170%;
   height: 210%;
-  z-index: -1;
 }
 
 select {

@@ -52,7 +52,7 @@
         <div class="list-codename list-common"></div>  
       </div>
       <div class="list-img-box">
-        <img class="list-img" src="{{list.img}}" alt="">
+        <img class="list-img" src="" alt="">
       </div>
     </div>
     <div class="api-line"></div>
@@ -74,23 +74,21 @@
         <div class="cancel-right"></div>
       </div>
     </div>
-    <div class="folders">
-      <form class="folders-form">
-        <div class="folders-add">
-          <div class="add-folder">폴더 추가</div>
+    <form class="folders-form">
+      <div class="folders-add">
+        <div class="add-folder">폴더 추가</div>
+      </div>
+      <div class="empty-text" hidden>먼저 폴더를 추가해주세요.</div>
+      <div class="label" hidden></div>
+      <label class="label-box clone" hidden>
+        <div class="label-title">
+          <input type="radio" name="folder" value="">
+          <span></span>  
         </div>
-        <div class="empty-text" hidden>먼저 폴더를 추가해주세요.</div>
-        <div class="label" hidden></div>
-        <label class="label-box clone" hidden>
-          <div class="label-title">
-            <input type="radio" name="folder" value="">
-            <span></span>  
-          </div>
-          <div class="label-count"></div>
-        </label> 
-        <input class="submit" type="submit" value="등록" hidden>           
-      </form>
-    </div>
+        <div class="label-count"></div>
+      </label> 
+      <input class="submit" type="submit" value="등록" hidden>           
+    </form>
   </section>
   <section id="add" class="root" hidden>
     <div class="nav add">
@@ -103,7 +101,7 @@
     <form action="" class="add-form">
       <div class="add-radio">
         <label>
-          <input id="public" type="radio" name="isPublic" value="public" checked/>
+          <input id="public" type="radio" name="isPublic" value="public"/>
           <span>PUBLIC</span>
         </label>
         <label>

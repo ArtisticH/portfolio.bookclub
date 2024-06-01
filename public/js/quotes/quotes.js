@@ -141,10 +141,8 @@ class Quotes {
   ratio(value) {
     if(value === '11') {
       this.$imgBox.style.aspectRatio = '1 / 1';
-      this.$imgBox.style.width = '';
     } else if(value === '34') {
       this.$imgBox.style.aspectRatio = '3 / 4';
-      this.$imgBox.style.width = 'auto';
     }
   }
   color(value) {
@@ -240,7 +238,6 @@ class Quotes {
     this.$from.style.color = '';
     // 비율 리셋
     this.$imgBox.style.aspectRatio = '1 / 1';
-    this.$imgBox.style.width = '';
   }
   async download() {
     html2canvas(this.$imgBox, { scale: 1 })
@@ -261,6 +258,7 @@ class Quotes {
       // 클라우드 추가
       if(this._cloud < 4) {
         this.addCloud(this._cloud);
+        // 다음 문장
         this.$cloudText.textContent = this._cloudYes[this._cloud];
       } else if(this._cloud === 4) {
         this.$cloudText.textContent = this._cloudYes[this._cloud];
@@ -283,11 +281,11 @@ class Quotes {
       [...this.$cloudBtns.children][1].textContent = 'No';    
       this._cloud--;
       this.$cloudText.textContent = this._cloudYes[this._cloud];
-      if(this._cloud == 0) {
+      if(this._cloud === 0) {
         this.$cloudOne.style.display = 'none';
-      } else if(this._cloud == 1) {
+      } else if(this._cloud === 1) {
         this.$cloudTwo.style.display = 'none';
-      } else if(this._cloud == 2) {
+      } else if(this._cloud === 2) {
         this.$cloudThree.style.display = 'none';  
       }
     }
@@ -315,7 +313,6 @@ class Quotes {
       [...this.$cloudBtns.children][1].textContent = 'Reset';    
     }
   }
-
   resize() {
     if(document.documentElement.clientWidth < 850) {
       // Cloud
@@ -324,6 +321,7 @@ class Quotes {
       this.$cloudThree.style.display = 'none';
       this._cloud = 0;
       this.$cloudText.textContent = this._cloudYes[this._cloud];
+      [...this.$cloudBtns.children][0].hidden = false;
       [...this.$cloudBtns.children][0].textContent = 'Yes';
       [...this.$cloudBtns.children][1].textContent = 'No';    
       // Cat

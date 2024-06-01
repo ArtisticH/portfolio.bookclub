@@ -2,29 +2,27 @@ class API {
   constructor() {
     this.$api = document.getElementById('api');
     this._userId = this.$api.dataset.userId;
+    this._type = this.$api.dataset.type;
+    this._lastPage = +this.$api.dataset.last;
     // 리스트 박스 클릭
-    this.$listBoxes = Array.from(document.querySelectorAll('.list-box'));
+    this.$listBoxes = document.querySelectorAll('.list-box');
     this.clickBox = this.clickBox.bind(this);
-    this.$listBoxes.forEach(item => {
+    [...this.$listBoxes].forEach(item => {
       item.addEventListener('click', this.clickBox);
     });
-    // 페이지네이션
-    this._type = this.$api.dataset.type;
     this._current = 1;
-    this._lastPage = +this.$api.dataset.last;
     this._target = null;
-    this.$main = document.querySelector('.api-main');
-    this.$current = document.querySelector('.page-current');
-    this.$clone = document.querySelector('.list-box.clone');
-    // <<, <, >, >> 클릭 시
     this.$pagenation = document.querySelector('.pagenation');
     this.$pagenation.onclick = this.pagenation.bind(this);
-    // 직접 페이지 입력 후 이동 버튼
-    // 페이지 입력하면 targetPage가 바뀐다.
+    this.$current = document.querySelector('.page-current');
     this.$current.oninput = this.targetPage.bind(this);
     this.$moveBtn = document.querySelector('.page-move');
-    this.$moveBtn.onclick = this.inputPage.bind(this);
+    this.$moveBtn.onclick = this.movePage.bind(this);
+    this.$main = document.querySelector('.api-main');
+    this.$clone = document.querySelector('.list-box.clone');
     this.$cancel = document.querySelectorAll('.cancel');
+    this.$folders = document.getElementById('folders');
+    this.$add = document.getElementById('add');
     // 폼 취소
     [...this.$cancel].forEach(item => {
       item.onclick = this.cancel.bind(this);
@@ -32,26 +30,32 @@ class API {
     // 위시리스트 버튼 클릭
     this.$wishlist = document.querySelector('.api-wishlist');
     this.$wishlist.onclick = this.wishlist.bind(this);
-    this.$clicked = null;
-    this.$folders = document.getElementById('folders');
-    this.$add = document.getElementById('add');
-    this.$addBtn = document.querySelector('.add-folder');
-    this.$addBtn.onclick = this.showAddForm.bind(this);
     this.$empty = document.querySelector('.empty-text');
     this.$label = document.querySelector('.label');
+    this.$folderSubmit = this.$formFolder.querySelector('.submit');
     this.$labelClone = document.querySelector('.label-box.clone');
+    this._lists = [];
+    this.$addBtn = document.querySelector('.add-folder');
+    this.$addBtn.onclick = this.showAddForm.bind(this);
     this.$formFolder = document.querySelector('.folders-form');
     this.$formAdd = document.querySelector('.add-form');
-    this.$folderSubmit = this.$formFolder.querySelector('.submit');
-    this._lists = [];
     // 기존 폴더에 추가
     this.$formFolder.onsubmit = this.addFolder.bind(this);
     // 새로운 폴더에 추가
     this.$formAdd.onsubmit = this.newFolder.bind(this);
   }
+  checkMe() {
+    return this._userId;
+  }
   clickBox(e) {
     const target = e.currentTarget;
     target.classList.toggle('clicked', !target.classList.contains('clicked'));
+  }
+  clickedBoxes() {
+    return [...this.$listBoxes].filter(box => box.classList.contains('clicked'));
+  }
+  targetPage(e) {
+    this._target = +e.target.value;
   }
   pagenation(e) {
     const target = e.target.closest('.page-btn');
@@ -64,7 +68,7 @@ class API {
           return;
         }
         this._target = 1;
-        this.dirPage();
+        this.movePage();
         break;
       case 'before':
         if(this._current === 1) {
@@ -72,7 +76,7 @@ class API {
           return;
         }
         this._target = this._current - 1;
-        this.dirPage();
+        this.movePage();
         break;
       case 'after':
         if(this._current === this._lastPage) {
@@ -80,7 +84,7 @@ class API {
           return;
         }
         this._target = this._current + 1;
-        this.dirPage();
+        this.movePage();
         break;
       case 'last':
         if(this._current === this._lastPage) {
@@ -88,28 +92,31 @@ class API {
           return;
         }
         this._target = this._lastPage;
-        this.dirPage();
+        this.movePage();
         break;
     }
   }
-  async dirPage() {
-    // 해당 페이지 내용을 가져와줘
+  pageArrange(lists) {
+    this._current = this._target;
+    this.$current.value = this._current;
+    [...this.$main.children].forEach(item => {
+      item.remove();
+    });
+    lists.forEach(list => {
+      this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
+    });
+  }
+  async movePage() {
+    if(this._current === this._target) {
+      alert('현재 페이지입니다.');
+      return;
+    }
     const res = await axios.post('/open/list', {
       type: this._type,
       page: this._target,
     });
-    // 내림차순(최신 => 오래된 순)으로 옴
     const lists = JSON.parse(res.data.lists);
-    this._current = this._target;
-    // 기존의 12개 삭제
-    [...this.$main.children].forEach(item => {
-      item.remove();
-    })
-    // 새로운 열두개 투입
-    lists.forEach(list => {
-      this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
-    });
-    this.$current.value = this._current;
+    this.pageArrange(lists);
   }
   listDOM(c, obj) {
     c.className = 'list-box';
@@ -123,58 +130,68 @@ class API {
     c.onclick = this.clickBox;
     return c;
   }
-  // this._target 바꾸자.
-  targetPage(e) {
-    // +안하면 문자열로 인식되서 오류
-    this._target = +e.target.value;
-  }
-  async inputPage() {
-    if(this._current == this._target) {
-      alert('현재 페이지입니다.');
-      return;
-    }
-    const res = await axios.post('/open/list', {
-      page: this._target,
-      type: this._type,
-    });
-    const lists = JSON.parse(res.data.lists);
-    this._current = this._target;
-    // 기존의 12개 삭제
-    [...this.$main.children].forEach(item => {
-      item.remove();
-    })
-    // 새로운 열두개 투입
-    lists.forEach(list => {
-      this.$main.append(this.listDOM(this.$clone.cloneNode(true), list));
-    })
-  }
   cancel(e) {
     const form = e.target.closest('.root');
     if(form.id === 'add') {
-      form.querySelector('.add-input').value = '';
-      const radios = document.getElementsByName('isPublic');
-      for (const radio of radios) {
-        radio.checked = false;
-      }
+      this.resetAdd();
+    } else {
+      this.resetFolder();
     }
-    form.hidden = true;
+  }
+  resetAdd() {
+    this.$add.querySelector('.add-input').value = '';
+    const radios = this.$add.getElementsByName('isPublic');
+    for (const radio of radios) {
+      radio.checked = false;
+    }
+    this.$add.hidden = true;
+  }
+  resetClicked() {
+    for(let item of this.clickedBoxes()) {
+      item.classList.remove('clicked');
+    }
+  }
+  resetFolder() {
+    const radios = this.$add.getElementsByName('folder');
+    for (const radio of radios) {
+      radio.checked = false;
+    }
+    [...this.$label.children].forEach(item => {
+      item.remove();
+    });    
+    this.$folders.hidden = true;
+  }
+  zeroFolder() {
+    this.$empty.hidden = false;
+    this.$label.hidden = true;
+    this.$folderSubmit.hidden = true;
+  }
+  notZeroFolder() {
+    this.$empty.hidden = true;
+    this.$label.hidden = false;
+    this.$folderSubmit.hidden = false;
+  }
+  labelDOM(c, obj) {
+    c.className = 'label-box';
+    c.hidden = false;
+    c.querySelector('.label-title > input').value = obj.id;
+    c.querySelector('span').textContent = obj.title;
+    c.querySelector('.label-count').textContent = `${obj.count}개`;
+    return c;
   }
   async wishlist() {
-    if(!this._userId) {
-      alert('로그인 후 이용 가능합니다');
+    if(!this.checkMe()) {
+      alert('권한이 없습니다.');
       return;
     }
     // 클릭 된 애들만 골라
-    this.$clicked = [...this.$main.children].filter(item => {
-      return item.classList.contains('clicked');
-    });
-    if(this.$clicked.length == 0) {
+    const targets = this.clickedBoxes();
+    if(targets.length == 0) {
       alert('도서를 클릭해주세요.');
       return;
     }
-    this._lists = [];
-    this.$clicked.forEach(item => {
-      this._lists[this._lists.length] = {
+    this._lists = targets.map(item => {
+      return {
         title: item.querySelector('.list-title').textContent,
         author: item.querySelector('.list-author').textContent,
         img: item.querySelector('.list-img').src,
@@ -185,26 +202,14 @@ class API {
     const res = await axios.get(`/open/folders/${this._userId}`);
     const folders = res.data.folders;
     if(folders.length === 0) {
-      this.$empty.hidden = false;
-      this.$label.hidden = true;
-      this.$folderSubmit.hidden = true;
+      this.zeroFolder();
     } else {
-      this.$empty.hidden = true;
-      this.$label.hidden = false;
-      this.$folderSubmit.hidden = false;
+      this.notZeroFolder();
       folders.forEach(item => {
         this.$label.append(this.labelDOM(this.$labelClone.cloneNode(true), item));
       });
     }
     this.$folders.hidden = false;
-  }
-  labelDOM(c, obj) {
-    c.className = 'label-box';
-    c.hidden = false;
-    c.querySelector('.label-title > input').value = obj.id;
-    c.querySelector('span').textContent = obj.title;
-    c.querySelector('.label-count').textContent = `${obj.count}개`;
-    return c;
   }
   async addFolder(e) {
     e.preventDefault();
@@ -221,24 +226,18 @@ class API {
       return;
     }
     const FolderId = e.target.folder.value;
-    const res = await axios.post('/open/exist', {
+    await axios.post('/open/exist', {
       lists: JSON.stringify(this._lists),
       FolderId,
       MemberId: this._userId,
     });
-    this.$folders.hidden = true;
-    [...this.$label.children].forEach(item => {
-      item.remove();
-    });    
-    [...this.$clicked].forEach(item => {
-      item.classList.remove('clicked');
-    });
-    this.$clicked = null;
+    this.resetFolder();
+    this.resetClicked();
     alert('등록이 완료되었습니다!');
   }
   // 폴더 선택 폼 사라지고 폴더 추가 후 등록 폼 등장
   showAddForm() {
-    this.$folders.hidden = true;
+    this.resetFolder();
     this.$add.hidden = false;
   }    
   async newFolder(e) {
@@ -268,11 +267,8 @@ class API {
       isPublic,
       lists: JSON.stringify(this._lists),
     });
-    this.$add.hidden = true;
-    [...this.$clicked].forEach(item => {
-      item.classList.remove('clicked');
-    });
-    this.$clicked = null;
+    this.resetAdd();
+    this.resetClicked();
     alert('등록이 완료되었습니다!');
   }
 }

@@ -1,5 +1,4 @@
 const express = require('express');
-const { Model } = require('sequelize');
 const xml2js = require('xml2js');
 const { Folder, List } = require('../../models/wishlist')
 
@@ -28,9 +27,11 @@ const parseXMLToJSON = (xml) => {
 // 국립중앙도서관 사서추천도서
 const natLists = [];
 router.get('/nat', async (req, res) => {
+  // 2023년 1월부터 2024년 6월까지의
   const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.NATIONAL_KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
   const response = await fetch(url);
   const xml = await response.text();
+  // xml => JSON
   const data = await parseXMLToJSON(xml);
   const title = '2024 국립중앙도서관 사서추천도서';
   const img = '/img/open/national.png';
@@ -46,6 +47,7 @@ router.get('/nat', async (req, res) => {
       codeName: list.item.drCodeName,
     }
   });
+  // 12개만 보낼게
   const lists = natLists.slice(0, 12);
   const type = 'nat';
   res.render('api/api', { lists, title, img, last, type });
@@ -99,37 +101,6 @@ router.get('/faker', async (req, res) => {
   const lists = fakerLists.slice(0, 12);
   const type = 'faker';
   res.render('api/api', { lists, title, img, last, type });
-})
-// 국립중앙도서관 소장자료조희
-router.get('/search', (req, res) => {
-  const explanation = '국립중앙도서관 오프라인 도서 자료 검색 결과를 10건 반환합니다.';
-  res.render('api/api-search', { explanation });
-});
-// 소장 자료 검색 결과 반환
-router.post('/search', async (req, res) => {
-  const target = req.body.target;
-  const kwd = req.body.kwd;
-  const url = `
-  https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.NATIONAL_KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
-  `;
-  const response = await fetch(url);
-  const json = await response.json();
-  const lists = [];
-  json.result.forEach(item => {
-    lists[lists.length] = {
-      title: item.titleInfo,
-      author: item.authorInfo,
-      pub: item.pubInfo,
-      year: item.pubYearInfo,
-      call: item.callNo,
-      place: item.placeInfo,
-      detail: `https://www.nl.go.kr${item.detailLink}`,
-      img: item.imageUrl ? `http://cover.nl.go.kr/${item.imageUrl}` : '/img/open/book-default.png',
-    }
-  })
-  res.json({
-    lists,
-  });
 });
 // 추천 도서 페이지네이션
 router.post('/list', async (req, res) => {
@@ -161,9 +132,8 @@ router.get('/folders/:memberid', async (req, res) => {
     where: { MemberId },
     attributes: ['id', 'title', 'count'],
   });
-  const folders = [];
-  results.forEach(item => {
-    folders[folders.length] = {
+  const folders = results.map(item => {
+    return {
       id: item.id,
       title: item.title,
       count: item.count,
@@ -215,6 +185,33 @@ router.post('/add', async (req, res) => {
   });
   await Promise.all(create);
   res.json({});
+});
+// 국립중앙도서관 소장자료조희
+router.get('/search', (req, res) => {
+  res.render('api/api-search');
+});
+// 소장 자료 검색 결과 반환
+router.post('/search', async (req, res) => {
+  const target = req.body.target;
+  const kwd = req.body.kwd;
+  const url = `
+  https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.NATIONAL_KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
+  `;
+  const response = await fetch(url);
+  const json = await response.json();
+  const lists = json.result.map(item => {
+    return {
+      title: item.titleInfo,
+      author: item.authorInfo,
+      pub: item.pubInfo,
+      year: item.pubYearInfo,
+      call: item.callNo,
+      place: item.placeInfo,
+      detail: `https://www.nl.go.kr${item.detailLink}`,
+      img: item.imageUrl ? `http://cover.nl.go.kr/${item.imageUrl}` : '/img/open/book-default.png',
+    }
+  });
+  res.json({ lists });
 });
 
 module.exports = router;

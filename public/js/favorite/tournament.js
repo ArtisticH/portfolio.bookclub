@@ -8,6 +8,7 @@ class Tournament {
     // 서버에서 보내온 배열
     this._original = JSON.parse(this.$tournament.dataset.original);
     // 이미지 경로할때 필요, 오디오 경로할때 필요
+    // 이미지, 오디오의 이름은 main과 같게
     this._model = this.$tournament.dataset.model;
     // types에 따라 노래, sub 노출할지 안할지 결정
     this._types = this.$tournament.dataset.types;
@@ -67,7 +68,6 @@ class Tournament {
     // 파이널
     this.$final = document.getElementById('final');
     this.$finalImg = this.$final.querySelector('img');
-    this.$finalTitle = document.querySelector('.final-title');
     this.$finalMain = document.querySelector('.final-main');
     this.$finalSub = document.querySelector('.final-sub');
     // 이미지 다운로드
@@ -82,7 +82,7 @@ class Tournament {
       if(arr.indexOf(number) === -1) {
         arr[arr.length] = number;
       } 
-      if(arr.length == round) break;
+      if(arr.length === round) break;
     }
     return arr;
   }
@@ -95,93 +95,102 @@ class Tournament {
       this._sub[this._sub.length] = this._original[item].sub;
     });
   }
+  // 만약 처음에 뽑히거나, 다음 라운드에 진출하거나 그러면 selected를 ++;
+  selected(arr) {
+    arr.forEach(item => {
+      this._original[item].selected++;
+    })
+  }   
+  // 1 / 16, 2 / 16, 1 / 8...등 대입 
+  round(cur, total) {
+    this.$current.textContent = cur;
+    this.$total.textContent = total;
+  }
+  bottomPause() {
+    this.$bottomAudio.pause();
+    this.$bottomPause.hidden = true;
+    this.$bottomPlay.hidden = false;
+  }
+  bottomPlay() {
+    this.$bottomPlay.hidden = true;
+    this.$bottomPause.hidden = false;
+    this.$bottomAudio.play();
+  }
+  topPause() {
+    this.$topAudio.pause();
+    this.$topPause.hidden = true;
+    this.$topPlay.hidden = false;
+  }
+  topPlay() {
+    this.$topPlay.hidden = true;
+    this.$topPause.hidden = false;
+    this.$topAudio.play();
+  }
   play(e) {
     const direction = e.currentTarget.classList[1];
     if(direction === 'top') {
-      this.$bottomAudio.pause();
-      this.$bottomPause.hidden = true;
-      this.$bottomPlay.hidden = false;
-      this.$topPlay.hidden = true;
-      this.$topPause.hidden = false;
-      this.$topAudio.play();
+      // 위에 있는 노래 클릭 시 아래 재생되고 있는 노래 끊고
+      // 이미지도 바꾸고
+      this.bottomPause();
+      this.topPlay();
     } else if(direction === 'bot') {
-      this.$topAudio.pause();
-      this.$topPause.hidden = true;
-      this.$topPlay.hidden = false;
-      this.$bottomPlay.hidden = true;
-      this.$bottomPause.hidden = false;
-      this.$bottomAudio.play();
+      this.topPause();
+      this.bottomPlay();
     }
   }
   pause(e) {
     const direction = e.currentTarget.classList[1];
     if(direction === 'top') {
-      this.$topPause.hidden = true;
-      this.$topAudio.pause();
-      this.$topPlay.hidden = false;
+      this.topPause();
     } else if(direction === 'bot') {
-      this.$bottomPause.hidden = true;
-      this.$bottomAudio.pause();
-      this.$bottomPlay.hidden = false;
+      this.bottomPause();
     }
+  }
+  topEnded() {
+    this.$topPause.hidden = true;
+    this.$topAudio.currentTime = 0;
+    this.$topPlay.hidden = false;
+  }
+  bottomEnded() {
+    this.$bottomPause.hidden = true;
+    this.$bottomAudio.currentTime = 0;
+    this.$bottomPlay.hidden = false;
   }
   ended(e) {
-    const direction = e.currentTarget.classList[1];
+    const direction = e.currentTarget.dataset.dir;
     if(direction === 'top') {
-      this.$topPause.hidden = true;
-      this.$topAudio.currentTime = 0;
-      this.$topPlay.hidden = false;
+      this.topEnded();
     } else if(direction === 'bot') {
-      this.$bottomPause.hidden = true;
-      this.$bottomAudio.currentTime = 0;
-      this.$bottomPlay.hidden = false;
+      this.bottomEnded();
     }
   }
-  // 위쪽의 요소
-  top(index) {
-    if(this._types !== 'basic') {
-      this.$topAudio.src = `/audio/${this._model}/${this._main[index]}.mp3`;
-      this.$topSub.textContent = this._sub[index];
-    }
-    this.$topImg.src = `/img/${this._model}/${this._main[index]}.jpeg`;
-    this.$topMain.textContent = this._main[index];
-  }
-  // 아래쪽 요소
-  bottom(index) {
-    if(this._types !== 'basic') {
-      this.$bottomAudio.src = `/audio/${this._model}/${this._main[index]}.mp3`;
-      this.$bottomSub.textContent = this._sub[index];
-    }
-    this.$bottomImg.src = `/img/${this._model}/${this._main[index]}.jpeg`;
-    this.$bottomMain.textContent = this._main[index];
-  }
-
-  round(cur, total) {
-    this.$current.textContent = cur;
-    this.$total.textContent = total;
-  }
-
   tournament(index) {
-    if(this._types !== 'basic') {
-      this.$topPlay.hidden = false;
-      this.$topPause.hidden = true;
-      this.$bottomPlay.hidden = false;
-      this.$bottomPause.hidden = true;  
-    }
     this.top(index);
     this.bottom(index + 1);
   }
-  // 만약 처음에 뽑히거나, 다음 라운드에 진출하거나 그러면 selected를 ++;
-  selected(base) {
-    base.forEach(item => {
-      this._original[item].selected++;
-    })
-  }  
+  // 위쪽의 요소
+  top(index) {
+    if(this._types === 'music') {
+      this.$topAudio.src = `/audio/${this._model}/${this._main[index]}.mp3`;
+    }
+    this.$topImg.src = `/img/${this._model}/${this._main[index]}.jpeg`;
+    this.$topMain.textContent = this._main[index];
+    this.$topSub.textContent = this._sub[index];
+  }
+  // 아래쪽 요소
+  bottom(index) {
+    if(this._types === 'music') {
+      this.$bottomAudio.src = `/audio/${this._model}/${this._main[index]}.mp3`;
+    }
+    this.$bottomImg.src = `/img/${this._model}/${this._main[index]}.jpeg`;
+    this.$bottomMain.textContent = this._main[index];
+    this.$bottomSub.textContent = this._sub[index];
+  }
   // 박스 클릭
   // 클릭 시 top이면 index 0, 2, 4, 등이고 this._index
   // 클릭 시 bottom이면 index 1, 3, 5, ..등의 홀수 this._index + 1의 값
   clickBox(e) {
-    const direction = e.currentTarget.classList[1];
+    const direction = e.currentTarget.dataset.dir;
     // 클릭 된 정보 저장
     // 일단 클릭 된 놈의 win++;
     // 이런건 다 this._original에 저장, 이게 나중에 서버로 보내서 합칠 놈임.
@@ -195,6 +204,7 @@ class Tournament {
     }
     if(this._final) {
       // 파이널이라면 파이널 찍고 탈출
+      this._original[index].win++;
       this._original[index].finalWin++;
       return this.final(index);
     }
@@ -205,7 +215,7 @@ class Tournament {
     this._temMain[this._temMain.length] = this._original[index].main;
     this._temSub[this._temSub.length] = this._original[index].sub;
     // 다음으로
-    this._index += 2;;
+    this._index += 2;
     this._currentIter++;
     if(this._currentIter > this._totalIter) {
       // 다음 토너먼트로 넘어갈때 예를 들면 32강에서 16강으로..
@@ -230,19 +240,17 @@ class Tournament {
     }
     this.tournament(this._index);  
   }
-
   async final(index) {
     // 서버에 보내고, 
     // 기록하기, 
     // 새로운 HTML 보여주기,
-    const res = await axios.post(`/favorite/final`, {
+    await axios.post(`/favorite/final`, {
       original: JSON.stringify(this._original),
-      id: this._id,
-      MemberId: this._memberId,
-      main: this._original[index].main,
-      sub: this._original[index].sub,
+      modelName: this._model,
     });
-    // 싹 다 엎고 final 보여주기
+    this.showFinal(index);
+  }
+  showFinal(index) {
     this.$final.hidden = false;
     this.$finalImg.src = `/img/${this._model}/${this._original[index].main}.jpeg`;
     this.$finalMain.textContent = this._original[index].main;
@@ -250,7 +258,6 @@ class Tournament {
     this.$finalImgOpt.href = `/img/${this._model}/${this._original[index].main}.jpeg`;
     this.$finalImgOpt.download = `${this._original[index].main}.jpeg`;
   }
-
   init() {
     // 라운드에 맞는 랜덤 숫자 배열 만들고
     this._random = this.random(this._round);

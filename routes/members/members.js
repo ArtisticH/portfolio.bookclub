@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
     };
   });
   const bookTotal = books.length;
-  res.render('member/members', { members, books, bookTotal });
+  res.render('members/members', { members, books, bookTotal });
 });
 
 router.get('/:id', async (req, res) => {

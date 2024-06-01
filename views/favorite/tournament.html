@@ -35,13 +35,13 @@
         <div class="tournament-explanation">{{explanation}}</div>
       </div>
       <div class="tournament-con top-img">
-        <div class="tournament-img-box top">
+        <div class="tournament-img-box top" data-dir="top">
           <img class="tournament-img top" src="" alt="">
         </div>
       </div>
       <div class="tournament-con top-info">
         {% if types == 'music' %}
-        <audio class="tournament-audio top" src=""></audio>
+        <audio class="tournament-audio top" src="" data-dir="top"></audio>
         <div class="play-btn top">
           <img class="tournament-img" src="/img/favorite/play.png" alt="play">
         </div>
@@ -57,7 +57,7 @@
       </div>
       <div class="tournament-con bot-info">
         {% if types == 'music' %}
-        <audio class="tournament-audio bot" src=""></audio>
+        <audio class="tournament-audio bot" src="" data-dir="bot"></audio>
         <div class="play-btn bot">
           <img class="tournament-img" src="/img/favorite/play.png" alt="play">
         </div>
@@ -72,7 +72,7 @@
         {% endif %}
       </div>
       <div class="tournament-con bot-img">
-        <div class="tournament-img-box bot">
+        <div class="tournament-img-box bot" data-dir="bot">
           <img class="tournament-img bot" src="" alt="">
         </div>
       </div>

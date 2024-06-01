@@ -9,15 +9,15 @@ const passport = require('passport');
 
 dotenv.config();
 const pageRouter = require('./routes/page');
-const authRouter = require('./routes/rest/auth');
+const authRouter = require('./routes/auth/auth');
 const bookRouter = require('./routes/book/book');
 const reviewRouter = require('./routes/book/review');
-const memberRouter = require('./routes/rest/members');
+const memberRouter = require('./routes/members/members');
 const wishlistRouter = require('./routes/wishlist/wishlist');
 const listRouter = require('./routes/wishlist/list');
 const favoriteRouter = require('./routes/favorite/favorite');
-const quotesRouter = require('./routes/rest/quotes');
-const openRouter = require('./routes/rest/open');
+const quotesRouter = require('./routes/quotes/quotes');
+const openRouter = require('./routes/open/open');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
@@ -80,7 +80,7 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
   res.status(err.status || 500);
-  res.render('rest/error');
+  res.render('error/error');
 });
 
 app.listen(app.get('port'), () => {

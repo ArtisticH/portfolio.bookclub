@@ -1,7 +1,7 @@
 const express = require('express');
 const { Book, Member, Review } = require('../../models/main');
 const db = require('../../models');
-const { date, star } = require('../rest/middlewares');
+const { date, star } = require('../tools/tools');
 
 function overText(bool, realText) {
   let text = [];

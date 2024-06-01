@@ -27,27 +27,27 @@
       </div>
     </div>
     <div class="ranking-main">
-      {% for ranking in rankings %}
+      {% for list in lists %}
       <div class="ranking-box">
         <div class="ranking-img-box">
-          <img class="ranking-img" src="/img/{{ranking.model}}/{{ranking.main}}.jpeg" alt="{{ranking.main}}">
+          <img class="ranking-img" src="/img/{{list.modelName}}/{{list.main}}.jpeg" alt="{{list.main}}">
         </div>
         <div class="ranking-box-info">
           <div class="ranking-box-info-top">
             <div class="ranking-box-number">{{loop.index}}</div>
             <div>
-              <div class="ranking-box-main">{{ranking.main}}</div>
-              <div class="ranking-box-sub">{{ranking.sub}}</div>    
+              <div class="ranking-box-main">{{list.main}}</div>
+              <div class="ranking-box-sub">{{list.sub}}</div>    
             </div>
           </div>
           <div class="ranking-box-info-bottom">
             <div class="ranking-number-box">
               <div class="ranking-box-victory">승률</div>
-              <div class="ranking-box-victory-number">{{ranking.victoryRate}}%</div>
+              <div class="ranking-box-victory-number">{{list.victoryRate}}%</div>
             </div>
             <div class="ranking-number-box">
               <div class="ranking-box-winning">우승비율</div>
-              <div class="ranking-box-winning-number">{{ranking.winningRate}}%</div>
+              <div class="ranking-box-winning-number">{{list.winningRate}}%</div>
             </div>
           </div>
         </div>

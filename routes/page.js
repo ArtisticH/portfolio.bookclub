@@ -24,7 +24,7 @@ router.get('/books', async (req, res) => {
 });
 
 router.get('/fun', (req, res) => {
-  res.render('rest/fun');
+  res.render('fun/fun');
 });
 
 module.exports = router;

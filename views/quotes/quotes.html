@@ -71,37 +71,35 @@
               <div class="quotes-box-cancel__right"></div>
             </div>
           </div>
-          <div class="quotes-box-input">
-            <form class="quotes-form basic">
-              <div class="quotes-form-title">Choose Basic Img...</div>
-              <div class="quotes-form-labels">
-                <label class="quotes-label" for="one">
-                  <input type="radio" id="one" name="basic" value="one" checked>
-                  <img class="basic-img" src="/img/quotes/one.jpeg" alt="basic-img">
-                </label>
-                <label  class="quotes-label" for="two">
-                  <input type="radio" id="two" name="basic" value="two">
-                  <img class="basic-img" src="/img/quotes/two.jpeg" alt="basic-img">
-                </label>
-                <label  class="quotes-label" for="three">
-                  <input type="radio" id="three" name="basic" value="three">
-                  <img class="basic-img" src="/img/quotes/three.jpeg" alt="basic-img">
-                </label>
-                <label  class="quotes-label" for="four">
-                  <input type="radio" id="four" name="basic" value="four">
-                  <img class="basic-img" src="/img/quotes/four.jpeg" alt="basic-img">
-                </label>
-                <label  class="quotes-label" for="five">
-                  <input type="radio" id="five" name="basic" value="five">
-                  <img class="basic-img" src="/img/quotes/five.jpeg" alt="basic-img">
-                </label>  
-                <label  class="quotes-label" for="six">
-                  <input type="radio" id="six" name="basic" value="six">
-                  <img class="basic-img" src="/img/quotes/six.jpeg" alt="basic-img">
-                </label>  
-              </div>
-            </form>
-          </div>
+          <form class="quotes-form basic">
+            <div class="quotes-form-title">Choose Basic Img...</div>
+            <div class="quotes-form-labels">
+              <label class="quotes-label" for="one">
+                <input type="radio" id="one" name="basic" value="one" checked>
+                <img class="basic-img" src="/img/quotes/one.jpeg" alt="basic-img">
+              </label>
+              <label  class="quotes-label" for="two">
+                <input type="radio" id="two" name="basic" value="two">
+                <img class="basic-img" src="/img/quotes/two.jpeg" alt="basic-img">
+              </label>
+              <label  class="quotes-label" for="three">
+                <input type="radio" id="three" name="basic" value="three">
+                <img class="basic-img" src="/img/quotes/three.jpeg" alt="basic-img">
+              </label>
+              <label  class="quotes-label" for="four">
+                <input type="radio" id="four" name="basic" value="four">
+                <img class="basic-img" src="/img/quotes/four.jpeg" alt="basic-img">
+              </label>
+              <label  class="quotes-label" for="five">
+                <input type="radio" id="five" name="basic" value="five">
+                <img class="basic-img" src="/img/quotes/five.jpeg" alt="basic-img">
+              </label>  
+              <label  class="quotes-label" for="six">
+                <input type="radio" id="six" name="basic" value="six">
+                <img class="basic-img" src="/img/quotes/six.jpeg" alt="basic-img">
+              </label>  
+            </div>
+          </form>
         </div>
         <div class="quotes-box myimg" hidden>
           <div class="quotes-box-nav">
@@ -111,16 +109,14 @@
               <div class="quotes-box-cancel__right"></div>
             </div>
           </div>
-          <div class="quotes-box-input">
-            <form class="quotes-form user-img" action="post" enctype="multipart/form-data">
-              <div class="quotes-form-title">Upload a photo...</div>
-              <label for="user-img" class="user-img-label">
-                <div class="user-img-label-ver"></div>
-                <div class="user-img-label-hor"></div>
-              </label>
-              <input id="user-img" name="userimage" class="user-img-input" type="file" accept="image/*">
-            </form>
-          </div>
+          <form class="quotes-form user-img" action="post" enctype="multipart/form-data">
+            <div class="quotes-form-title">Upload a photo...</div>
+            <label for="user-img" class="user-img-label">
+              <div class="user-img-label-ver"></div>
+              <div class="user-img-label-hor"></div>
+            </label>
+            <input id="user-img" name="userimage" class="user-img-input" type="file" accept="image/*">
+          </form>
         </div>
         <div class="quotes-box input" hidden>
           <div class="quotes-box-nav">
@@ -130,15 +126,13 @@
               <div class="quotes-box-cancel__right"></div>
             </div>
           </div>
-          <div class="quotes-box-input">
-            <form class="quotes-form input">
-              <div class="quotes-form-title">Enter quotes</div>
-              <input class="quotes-input-quotes" type="text" maxlength="100" placeholder="quotes..." name="quotes">
-              <div class="quotes-form-title">This quotes is taken from...</div>
-              <input class="quotes-input-from" type="text" maxlength="20" placeholder="this quotes taken from..." name="from">
-              <input class="quotes-input-submit" type="submit" value="Submit">
-            </form>
-          </div>
+          <form class="quotes-form input">
+            <div class="quotes-form-title">Enter quotes</div>
+            <input class="quotes-input-quotes" type="text" maxlength="100" placeholder="quotes..." name="quotes">
+            <div class="quotes-form-title">This quotes is taken from...</div>
+            <input class="quotes-input-from" type="text" maxlength="30" placeholder="this quotes taken from..." name="from">
+            <input class="quotes-input-submit" type="submit" value="Submit">
+          </form>
         </div>
         <div class="quotes-box ratio" hidden>
           <div class="quotes-box-nav">
@@ -162,12 +156,12 @@
             </div>
           </div>
           <div class="quotes-box-contents">
-            <div class="quotes-box-con" data-value="noto">Noto Sans KR</div>
-            <div class="quotes-box-con" data-value="basic">basic</div>
-            <div class="quotes-box-con" data-value="brush">Nanum Brush</div>
-            <div class="quotes-box-con" data-value="myeongjo">Nanum Myeongjo</div>
-            <div class="quotes-box-con" data-value="dokdo">Dokdo</div>
-            <div class="quotes-box-con" data-value="diphylleia">Diphylleia</div>
+            <div class="quotes-box-con noto" data-value="noto">Noto Sans KR</div>
+            <div class="quotes-box-con basic" data-value="basic">basic</div>
+            <div class="quotes-box-con brush" data-value="brush">Nanum Brush</div>
+            <div class="quotes-box-con myeongjo" data-value="myeongjo">Nanum Myeongjo</div>
+            <div class="quotes-box-con dokdo" data-value="dokdo">Dokdo</div>
+            <div class="quotes-box-con diphylleia" data-value="diphylleia">Diphylleia</div>
           </div>
         </div>
         <div class="quotes-box size" hidden>

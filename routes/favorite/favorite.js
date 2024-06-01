@@ -14,8 +14,8 @@ function makeRanking(arr, modelName, total) {
       main: item.main,
       sub: item.sub,
       // 0 / 0으로 나눌때 NaN
-      victoryRate: isNaN(+item.win / +item.selected) ? 0 : +(+item.win / +item.selected).toFixed(2),
-      winningRate: isNaN(+item.finalWin / total) ? 0 : +(+item.finalWin / total).toFixed(2),
+      victoryRate: isNaN(+item.win / +item.selected) ? 0 : Math.floor((+item.win / +item.selected) * 100),
+      winningRate: isNaN(+item.finalWin / total) ? 0 :  Math.floor((+item.finalWin / total) * 100),
       modelName,
     }
   });

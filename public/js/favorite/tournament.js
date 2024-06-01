@@ -257,6 +257,9 @@ class Tournament {
     this.$finalSub.textContent = this._original[index].sub;
     this.$finalImgOpt.href = `/img/${this._model}/${this._original[index].main}.jpeg`;
     this.$finalImgOpt.download = `${this._original[index].main}.jpeg`;
+    // 노래 재생되는거있으면 다 멈추기
+    this.topPause();
+    this.bottomPause();
   }
   init() {
     // 라운드에 맞는 랜덤 숫자 배열 만들고

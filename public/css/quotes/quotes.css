@@ -13,10 +13,24 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
 #quotes {
   min-height: 100vh;
   background-color: #027b7c;
-  box-sizing: border-box;
 }
 
 .quotes-nav {
@@ -28,15 +42,12 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: space-between;
   padding: 0 5px;
-  box-sizing: border-box;
   color: white;
   border: 1.5px solid #ccc9c0;
 }
 
 .quotes-home {
-  text-decoration: none;
   color: white;
-  display: block;
 }
 
 .quotes-main {
@@ -45,27 +56,21 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   padding: 20px 0;
-  box-sizing: border-box;
-}
-
-.quotes-main-right {
-  box-sizing: border-box;
 }
 
 .quotes-preview {
-  box-sizing: border-box;
   background-color: #0201a5;
-  padding: 5px;
   width: var(--width);
   border: 3px solid #ccc9c0;
   aspect-ratio: 1 / 1;
   box-shadow: 1px 1px 2px 2px #503b46;
+  /* .quotes-img-box */
   position: relative;
 }
 
 .quotes-img-box {
-  box-sizing: border-box;
   aspect-ratio: 1 / 1;
+  /* .quotes-preview */
   position: absolute;
   top: 0;
   left: 50%;
@@ -78,13 +83,13 @@ body::-webkit-scrollbar {
 }
 
 .quotes-img-inputs {
+  /* .quotes-preview */
   position: absolute;
   top: 50%;
   left: 0;
   width: 100%;
   transform: translateY(-50%);
   font-family: var(--font-hahmlet);
-  box-sizing: border-box;
   padding: 0 10px;
 }
 
@@ -97,7 +102,6 @@ body::-webkit-scrollbar {
 .quotes-img-inputs-from {
   font-size: 1rem;
   letter-spacing: -1px;
-  margin-bottom: 10px;
   font-weight: 200;
 }
 
@@ -108,7 +112,6 @@ body::-webkit-scrollbar {
 .quotes-oper {
   width: var(--width);
   display: flex;
-  box-sizing: border-box;
   align-items: center;
   margin-bottom: 7px;
 }
@@ -142,7 +145,6 @@ body::-webkit-scrollbar {
 
 .quotes-box {
   margin-top: 2px;
-  box-sizing: border-box;
   width: var(--width);
   background-color: #ccc9c0;
   padding: 1px;
@@ -156,7 +158,6 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: space-between;
   padding: 0 3px;
-  box-sizing: border-box;
 }
 
 .quotes-box-title {
@@ -168,7 +169,6 @@ body::-webkit-scrollbar {
   background-color: #ccc9c0;
   width: 15px;
   height: 15px;
-  box-sizing: border-box;
   position: relative;
   cursor: pointer;
   box-shadow: 0.5px 0.5px 1px 1px #503b46;
@@ -201,7 +201,7 @@ body::-webkit-scrollbar {
 .quotes-box-contents {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 15px;
   font-family: var(--font-vt323);
   font-size: 1.2rem;
   padding: 20px 0;
@@ -217,6 +217,10 @@ body::-webkit-scrollbar {
   justify-content: center;
 }
 
+.quotes-form-title {
+  text-align: center;
+}
+
 .quotes-form-labels {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -224,65 +228,9 @@ body::-webkit-scrollbar {
   margin-top: 10px;
 }
 
-input {
-  display: block;
-}
-
-input::placeholder {
-  font-family: var(--font-vt323);
-  font-size: 1.2rem;
-}
-
-.quotes-form-title {
-  text-align: center;
-}
-
-.quotes-input-quotes,
-.quotes-input-from {
-  width: 350px;
-  margin: 10px 0;
-  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
-  border: none;
-  outline: none;
-  height: 22px;
-  font-family: var(--font-hahmlet);
-  font-size: 1rem;
-  letter-spacing: -1px;
-  background-color: #ffffff;
-}
-
-.quotes-input-submit {
-  cursor: pointer;
-  font-family: var(--font-vt323);
-  font-size: 1.2rem;
-  border: none;
-  outline: none;
-  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
-  height: 25px;
-  padding: 0 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #efefef;
-  margin: 0 auto;
-}
-
-.quotes-box-con {
-  height: 30px;
-  padding: 0 10px;
-  font-family: var(--font-vt323);
-  width: fit-content;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
-  cursor: pointer;
-}
-
 .quotes-label {
   display: flex;
+  align-items: center;
 }
 
 .basic-img {
@@ -299,12 +247,14 @@ input::placeholder {
   width: 50px;
   height: 30px;
   margin-top: 10px;
+  /* .user-img-label-ver, -hor */
   position: relative;
   cursor: pointer;
 }
 
 .user-img-label-ver,
 .user-img-label-hor {
+  /* .user-img-label */
   position: absolute;
   top: 50%;
   width: 15px;
@@ -325,19 +275,95 @@ input::placeholder {
   display: none;
 }
 
+.quotes-input-quotes,
+.quotes-input-from {
+  width: 350px;
+  margin: 10px 0;
+  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+  border: none;
+  outline: none;
+  height: 22px;
+  font-family: var(--font-hahmlet);
+  font-size: 1rem;
+  letter-spacing: -1px;
+  background-color: #ffffff;
+}
+
+input {
+  display: block;
+}
+
+input::placeholder {
+  font-family: var(--font-vt323);
+  font-size: 1.2rem;
+}
+
+.quotes-input-submit {
+  cursor: pointer;
+  font-family: var(--font-vt323);
+  font-size: 1.2rem;
+  border: none;
+  outline: none;
+  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+  height: 25px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #efefef;
+  margin: 5px auto 0 auto;
+}
+
+.quotes-box-con {
+  height: 30px;
+  padding: 0 10px;
+  font-family: var(--font-vt323);
+  width: fit-content;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+  cursor: pointer;
+}
+
+.quotes-box-con.noto {
+  font-family: var(--font-noto);
+}
+
+.quotes-box-con.basic {
+  font-family: var(--font-hahmlet);
+}
+
+.quotes-box-con.brush {
+  font-family: var(--font-brush);
+}
+
+.quotes-box-con.myeongjo {
+  font-family: var(--font-myeongjo);
+}
+
+.quotes-box-con.dokdo {
+  font-family: var(--font-dokdo);
+}
+
+.quotes-box-con.diphylleia {
+  font-family: var(--font-diphylleia);
+}
+
 .quotes-other {
   z-index: 1;
   display: none;
-  box-sizing: border-box;
   background-color: #cbc9c0;
-  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+  box-shadow: 1px 1px 2px 2px #503b46;
+  padding: 1px;
 }
 
 .quotes-other-nav {
   display: flex;
   align-items: center;
   height: 20px;
-  box-sizing: border-box;
   background-color: #0201a5;
   padding: 0 5px;
   font-family: var(--font-vt323);
@@ -350,16 +376,6 @@ input::placeholder {
 }
 
 .quotes-other-text {
-  text-align: center;
-  font-size: 1.1rem;
-}
-
-.quotes-other.quotes .quotes-other-text {
-  font-size: 1.3rem;
-}
-
-.quotes-other-from {
-  margin-top: 10px;
   text-align: center;
   font-size: 1.1rem;
 }
@@ -384,6 +400,16 @@ input::placeholder {
   cursor: pointer;
 }
 
+.quotes-other.quotes .quotes-other-text {
+  font-size: 1.3rem;
+}
+
+.quotes-other-from {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
 .cloud-one {
   position: fixed;
   width: 400px;
@@ -394,6 +420,7 @@ input::placeholder {
 }
 
 .cloud-two {
+  /* .quotes-main-right */
   position: absolute;
   width: 200px;
   top: 20px;
@@ -403,6 +430,7 @@ input::placeholder {
 }
 
 .cloud-three {
+  /* .quotes-main-right */
   position: absolute;
   width: 300px;
   top: 100px;
@@ -413,6 +441,7 @@ input::placeholder {
 }
 
 .img-cat {
+  /* .quotes-main-right */
   display: none;
   position: absolute;
   bottom: 0;
@@ -422,6 +451,7 @@ input::placeholder {
 }
 
 .quotes-download {
+  width: fit-content;
   font-family: var(--font-vt323);
   font-size: 1.2rem;
   box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
@@ -432,7 +462,6 @@ input::placeholder {
   justify-content: center;
   background-color: #efefef;
   cursor: pointer;
-  width: 120px;
   margin: 20px auto 0 auto;
 }
 
@@ -462,12 +491,14 @@ input::placeholder {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* .cloud-two, .quotes-box */
     position: relative;
     width: 50vw;
   }
 
   .quotes-box {
     margin-top: 0px;
+    /* .quotes-main-right */
     position: absolute;
     left: 0;
     top: 50%;
@@ -476,14 +507,11 @@ input::placeholder {
 
   .quotes-download {
     margin-top: 0;
+    /* .quotes-main-right */
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: calc(var(--width) + 10px);
-    display: flex;
-    flex-direction: column;
-    width: max-content;
-    align-items: flex-start;
+    left: calc(var(--width) + 20px);
   }
   
   .quotes-other {

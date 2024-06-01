@@ -70,7 +70,6 @@ class Index {
     this.$wishForm = document.querySelector('.wishlist');
     this.$wishForm.onsubmit = this.wishlist.bind(this);
   }
-
   /* --------------------------------------------------------------------------------------------------------- */
   // 1. 폼 등장
   showForm(e) {
@@ -185,20 +184,26 @@ class Index {
         case 'success':
           alert(`회원가입이 완료되었습니다! 로그인을 진행해주세요.`);
           break;
+        case 'blank':
+          alert(`빈칸을 모두 채워주세요.`);
+          break;
       }
+      return;
     } else if(this.searchParams.has('login')) {
       if(this.searchParams.get('login') === 'success') {
         alert(`로그인 완료!`);
-      } else if(this.searchParams.get('login') === 'need') {
-        alert(`로그인이 필요합니다.`);
-      } else if(this.searchParams.get('login') === 'already') {
-        alert(`이미 로그인한 상태입니다`);
+        return;
+      } else if(this.searchParams.get('login') === 'blank') {
+        alert(`빈칸을 모두 채워주세요.`);
+        return;
       } else {
         alert(`${this.searchParams.get('login')}`);
+        return;
       }
     } else if(this.searchParams.has('logout')) {
       if(this.searchParams.get('logout') === 'success') {
         alert(`로그아웃 완료!`);
+        return;
       }
     } 
   }

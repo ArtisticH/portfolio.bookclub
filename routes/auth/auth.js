@@ -1,17 +1,19 @@
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const { isLoggedIn, isNotLoggedIn } = require('../tools/tools');
 const { Member } = require('../../models/main');
 
 const router = express.Router();
 
-router.post('/signup', isNotLoggedIn, async (req, res) => {
+router.post('/signup', async (req, res) => {
   const { email, nick, password } = req.body;
   try {
+    if(!email || !nick || !password) {
+      return res.redirect('/?signup=blank');
+    }
     const exUser = await Member.findOne({ where: { email }});
     if(exUser) {
-      return res.redirect('/?signup=exist')
+      return res.redirect('/?signup=exist');
     }
     const hash = await bcrypt.hash(password, 12);
     await Member.create({
@@ -25,7 +27,11 @@ router.post('/signup', isNotLoggedIn, async (req, res) => {
   }
 });
 
-router.post('/login', isNotLoggedIn, async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
+  const { email, password } = req.body;
+  if(!email || !password) {
+    return res.redirect('/?login=blank');
+  }
   passport.authenticate('local', (authError, user, info) => {
     if(authError) {
       return next(authError);
@@ -42,7 +48,7 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
   })(req, res, next);
 });
 
-router.get('/logout', isLoggedIn, (req, res) => {
+router.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) { return next(err); }
     req.session.destroy();

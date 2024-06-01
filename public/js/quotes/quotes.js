@@ -1,51 +1,47 @@
 class Quotes {
   constructor() {
-    // 1. 조작, 이벤트 위임
+    // 클릭에 맞는 박스 보여주기
     this.$opers = document.querySelector('.quotes-opers');
     this.$opers.onclick = this.operation.bind(this);
-    // 클릭에 맞는 박스 보여주기
-    this.$boxes = Array.from(document.querySelectorAll('.quotes-box'));
     this._type = null;
-    // 2. 박스의 내용 클릭할때
+    this.$boxes = Array.from(document.querySelectorAll('.quotes-box'));
+    // 박스의 내용 클릭할때
     this.$contents = Array.from(document.querySelectorAll('.quotes-box-contents'));
     this.clickContents = this.clickContents.bind(this);
     this.$contents.forEach(con => {
       con.addEventListener('click', this.clickContents);
-    })
-    // 2. 혹은 input을 입력할때
-    this.$inputForm = document.querySelector('.quotes-form.input');
-    this.input = this.input.bind(this);
-    this.$inputForm.addEventListener('submit', this.input);
-    // 3. 꾸미기
-    // 비율 조작
+    });
+    // 1 : 1인지, 3 : 4인지,
     this.$imgBox = document.querySelector('.quotes-img-box');
-    // this.$img = document.querySelector('.quotes-img');
-    this.$inputs = document.querySelector('.quotes-img-inputs');
+    // 글자 색상
     this.$quotes = document.querySelector('.quotes-img-inputs-quotes');
     this.$from = document.querySelector('.quotes-img-inputs-from');
+    // 글자 폰트
+    this.$inputs = document.querySelector('.quotes-img-inputs');
+    // 제출 시
+    this.$inputForm = document.querySelector('.quotes-form.input');
+    this.$inputForm.onsubmit = this.input.bind(this);
     // 기본 이미지 선택 시
     this.$basicForm = document.querySelector('.quotes-form.basic');
-    this.basic = this.basic.bind(this);
-    this.$basicForm.addEventListener('change', this.basic);
+    this.$basicForm.onchange = this.basic.bind(this);
     // 직접 이미지 올릴때
     this.$userForm = document.querySelector('.quotes-form.user-img');
-    this.myImg = this.myImg.bind(this);
-    this.$userForm.addEventListener('change', this.myImg);
-    // 4. 엑스 버튼 클릭 시 기본 상자 보여주기
+    this.$userForm.onchange = this.myImg.bind(this);
+    // 취소 버튼 클릭 시 기본 상자 보여주기
     this.$cancelBtns = Array.from(document.querySelectorAll('.quotes-box-cancel'));
     this.cancel = this.cancel.bind(this);
     this.$cancelBtns.forEach(btn => {
       btn.addEventListener('click', this.cancel);
     });
-    // 5. 다운로드
+    this.$noneBox = document.querySelector('.quotes-box.none');
+    // 이미지 다운로드
     this.$download = document.querySelector('.quotes-download');
     this.$download.onclick = this.download.bind(this);
     this.$output = null;
     this.$link = document.getElementById('capture');
-    this.$quotesSection = document.getElementById('quotes');
-    this._userId = this.$quotesSection.dataset.userId;
-    // 기본 박스
-    this.$noneBox = document.querySelector('.quotes-box.none');
+    // 리셋
+    this.$reset = document.querySelector('.quotes-reset');
+    this.$reset.onclick = this.reset.bind(this);
     // 클라우드
     this.$cloud = document.querySelector('.quotes-other.cloud');
     this.$cloudText = this.$cloud.querySelector('.quotes-other-text');
@@ -107,16 +103,13 @@ class Quotes {
       "- Mary Wortley Montagu -"
     ];
   }
-  // 1. 조작
-  // 클릭한 type에 맞는 폼 보여주기
+  // 버튼에 맞는 폼 보여주기
   operation(e) {
     const target = e.target.closest('.quotes-oper-box');
     if(!target) return;
-    const type = target.dataset.type;
-    this._type = type;
+    this._type = target.dataset.type;
     this.changeBox(this._type);
   }
-  // 폼 변화 보여주기
   changeBox(type) {
     this.$boxes.forEach(box => {
       if(box.classList[1] === type) {
@@ -126,7 +119,6 @@ class Quotes {
       }
     })
   }
-  // 2. 박스의 내용 클릭할때
   clickContents(e) {
     const target = e.target.closest('.quotes-box-con');
     if(!target) return;
@@ -146,19 +138,6 @@ class Quotes {
         break;
     }
   }
-  // 2. 혹은 박스가 input 사항일때
-  input(e) {
-    e.preventDefault();
-    const target = e.currentTarget;
-    const quotes = target.quotes.value;
-    const from = target.from.value;
-    this.$quotes.textContent = quotes;
-    this.$from.textContent = from;
-    target.quotes.value = '';
-    target.from.value = '';
-  }
-  // 3. 꾸미기
-  // 비율 변화
   ratio(value) {
     if(value === '11') {
       this.$imgBox.style.aspectRatio = '1 / 1';
@@ -213,11 +192,20 @@ class Quotes {
       this.$from.style.letterSpacing = '-1.4px';
     } 
   }
+  // 이미지에 글자 입력되는 효과
+  input(e) {
+    e.preventDefault();
+    const target = e.currentTarget;
+    const quotes = target.quotes.value;
+    const from = target.from.value;
+    this.$quotes.textContent = quotes;
+    this.$from.textContent = from;
+    target.quotes.value = '';
+    target.from.value = '';
+  }
   basic(e) {
     const value = e.target.value;
     this.$imgBox.style.backgroundImage = `url("/img/quotes/${value}.jpeg")`;
-    this.$quotes.textContent = '';
-    this.$from.textContent = '';
   }
   async myImg(e) {
     const target = e.currentTarget;
@@ -226,25 +214,39 @@ class Quotes {
     formData.append('image', file);
     const res = await axios.post('/quotes/img', formData);
     this.$imgBox.style.backgroundImage = `url(${res.data.url})`;
-    this.$quotes.textContent = '';
-    this.$from.textContent = '';
   }
-  // 4. 엑스 버튼 클릭 시 기본 상자 보여주기
   cancel(e) {
     const box = e.target.closest('.quotes-box');
     box.hidden = true;
     this.$noneBox.hidden = false;
   }
-  // 5. 다운로드
+  reset() {
+    // 텍스트 리셋
+    this.$quotes.textContent = '';
+    this.$from.textContent = '';
+    // 이미지 리셋
+    this.$imgBox.style.backgroundImage = `url("/img/quotes/one.jpeg")`;
+    // 글자 사이즈 리셋
+    this.$quotes.style.fontSize = '';
+    this.$from.style.fontSize = '';
+    this.$quotes.style.letterSpacing = '';
+    this.$from.style.letterSpacing = '';
+    // 폰트 리셋
+    this.$inputs.style.fontFamily = '';
+    // 글자 색상 리셋
+    this.$quotes.style.color = '';
+    this.$from.style.color = '';
+    // 비율 리셋
+    this.$imgBox.style.aspectRatio = '1 / 1';
+  }
   async download() {
-    this.$output = document.querySelector('.quotes-img-box');
-    html2canvas(this.$output, { scale: 1 })
+    html2canvas(this.$imgBox, { scale: 1 })
       .then((canvas) => {
         const img = canvas.toDataURL();
         this.$link.href = img;
         this.$link.download = 'capture.png'; 
         this.$link.click();
-      })
+      });
   }
   // 클라우드
   cloud(e) {

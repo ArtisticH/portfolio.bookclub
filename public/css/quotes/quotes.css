@@ -55,7 +55,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
+  padding: 20px 0 40px 0;
 }
 
 .quotes-preview {
@@ -140,6 +140,30 @@ body {
   border: 1px solid #ccc9c0;
   color: white;
   margin-right: 5px;
+  cursor: pointer;
+}
+
+.quotes-btns {
+  display: block;
+  width: var(--width);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.quotes-download,
+.quotes-reset {
+  width: fit-content;
+  font-family: var(--font-vt323);
+  font-size: 1.2rem;
+  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
+  height: 30px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #efefef;
   cursor: pointer;
 }
 
@@ -450,21 +474,6 @@ input::placeholder {
   transform: rotate3d(0, 1, 0, 180deg);
 }
 
-.quotes-download {
-  width: fit-content;
-  font-family: var(--font-vt323);
-  font-size: 1.2rem;
-  box-shadow: 1px 1px 1px 1px #503b46, -0.5px -0.5px 1px 1px white;
-  height: 30px;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #efefef;
-  cursor: pointer;
-  margin: 20px auto 0 auto;
-}
-
 @media all and (min-width: 800px) {
   #quotes {
     height: 100vh;
@@ -475,6 +484,7 @@ input::placeholder {
     flex-direction: row;
     align-items: stretch;
     justify-content: center;
+    padding: 20px 0;
   }
 
   .quotes-main-left {
@@ -504,15 +514,6 @@ input::placeholder {
     top: 50%;
     transform: translateY(-50%);
   }  
-
-  .quotes-download {
-    margin-top: 0;
-    /* .quotes-main-right */
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: calc(var(--width) + 20px);
-  }
   
   .quotes-other {
     display: block;

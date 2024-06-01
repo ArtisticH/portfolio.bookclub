@@ -141,8 +141,10 @@ class Quotes {
   ratio(value) {
     if(value === '11') {
       this.$imgBox.style.aspectRatio = '1 / 1';
+      this.$imgBox.style.width = '';
     } else if(value === '34') {
       this.$imgBox.style.aspectRatio = '3 / 4';
+      this.$imgBox.style.width = 'auto';
     }
   }
   color(value) {
@@ -238,6 +240,7 @@ class Quotes {
     this.$from.style.color = '';
     // 비율 리셋
     this.$imgBox.style.aspectRatio = '1 / 1';
+    this.$imgBox.style.width = '';
   }
   async download() {
     html2canvas(this.$imgBox, { scale: 1 })

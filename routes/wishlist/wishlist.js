@@ -14,14 +14,17 @@ router.get('/:memberid', async (req, res) => {
     const id = req.params.memberid;
     const member = await Member.findOne({
       where: { id },
-      attributes: ['id', 'nick'],
+      attributes: ['nick'],
     });
+    const nick = member.nick;
+    // 처음에 내려줄때 정렬법을 봐야 한다. 
     const sort = await Sort.findOne({
       where: { MemberId: id },
     })
     let results;
     // 맨처음에 아무것도 없으면 sort는 null
     if(!sort) {
+      // 아무것도 전에 지정하지 않았다면 그냥 기본값대로 내려주기
       results = await Folder.findAll({
         include: [{
           model: Member,
@@ -37,15 +40,13 @@ router.get('/:memberid', async (req, res) => {
         order: [[sort.sort, sort.order]],
       }); 
     }
-    const folders = [];
-    results.forEach(result => {
-      folders[folders.length] = {
+    const folders = results.map(result => {
+      return {
         id: result.id,
         title: result.title,
         count: result.count,
         public: result.public,
         createdAt: result.createdAt,
-        updatedAt: result.updatedAt,
       }
     });
     const done = await DoneFolder.findOne({
@@ -55,7 +56,7 @@ router.get('/:memberid', async (req, res) => {
     res.render('wishlist/wishlist', {
       folders,
       done,
-      member,
+      nick,
     });  
   } catch(err) {
     console.error(err);
@@ -96,20 +97,13 @@ router.patch('/folder', async (req, res) => {
   try {
     const id = req.body.id;
     const title = req.body.title;
+    // 이름 바꾼다. 
     await Folder.update({
       title,
     }, {
       where: { id },
     });
-    const result = await Folder.findOne({
-      where: { id },
-      attributes: ['title', 'updatedAt'],
-    });
-    const folder = {
-      title: result.title,
-      updatedAt: result.updatedAt,
-    };
-    res.json({ folder });  
+    res.json({});  
   } catch(err) {
     console.error(err);
   }
@@ -119,7 +113,7 @@ router.delete('/:folderid/:memberid', async (req, res) => {
   try {
     const id = req.params.folderid;
     const MemberId = req.params.memberid;
-    // 리스트 데이터에서 현재 멤버 + 현재 폴더 가진거 추려내기
+    // 리스트 데이터에서 이 유저의, 이 폴더에 속한 리스트 고르기
     const results = await List.findAll({
       include: [{
         model: Folder,
@@ -133,7 +127,8 @@ router.delete('/:folderid/:memberid', async (req, res) => {
     const ids = [];
     results.forEach(item => {
       ids[ids.length] = item.id;
-    })
+    });
+    // 폴더 삭제
     await Folder.destroy({
       where: { id },
     });
@@ -182,7 +177,7 @@ router.post('/sort', async (req, res) => {
       where: { MemberId },
     });
     if(!result) {
-      // 처음이라면 생성
+      // 이 유저가 저장한 내용이 없다면 생성
       await Sort.create({
         sort,
         order,
@@ -199,13 +194,22 @@ router.post('/sort', async (req, res) => {
     }
     // 분류 기준이 수정일이라면 새로 데이터베이스에서 내려줘야 한다.
     if(updated) {
-      const folders = await Folder.findAll({
+      const items = await Folder.findAll({
         include: [{
           model: Member,
           where: { id: MemberId },
         }],
         order: [[sort, order]],
       }); 
+      const folders = items.map(item => {
+        return {
+          id: item.id,
+          title: item.title,
+          count: item.count,
+          public: item.public,
+          createdAt: item.createdAt,
+        }
+      });
       res.json({ folders });  
     } else {
       res.json({}); 

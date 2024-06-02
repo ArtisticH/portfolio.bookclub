@@ -284,18 +284,18 @@ class Wishlist {
     }
   }
   cancelAdd() {
-    this.$add.hidden = true;
     this.$addInput.value = '';
     this.$addLength.textContent = 0;
     const radios = document.getElementsByName('isPublic');
     for(let radio of radios) {
       radio.checked = false;
     }
+    this.$add.hidden = true;
   }
   cancelName() {
-    this.$name.hidden = true;
     this.$nameInput.value = '';
     this.$nameLength.textContent = 0;  
+    this.$name.hidden = true;
   }
   // 폴더 새롭게 생성
   async submitAdd(e) {
@@ -343,7 +343,7 @@ class Wishlist {
     this.$done.dataset.public = obj.public;
     this.$done.querySelector('.folder-count').textContent = obj.count;
     // 나중에 삭제할때 empty를 보일 것인가 말 것인가를 결정
-    this._doneCount = obj.count;
+    this._doneCount = +obj.count;
   }
   folderDOM(c, obj) {
     c.className = `folder`;
@@ -359,7 +359,7 @@ class Wishlist {
   // 폴더 이름 변경
   name() {
     this.$name.hidden = false;
-    // 원래 이름 표기해주기
+    // 원래 이름을 그대로 일단 보여주기
     const oldTitle = this.$current.querySelector('.folder-title').textContent;
     this.$name.querySelector('.change-input').value = oldTitle;
     this.$name.querySelector('.change-length').textContent = oldTitle.length;
@@ -367,71 +367,83 @@ class Wishlist {
   }
   async submitName(e) {
     e.preventDefault();
+    // 만약 다시 이름을 지우거나 쓰면서 아무것도 입력하지 않았을 때를 위해서
     if(!this._nameCheck) {
       alert('폴더명을 입력하세요');
       return;
     }
+    // 이 폴더의 아이디와 새로 바뀐 이름을 서버에 보내 바꾼다.
     const id = this.$current.dataset.folderId;
     const title = e.target.title.value;
-    const res = await axios.patch('/wishlist/folder', {
+    await axios.patch('/wishlist/folder', {
       id,
       title,
     });
     this.cancelName();
-    const folder = res.data.folder;
-    this.$current.querySelector('.folder-title').textContent = folder.title;
+    // 이름 변경
+    this.$current.querySelector('.folder-title').textContent = title;
   }
   // 삭제
   async delete() {
     const answer = confirm('폴더 내 모든 독서 리스트가 삭제됩니다. 그래도 폴더를 삭제하시겠습니까?');
     if(!answer) return;
     const id = this.$current.dataset.folderId;
+    // 현재 이 유저의 이 폴더를 삭제
     await axios.delete(`/wishlist/${id}/${this._memberId}`);
+    // 폴더 갯수 줄이고, 실제 요소 삭제하고, 
     this._totalFolder--;
     this.$current.remove();
     this.$current = null;
+    // 만약 다 삭제하고 읽은 것들도 리스트가 0이라면 empty보여준다.
     this.isZero();
   }
   isZero() {
     if(this._totalFolder === 0 && this._doneCount === 0) {
       this.$done.hidden = true;
+      // wishlist grid =>  wishlist로
       this.$area.classList.remove('grid');
       this.$empty.hidden = false;
     }
   }
   // 공개 / 비공개 전환
   async public() {
+    // 현재 상태
     const current = this.$current.dataset.public === 'true' ? '공개' : '비공개';
+    // !현재
     const change = current === '공개' ? '비공개' : '공개';
     const answer = confirm(`현재 ${current}상태입니다. ${change}상태로 바꾸시겠습니까?`);
     if(!answer) return;
+    // 바꾼다면,
     const isPublic = change === '비공개' ? false : true;
-    // done폴더일때와 아닐때 구분
+    // done폴더일때와 아닐때에 따라 id값을 다르게 지정한다. 
     if(this.checkDone()) {
       const MemberId = this._memberId;
-      const res = await axios.patch('/wishlist/public', {
+      // done이라면 DoneFolder에서 변경
+      await axios.patch('/wishlist/public', {
         id: MemberId,
         public: isPublic,
         done: true,
       }); 
     } else {
+      // 일반 폴더라면 Folder에서 변경
       const FolderId = this.$current.dataset.folderId;
-      const res = await axios.patch('/wishlist/public', {
+      await axios.patch('/wishlist/public', {
         id: FolderId,
         public: isPublic,
         done: false,
       });  
     }
+    // dataset이 바뀌면 css에 따라 색상에도 변화가 있음.
     this.$current.dataset.public = isPublic;
   }
   // 폴더 정렬 - 이름순
   async sortName() {
     // done, clone 걸러내기
-    let $folders = document.querySelectorAll('.folder');
-    $folders = [...$folders].filter(item => item.classList.length === 1);
+    // done은 그냥 항상 맨 뒤에 있다. 
+    const $folders = [...document.querySelectorAll('.folder')].filter(item => item.classList.length === 1);
     const names = [];
-    // [이름, 원래 인덱스]
-    [...$folders].forEach((item, index) => {
+    // names = [이름, 원래 인덱스]
+    $folders.forEach((item, index) => {
       names[names.length] = [
         item.querySelector('.folder-title').textContent,
         index
@@ -441,8 +453,10 @@ class Wishlist {
     names.sort();
     const newFolders = [];
     // 인덱스에 따라 노드들을 배치
+    // 만약에 첫 요소가 ["이름", 3]이면 원래 $folders에서 3번째 인덱스인 요소를 가장 앞에 배치
+    // 이렇게 하면 이름 순으로 요소가 재배열된다. 
     names.forEach(name => {
-      newFolders[newFolders.length] = [...$folders][name[1]]
+      newFolders[newFolders.length] = $folders[name[1]];
     });
     // 원래꺼 삭제
     [...$folders].forEach((fol) => {
@@ -452,6 +466,11 @@ class Wishlist {
     newFolders.forEach(item => {
       this.$done.before(item);
     });
+    // 그리고 새로고침해도 항상 이 유저의 이 정렬법을 고수하기 위해
+    // 데이터베이스에 현재 정렬 규칙을 저장한다. 
+    // 현재는 이름 순 + 오름차순(ASC)로 정했다. 
+    // updated는 특수한 경우라 따로 구분을 해줘야 하고, 
+    // 이렇게 하면 처음에 /wishlist/1처럼 폴더들을 보여줄때 이 sort의 내용대로 보여준다.
     await axios.post('/wishlist/sort', { 
       sort: 'title', 
       MemberId: this._memberId,
@@ -460,11 +479,11 @@ class Wishlist {
     });
   }
   // 생성일 - 오름차순으로
+  // 가장 오래전에 생성 - 가장 최근에 생성 순으로..
   async sortCreatedAt() {
-    let $folders = document.querySelectorAll('.folder');
-    $folders = [...$folders].filter(item => item.classList.length === 1);
+    const $folders = [...document.querySelectorAll('.folder')].filter(item => item.classList.length === 1);
     const createdAt = [];
-    [...$folders].forEach((item, index) => {
+    $folders.forEach((item, index) => {
       createdAt[createdAt.length] = [
         item.dataset.createdat,
         index
@@ -477,19 +496,23 @@ class Wishlist {
       const d2 = new Date(date2);
       // getTime() 메서드를 사용하여 날짜를 밀리초 단위의 숫자로 변환한 후 비교
       if (d1.getTime() < d2.getTime()) {
+        // (a, b)중 a - b 순서대로
         return -1;
       } else if (d1.getTime() > d2.getTime()) {
+        // (a, b)중 b - a 순서대로
         return 1;
       } else {
+        // 그대로
         return 0;
       }
     }
+    // 이름순으로 정렬과 같은 과정
     createdAt.sort(compareDates);
     const newFolders = [];
     createdAt.forEach(date => {
-      newFolders[newFolders.length] = [...$folders][date[1]];
+      newFolders[newFolders.length] = $folders[date[1]];
     });
-    [...$folders].forEach((fol) => {
+    $folders.forEach((fol) => {
       fol.remove();
     });
     newFolders.forEach(item => {
@@ -503,11 +526,15 @@ class Wishlist {
     });
   }
   // 수정일 - 내림차순
-  // 수정일은 기존의 것을 활용하는게아니라
+  // 가장 최근에 수정 - 가장 오래전에 수정... 순으로
   // 기존 것 없애고 새로 서버에서 받은 데이터로 채우기
+  // 이름변경, 공개/비공개 변경시 수정됌
+  // 위에서 변경때마다 데이터베이스에서 변경일을 다시 뽑아 클라이언트에서 수정하지 말고
+  // 그냥 정렬을 클릭하면 한번에 받는게 효율적?
+  // 뭐땜에 오류나서 이렇게 하는 방식이 낫다는 걸 알았는데
+  // 뭐땜에 오류났는지 기억이 안나...
   async sortUpdatedAt() {
-    let $folders = document.querySelectorAll('.folder');
-    $folders = [...$folders].filter(item => item.classList.length === 1);
+    const $folders = [...document.querySelectorAll('.folder')].filter(item => item.classList.length === 1);
     const res = await axios.post('/wishlist/sort', { 
       sort: 'updatedAt', 
       MemberId: this._memberId,
@@ -515,7 +542,7 @@ class Wishlist {
       updated: true,
     });
     const folders = res.data.folders;
-    [...$folders].forEach((fol) => {
+    $folders.forEach((fol) => {
       fol.remove();
     });
     folders.forEach(folder => {

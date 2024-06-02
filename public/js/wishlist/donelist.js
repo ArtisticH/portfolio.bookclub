@@ -173,7 +173,7 @@ class DoneList {
     alert('해제했습니다.');
     this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }  
-  async deleteRearrange(ids) {
+  async afterDoneDelete(ids) {
     // 삭제, 이동 시 대처
     if(this._totalList <= 15) {
       // 15개 이하면 그냥 삭제만

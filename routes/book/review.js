@@ -36,7 +36,6 @@ router.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-
 // 리뷰 새로 등록
 // 📍 클라이언트에서 쿠키 시간을 넘어 전송할때
 // 여기서 req.authenticated로 걸러내기
@@ -298,9 +297,8 @@ router.get('/page/:bookid/:page', async (req, res) => {
       limit: 5,
       order: [['id', 'DESC']],
     });
-    const reviews = [];
-    results.forEach(item => {
-      reviews[reviews.length] = {
+    const reviews =  results.map(item => {
+      return {
         id: item.id,
         title: item.title,
         text: overText(item.overText, item.text),

@@ -407,12 +407,13 @@ class Book {
   pagenation(e) {
     const target = e.target;
     if(target.className === 'page-number') {
+      // 넘버 클릭시에는 방향 설정해야돼
       this.direction(target);
       this.number(target);
     } else if(target === this.$after) {
-      this.after(target);
+      this.after();
     } else if(target === this.$before) {
-      this.before(target);
+      this.before();
     } else if(target === this.$last) {
       this.last();
     } else if(target === this.$first) {
@@ -420,7 +421,9 @@ class Book {
     }
   }
   direction(target) {
+    // 현재 페이지 넘버
     this._ex = +this.$current.textContent;
+    // 내가 클릭한 페이지 넘버
     this._cur = +target.textContent;
     this._direction = this._ex < this._cur ? 'right' : 'left';
   }
@@ -430,20 +433,38 @@ class Book {
     } else if(this._direction === 'left') {
       this.left(target);
     }
+    // 페이지 번호에 맞는 리뷰 가져와
     this.getReviews();
   }
   // 페이지 넘버를 재배열하고
   // 현재 강조 요소 결정
   right(target) {
+    // 현재 페이지 넘버 강조 제거하고
     this.$ex = this.$current;
     this.$ex.classList.remove('clicked');
     if(this._cur >= 4 && this._cur <= this._lastPage - 2) {
       // 4이상 클릭하고, (마지막 페이지 - 2)보다 같거나 작은 경우
       // 센터에 위치
+      // 예를 들어 마지막 페이지가 6이고 나는 4를 클릭했어.
+      // 그럼 2, 3, 4, 5, 6이런식으로..
       this.middle(this._cur);
       // 가운데 강조
       this.$current = [...this.$number][2];
+    } else if(this._cur >= 4 && this._cur === this._lastPage) {
+      // 마지막 페이지를 클릭했을떄
+      this.middle(this._lastPage - 2);
+      this.$current = [...this.$number][4];
+    } else if(this._cur >= 4 && this._cur === this._lastPage - 1) {
+      // 예를 들어 1, 2, 3, 4, 5 상태에서 마지막 페이지가 6이고 나는 5를 클릭했어.
+      // 그럼 2, 3, 4, 5, 6식으로 있어야돼
+      this.middle(this._lastPage - 2);
+      [...this.$number].forEach((item) => {
+        if(+item.textContent === this._cur) {
+          this.$current = item;
+        }
+      });  
     } else {
+      // 그게 아니면 그냥 강조만
       this.$current = target;
     }
     this.$current.classList.add('clicked');   
@@ -461,6 +482,19 @@ class Book {
     if(this._cur >= 3 && this._cur <= this._lastPage - 2) {
       this.middle(this._cur);
       this.$current = [...this.$number][2];
+    } else if(this._cur >= 4 && this._cur === this._lastPage) {
+      // 마지막 페이지를 클릭했을떄
+      this.middle(this._lastPage - 2);
+      this.$current = [...this.$number][4];
+    } else if(this._cur >= 4 && this._cur === this._lastPage - 1) {
+      // 예를 들어 1, 2, 3, 4, 5 상태에서 마지막 페이지가 6이고 나는 5를 클릭했어.
+      // 그럼 2, 3, 4, 5, 6식으로 있어야돼
+      this.middle(this._lastPage - 2);
+      [...this.$number].forEach((item) => {
+        if(+item.textContent === this._cur) {
+          this.$current = item;
+        }
+      });  
     } else {
       this.$current = target;
     }
@@ -476,28 +510,28 @@ class Book {
       this.$container.append(this.reviewDOM(this.$clone.cloneNode(true), item));
     });
   }
-  after(target) {
-    if(this.$current.textContent == this._lastPage) {
+  after() {
+    if(+this.$current.textContent === this._lastPage) {
       alert('마지막 페이지입니다');
       return;
     }
-    target = this.$current.nextElementSibling;
-    this._cur = +target.textContent;
+    const target = this.$current.nextElementSibling;
+    this._cur++;
     this.right(target);
     this.getReviews();
   }
-  before(target) {
-    if(this.$current.textContent == 1) {
+  before() {
+    if(+this.$current.textContent === 1) {
       alert('첫 페이지입니다');
       return;
     }
-    target = this.$current.previousElementSibling;
-    this._cur = +target.textContent;
+    const target = this.$current.previousElementSibling;
+    this._cur--;
     this.left(target);
     this.getReviews();
   }
   last() {
-    if(this.$current.textContent == this._lastPage) {
+    if(+this.$current.textContent === this._lastPage) {
       alert('마지막 페이지입니다');
       return;
     }
@@ -506,11 +540,11 @@ class Book {
     this.middle(this._lastPage - 2);
     this.$current = [...this.$number][4];
     this.$current.classList.add('clicked');   
-    this._cur = +this.$current.textContent;
+    this._cur = this._lastPage;
     this.getReviews();
   }
   first() {
-    if(this.$current.textContent == 1) {
+    if(+this.$current.textContent === 1) {
       alert('첫 페이지입니다');
       return;
     }
@@ -519,7 +553,7 @@ class Book {
     this.middle(3);
     this.$current = [...this.$number][0];
     this.$current.classList.add('clicked');   
-    this._cur = +this.$current.textContent;
+    this._cur = 1;
     this.getReviews();
   }  
   // 더보기 버튼
@@ -635,7 +669,6 @@ class Book {
       c.querySelector('.more-btn').hidden = false;
     }
   }
-  /* --------------------------------------------------------------------------------------------------------- */
   // 삭제
   async delete(e) {
     const box = e.target.closest('.rebox');

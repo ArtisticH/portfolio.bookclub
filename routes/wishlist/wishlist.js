@@ -61,7 +61,7 @@ router.get('/:memberid', async (req, res) => {
     console.error(err);
   }
 });
-// 폴더 생성
+// 폴더 새롭게 생성
 router.post('/folder', async (req, res) => {
   try {
     const MemberId = req.body.id;
@@ -78,7 +78,6 @@ router.post('/folder', async (req, res) => {
       count: result.count,
       public: result.public,
       createdAt: result.createdAt,
-      updatedAt: result.updatedAt,
     };
     const done = await DoneFolder.findOne({
       where: { MemberId },

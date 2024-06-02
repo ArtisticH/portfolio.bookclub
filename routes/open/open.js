@@ -24,7 +24,6 @@ const parseXMLToJSON = (xml) => {
       });
   });
 };
-
 // 국립중앙도서관 사서추천도서
 const natLists = [];
 router.get('/nat', async (req, res) => {

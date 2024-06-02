@@ -222,7 +222,7 @@ class API {
   async wishlist() {
     // 로그인 안 했으면 이용 불가
     if(!this.checkMe()) {
-      alert('권한이 없습니다.');
+      alert('로그인 후 이용하세요.');
       return;
     }
     // 클릭 된 애들만 골라

@@ -5,17 +5,19 @@ class Tournament {
     // 몇 라운드인지 클릭했는지
     this._round = +new URL(location.href).pathname.split('/')[3];
     this.$tournament = document.getElementById('tournament');
-    // 서버에서 보내온 배열
+    // 서버에서 보내온 배열, 0, 0, 0으로 초기화되어있음.
     this._original = JSON.parse(this.$tournament.dataset.original);
-    // 이미지 경로할때 필요, 오디오 경로할때 필요
-    // 이미지, 오디오의 이름은 main과 같게
+    // 이미지, 오디오 폴더 이름, 개인 이름은 main임
     this._model = this.$tournament.dataset.model;
-    // types에 따라 노래, sub 노출할지 안할지 결정
+    // types에 따라 오디오 결정
     this._types = this.$tournament.dataset.types;
+    // 랜덤으로 추출한 0부터 31까지의 숫자 배열
     this._random = null;
+    // _original[랜덤 추출한 숫자]가 되어 main, sub따로 담기
     this._main = [];
     this._sub = [];
-    // tem은 임시로, 현재 라운드에서 선택된 애들을 담아두고 다음 라운드 갈때 위의 아이들로 교체한다.
+    // tem은 임시로, 현재 라운드에서 선택된 애들을 담아두고
+    // 다음 라운드 진출 시 _main, _sub, _random의 값이 된다.
     this._temRandom = [];
     this._temMain = [];
     this._temSub = [];
@@ -36,31 +38,34 @@ class Tournament {
     this.$bottomPause = document.querySelector('.pause-btn.bot');
     this.$plays = Array.from(document.querySelectorAll('.play-btn'));
     this.$pauses = Array.from(document.querySelectorAll('.pause-btn'));
-    // 플레이 버튼 클릭 시 노래 재생
-    // 멈춤으로 바꾼다.
+    // 플레이 버튼 클릭 시 노래 재생하고 멈춤으로 바꾼다.
     this.play = this.play.bind(this);
     this.$plays && this.$plays.forEach(play => {
       play.addEventListener('click', this.play);
-    })
+    });
     // 멈춤 클릭 시 노래 중지하고, 플레이로 바꾸기
     this.pause = this.pause.bind(this);
     this.$pauses && this.$pauses.forEach(pause => {
       pause.addEventListener('click', this.pause);
-    })
+    });
     // 오디오 재생이 끝나면 처음으로 감고 play버튼으로 복귀
     this.ended = this.ended.bind(this);
     this.$audios && this.$audios.forEach(audio => {
       audio.addEventListener('ended', this.ended);
-    })
+    });
     // 클릭
     this.$boxes = Array.from(document.querySelectorAll('.tournament-img-box'));
     this.clickBox = this.clickBox.bind(this);
+    // A vs B 중에 선택
     this.$boxes.forEach(box => {
       box.addEventListener('click', this.clickBox);
     })
     // 토너먼트
+    // 현재 반복? 1 / 16에서 1
     this._currentIter = null;
+    // 전체 반복 갯수, 1 / 16에서 16
     this._totalIter = null;
+    // +2씩 증가
     this._index = null;
     this.$total = document.querySelector('.round-total');
     this.$current = document.querySelector('.round-current');
@@ -72,6 +77,21 @@ class Tournament {
     this.$finalSub = document.querySelector('.final-sub');
     // 이미지 다운로드
     this.$finalImgOpt = document.querySelector('.final-option.img');
+  }
+  init() {
+    // 라운드에 맞는 랜덤 숫자 배열 만들고
+    this._random = this.random(this._round);
+    // 랜덤 숫자를 인덱스로 해서 this._main, this._sub 배열 만든다.
+    this.filterOriginal();
+    // 처음에 뽑힌 애들 selected 올려준다.
+    this.selected(this._random);
+    // 첫 번째 토너먼트를 시작, 만약 32강이면 16번 도는걸 시작
+    this._index = 0;
+    this._currentIter = 1;
+    this._totalIter = this._round / 2; // 16
+    this.round(this._currentIter, this._totalIter); // 1 / 16 대입
+    // 처음에 0과 1을 인덱스로 요소들 보여주기
+    this.tournament(this._index);
   }
   // 0에서 31의 수 중에서 몇개(라운드)만큼 랜덤으로 뽑기
   // 예를 들어 [4, 17, 25, 30, ...]
@@ -262,21 +282,6 @@ class Tournament {
     // 노래 재생되는거있으면 다 멈추기
     this.topPause();
     this.bottomPause();
-  }
-  init() {
-    // 라운드에 맞는 랜덤 숫자 배열 만들고
-    this._random = this.random(this._round);
-    // 랜덤 숫자를 인덱스로 해서 this._main, this._sub 배열 만든다.
-    this.filterOriginal();
-    // 처음에 뽑힌 애들 selected 올려준다.
-    this.selected(this._random);
-    // 첫 번째 토너먼트를 시작, 만약 32강이면 16번 도는걸 시작
-    this._index = 0;
-    this._currentIter = 1;
-    this._totalIter = this._round / 2; // 16
-    this.round(this._currentIter, this._totalIter); // 1 / 16 대입
-    // 처음에 0과 1을 인덱스로 요소들 보여주기
-    this.tournament(this._index);
   }
 }
 

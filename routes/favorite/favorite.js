@@ -93,7 +93,7 @@ router.get('/ranking/:id', async (req, res) => {
     console.error(err);
   }
 });
-
+// 몇번카테고리/라운드
 router.get('/:id/:round', async (req, res) => {
   try {
     const id = req.params.id;
@@ -101,6 +101,7 @@ router.get('/:id/:round', async (req, res) => {
       where: { id },
       attributes: ['modelName', 'title', 'types', 'explanation'],
     });
+    // 이미지, 오디오 폴더 이름으로 쓰임
     const modelName = model.modelName;
     let results;
     if(modelName === 'TS') {
@@ -119,6 +120,7 @@ router.get('/:id/:round', async (req, res) => {
       results = await KMC.findAll({});
     }
     // 처음에 보낼땐 0의 값을 보내
+    // 왜냐면 그래야 파이널 지나고 서버에서 합칠 수 있어
     const original = results.map(item => {
       return {
         id: item.id,
@@ -131,6 +133,7 @@ router.get('/:id/:round', async (req, res) => {
     });
     res.render('favorite/tournament', {
       original: JSON.stringify(original),
+      // 랭킹 클릭할때
       id,
       modelName,
       title: model.title,

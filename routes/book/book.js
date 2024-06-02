@@ -32,11 +32,12 @@ router.get('/:id', async (req, res) => {
     let sum = [...stars].reduce((acc, cur, index, arr) => {
       return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
     }, 0);
-    // 소수점 한 자릿수 만들기
+    // 소수점 한 자릿수로 만들기
     sum = Math.floor(sum * 10) / 10;
     // 위의 소수점숫자를 0, 0.5단위로 내리고, 그걸 배열로 만들기
+    // 만약 3.8이면 3.5로 만들고 [full, full, full, half, empty]처럼
     const { starArr, starSum } = star(sum);
-    // 그리고 최신 5개를 보내
+    // 그리고 최신 리뷰 5개를 보내
     const results = await Review.findAll({
       include: [{
         model: Book,
@@ -48,22 +49,23 @@ router.get('/:id', async (req, res) => {
       order: [['id', 'DESC']], 
       limit: 5,
     });
-    const reviews = [];
-    results.forEach(review => {
+
+    function forText(item) {
       const text = {};
-      // 리뷰 글이 200자를 넘으면 slice에 잘라 보내고
-      // 200자 미만이면 original만 보내기
-      if(review.text.length > 200) {
-        text.slice = review.text.slice(0, 200);
-        text.original = review.text;
+      if(item.length > 200) {
+        text.slice = item.slice(0, 200);
+        text.original = item;
       } else {
         text.slice = null;
-        text.original = review.text;
+        text.original = item;
       }
-      reviews[reviews.length] = {
+      return text;
+    }
+    const reviews = results.map(review => {
+      return {
         id: review.id,
         title: review.title,
-        text,
+        text: forText(review.text),
         like: review.like,
         overText: review.overText,
         stars: star(review.stars).starArr,

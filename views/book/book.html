@@ -96,6 +96,13 @@
               <div class="rebox__line"></div>
               <div class="rebox__delete rebox--common">삭제</div>  
             </div>
+            {% else %}
+            <div class="rebox__user" hidden>
+              <div class="rebox__line"></div>
+              <div class="rebox__edit rebox--common">수정</div>
+              <div class="rebox__line"></div>
+              <div class="rebox__delete rebox--common">삭제</div>  
+            </div>
             {% endif %}
           </div>
           <!-- slice가 null이라면 -->

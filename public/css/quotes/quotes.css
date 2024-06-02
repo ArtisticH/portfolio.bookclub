@@ -504,6 +504,7 @@ input::placeholder {
     /* .cloud-two, .quotes-box */
     position: relative;
     width: 50vw;
+    max-width: 720px;
   }
 
   .quotes-box {

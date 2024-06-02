@@ -4,7 +4,7 @@ const db = require('../../models');
 const { date, star } = require('../tools/tools');
 
 function overText(bool, realText) {
-  let text = [];
+  let text;
   if(bool) {
     // 글자 수가 많으면 우선 slice가 보여야 한다.
     text = {
@@ -21,9 +21,11 @@ function overText(bool, realText) {
 }
 
 function makeStar(stars) {
+  // 평균 구하고
   let sum = [...stars].reduce((acc, cur, index, arr) => {
     return index === arr.length - 1 ? (acc + cur.stars) / arr.length : (acc + cur.stars);
   }, 0);
+  // 소숫점 한 자리로 만들고
   sum = Math.floor(sum * 10) / 10;
   return star(sum);
 }
@@ -35,10 +37,13 @@ router.use((req, res, next) => {
   next();
 });
 
-// 리뷰 등록
+// 리뷰 새로 등록
+// 📍 클라이언트에서 쿠키 시간을 넘어 전송할때
+// 여기서 req.authenticated로 걸러내기
 router.post('/', async (req, res) => {
   try {
     const BookId = req.body.BookId;
+    const MemberId = req.body.MemberId;
     // 리뷰 등록
     const created = await Review.create({
       title: req.body.title,
@@ -46,12 +51,13 @@ router.post('/', async (req, res) => {
       overText: req.body.overText,
       stars: req.body.stars,
       BookId,
-      MemberId: req.body.MemberId,
+      MemberId,
     });
     // 방금 등록한 컨텐츠 가져오기
     const result = await Review.findOne({
       include: [{
         model: Book,
+        where: { id: BookId },
       }, {
         model: Member,
         attributes: ['id', 'type', 'nick'],
@@ -60,7 +66,7 @@ router.post('/', async (req, res) => {
       limit: 1,
       where: { id: created.id },
     });
-    // 등록 후 평점 업데이트
+    // 등록 후 이 책에 관련된 모든 평점 업데이트
     const stars = await Review.findAll({
       include: [{
         model: Book,
@@ -68,8 +74,8 @@ router.post('/', async (req, res) => {
       }],
       attributes: ['stars'],
     });
+    // 평점과 배열
     const { starArr, starSum } = makeStar(stars);
-
     const review = {
       id: result.id,
       title: result.title,
@@ -83,7 +89,6 @@ router.post('/', async (req, res) => {
       type: result.Member.type,
       nick: result.Member.nick,
     };
-
     res.json({
       review,
       starArr,

@@ -36,14 +36,19 @@ class Book {
     this.$textarea.addEventListener('input', this.countText);
     // 리뷰 DB에 등록
     this.OVERTEXT_LIMIT = 200;
+    // 전체 리뷰 보여주는 요소
     this.$totalReview = document.querySelector('.review-total');
+    // 리뷰들을 담는 요소
     this.$container = document.querySelector('.review-container');
+    // 현재 리뷰 갯수
     this._totalReview = +this.$totalReview.textContent;
+    // 마지막 페이지
     this._lastPage = (this._totalReview % 5) === 0 ? (this._totalReview / 5) : (Math.floor(this._totalReview / 5) + 1);
     this.stopSubmit = this.stopSubmit.bind(this);
     this.submit = this.submit.bind(this);
     // 등록, 삭제, 업데이트 시 평점 업데이트
     this.$starArr = document.querySelectorAll('.book-star');
+    // 책 전체 평점
     this.$starSum = document.querySelector('.book-numbers__current');    
     // 가장 처음에 넌적스로 서버에서 내림받은 데이터 사용
     // 이 친구를 계속 복사해서 리뷰 등록, 페이지네이션 시에 사용
@@ -63,9 +68,11 @@ class Book {
     // 일단 현재 페이지는 항상 1로
     this.$current = [...this.$number][0];
     this.$current.classList.add('clicked');
+    // 페이지가 감소하는지 증가하는지에 따라 왼쪽 오른쪽으로 구분
     this._direction = null;
-    // this._cur은 방향 알아볼때, 그리고 서버에 보낼때
+    // 현재 페이지
     this._cur = 1;
+    // 이전 페이지
     this._ex = null;
     // 더보기 버튼
     this.$moreBtns = document.querySelectorAll('.more-btn');
@@ -92,21 +99,19 @@ class Book {
       btn.addEventListener('click', this.delete);
     });
   }
+  // 리뷰 등록 버튼 누르기
   showForm(e) {
-    if(this._userId) {
-      // 로그인한 상태
-      // 리뷰 폼 등장
-      // 아래 세 가지가 모두 true여야 버튼이 활성화되는데,
-      // 폼을 처음 등록할때는 null로 초기화
-      this.flexForm();
-      this.resetCondition();
-      // 등록 버튼 비활성화, 버튼 눌러도 아무일도 안 일어남
-      this.stopSubmitBtn(); 
-    } else {
+    if(!this._userId) {
       alert('로그인 후 이용하세요.');
+      return;
     }
+    // 폼 등장
+    this.flexForm();
+    // 등록 버튼 비활성화, 버튼 눌러도 아무일도 안 일어남
+    this.stopSubmitBtn(); 
+    // 조건들 null로 초기화
+    this.resetCondition();
   }
-
   flexForm() {
     this.$form.style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -136,13 +141,14 @@ class Book {
     // 리뷰를 데이터베이스에 등록
     this.$form.onsubmit = this.submit;
   }  
-  /* --------------------------------------------------------------------------------------------------------- */
+  // 별점 선택
   clickStars(e) {
     const target = e.target.closest('.form__star');
     // 별이 아니면 나가
     if(!target) return;
     // 0, 1, 2, 3, 4 중 하나
     const rate = +target.dataset.star;
+    // 만약 세번째 별을 클릭하면, 첫번째, 두번째, 세번째 별에 색깔 칠해지는 효과
     [...this.$formStars.children].forEach((item, index) => {
       if(index <= rate) {
         item.style.opacity = '1';
@@ -151,9 +157,10 @@ class Book {
         item.style.opacity = '';
       }
     });
-    // 최종 선택 별점 1, 2, 3, 4, 5중 하나
     // 등록 버튼 활성화 조건 중 하나
+    // this._formStar에 선택한 별의 갯수 할당
     this._formStar = rate + 1;
+    // 등록 조건을 모두 갖췄는지 별선택, 제목입력, 텍스트 입력할때마다 확인
     this.check();
   }  
   // 텍스트 입력할때, 내용 입력할때, 별점 클릭할때마다 확인
@@ -164,13 +171,15 @@ class Book {
       this.stopSubmitBtn();
     }
   }
-  /* --------------------------------------------------------------------------------------------------------- */
+  // 리뷰 폼 사라지기
   disappearForm() {
     // 텍스트, 타이틀, 글자 수, 평점 다 초기화
     this.resetForm();
+    // 사라지기
     this.noneForm();
   }
   resetForm() {
+    // 별점 다 지우고
     [...this.$formStars.children].forEach((item) => {
       // opacity: 0.5로 
       item.style.opacity = '';
@@ -179,7 +188,6 @@ class Book {
     this.$textareaLength.textContent = 0;
     this.$textarea.value = '';
   }
-  /* --------------------------------------------------------------------------------------------------------- */
   // 몇 글자 입력했는지 보여주고, 등록 조건 변경 결정, 
   countText(e) {
     if(e.target.value.length > this.TEXTAREA_LIMIT) {
@@ -206,8 +214,8 @@ class Book {
     }
     this.check();
   }
-  /* --------------------------------------------------------------------------------------------------------- */
-  // 5. 리뷰 DB에 등록
+  // 리뷰 DB에 등록
+  // 조건이 다 갖춰졌을때 이 함수가 연결된다.
   async submit(e) {
     try {
       e.preventDefault();
@@ -229,8 +237,11 @@ class Book {
           BookId: this._bookId,
           MemberId: this._userId,
         }); 
-        const review = res.data.review;   
+        // 내가 작성한 리뷰
+        const review = res.data.review; 
+        // 방금 내가 작성한 리뷰로 업데이트된 전체 평점 배열
         const starArr = res.data.starArr;
+        // 방금 내가 작성한 리뷰로 업데이트된 전체 평점
         const starSum = res.data.starSum;
         // 맨 위에 책 전체 평점 업데이트
         this.star(starArr, starSum);    
@@ -246,9 +257,10 @@ class Book {
         } else {
           this.$container.prepend(this.reviewDOM(this.$clone.cloneNode(true), review));
           const length = [...this.$container.children].length;
+          // 가장 마지막 삭제
           [...this.$container.children][length - 1].remove();
         }
-        // 페이지 버튼 뭐 보여줄지
+        // 페이지 버튼, 페이지 넘버 뭐 보여줄지
         this.showPage();
       } else {
         // 몇번 리뷰를 수정해라
@@ -289,15 +301,13 @@ class Book {
     });
     c.querySelector('.rebox__type').textContent = obj.type;
     c.querySelector('.rebox__nickname').textContent = obj.nick;
-    c.querySelector('.rebox__nickname').href = `/member/${obj.MemberId}`;
+    c.querySelector('.rebox__nickname').href = `/members`;
     c.querySelector('.rebox__date').textContent = obj.createdAt;
     c.querySelector('.rebox__updatedDate').textContent = obj.updatedAt;
     // 유저의 아이디와 작성자의 아이디가 다르다면 수정/삭제 비활성화
     if(this._userId != obj.MemberId) {
       c.querySelector('.rebox__user').hidden = true;
     } 
-    c.querySelectorAll('.rebox__text')[0].hidden = false;
-    c.querySelectorAll('.rebox__text')[1].hidden = true;
     if(!obj.text.slice) {
       // original 보여준다.
       c.querySelectorAll('.rebox__text')[0].textContent = obj.text.original;
@@ -317,6 +327,8 @@ class Book {
     c.querySelector('.heart').onclick = this.heart;
     return c;
   }
+  // 0개 이상이면
+  // 페이지버튼 노출, 페이지넘버 노출, 리뷰 박스 담는 컨테이너 노출
   isZero() {
     if(this._totalReview > 0) {
       this.firstReview();
@@ -336,18 +348,24 @@ class Book {
     this.$numbers.hidden = true;
     this.$container.hidden = true;
   }
+  // 리뷰가 5개 이하면
+  // 숫자 1만 보여준다.
   underFive() {
     this.$after.hidden = true;
     this.$before.hidden = true;
     this.$last.hidden = true;
     this.$first.hidden = true;
   }
+  // 리뷰가 25개 이하면
+  // <, >와 숫자만 보여준다.
   under25() {
     this.$after.hidden = false;
     this.$before.hidden = false;
     this.$last.hidden = true;
     this.$first.hidden = true;
-}
+  }
+  // 25개 이하이면, 
+  // 1, 2, 3 혹은 1, 2, 3, 4혹은 1, 2, 3, 4, 5가 될지를 결정
   under25Page() {
     [...this.$number].forEach((item, index) => {
       if(index + 1 <= this._lastPage) {
@@ -358,12 +376,14 @@ class Book {
       }
     });
   }
+  // 숫자, <, <<, >, >> 다 노출
   over25() {
     this.$after.hidden = false;
     this.$before.hidden = false;
     this.$last.hidden = false;
     this.$first.hidden = false;
   }
+  // 그냥 무조건 1, 2, 3, 4, 5보여주기
   over25Page() {
     [...this.$number].forEach((item, index) => {
       item.hidden = false;
@@ -371,7 +391,7 @@ class Book {
     });  
   }
   showPage() {
-    this.isZero();
+    this.isZero(); // 0개냐 아니냐
     if(this._totalReview <= 5) {
       this.underFive();
       this.under25Page();
@@ -399,13 +419,11 @@ class Book {
       this.first();
     }
   }
-
   direction(target) {
     this._ex = +this.$current.textContent;
     this._cur = +target.textContent;
     this._direction = this._ex < this._cur ? 'right' : 'left';
   }
-
   number(target) {
     if(this._direction === 'right') {
       this.right(target);
@@ -419,36 +437,17 @@ class Book {
   right(target) {
     this.$ex = this.$current;
     this.$ex.classList.remove('clicked');
-    // if(this._lastPage <= 5) {
-    //   this.under25Page();
-    //   this.$current = target;
-    //   this.$current.classList.add('clicked');  
-    //   return;
-    // }
     if(this._cur >= 4 && this._cur <= this._lastPage - 2) {
       // 4이상 클릭하고, (마지막 페이지 - 2)보다 같거나 작은 경우
       // 센터에 위치
       this.middle(this._cur);
       // 가운데 강조
       this.$current = [...this.$number][2];
-    // } else if(this._cur > this._lastPage - 2 && this._cur <= this._lastPage) {
-    //   // (마지막 페이지 - 2)보다 크거나 마지막 페이지인 경우
-    //   // 예를 들어 마지막 페이지는 8, 현재 페이지는 4에서 6을 클릭한 경우 4 5 6 7 8을 보여줘야 한다.
-    //   const center = this._lastPage - 2;
-    //   this.middle(center);
-    //   // 가운데가 아닌 요소 강조
-    //   [...this.$number].forEach((item) => {
-    //     if(+item.textContent === this._cur) {
-    //       this.$current = item;
-    //     }
-    //   });
-    // } else {
     } else {
       this.$current = target;
     }
     this.$current.classList.add('clicked');   
   }
-
   middle(num) {
     const arr = [num - 2, num - 1, num, num + 1, num + 2];
     [...this.$number].forEach((item, index) => {
@@ -456,34 +455,17 @@ class Book {
       item.textContent = arr[index];
     });
   }
-
   left(target) {
     this.$ex = this.$current;
     this.$ex.classList.remove('clicked');
-    // if(this._lastPage <= 5) {
-    //   this.under25Page();
-    //   this.$current = target;
-    //   this.$current.classList.add('clicked');  
-    //   return;
-    // }
     if(this._cur >= 3 && this._cur <= this._lastPage - 2) {
       this.middle(this._cur);
       this.$current = [...this.$number][2];
-    // } else if(this._cur <= 3 && this._cur >= 1) {
-    //   const center = 3;
-    //   this.middle(center);
-    //   [...this.$number].forEach((item) => {
-    //     if(+item.textContent === this._cur) {
-    //       this.$current = item;
-    //     }
-    //   });
-    // } else {
     } else {
       this.$current = target;
     }
     this.$current.classList.add('clicked');   
   }
-
   async getReviews() {
     const res = await axios.get(`/review/page/${this._bookId}/${this._cur}`);
     const reviews = res.data.reviews;
@@ -494,7 +476,6 @@ class Book {
       this.$container.append(this.reviewDOM(this.$clone.cloneNode(true), item));
     });
   }
-
   after(target) {
     if(this.$current.textContent == this._lastPage) {
       alert('마지막 페이지입니다');
@@ -505,7 +486,6 @@ class Book {
     this.right(target);
     this.getReviews();
   }
-
   before(target) {
     if(this.$current.textContent == 1) {
       alert('첫 페이지입니다');
@@ -516,7 +496,6 @@ class Book {
     this.left(target);
     this.getReviews();
   }
-
   last() {
     if(this.$current.textContent == this._lastPage) {
       alert('마지막 페이지입니다');
@@ -530,7 +509,6 @@ class Book {
     this._cur = +this.$current.textContent;
     this.getReviews();
   }
-
   first() {
     if(this.$current.textContent == 1) {
       alert('첫 페이지입니다');

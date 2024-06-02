@@ -132,14 +132,14 @@ class Search {
   }
   resetAdd() {
     this.$add.querySelector('.add-input').value = '';
-    const radios = this.$add.getElementsByName('isPublic');
+    const radios = document.getElementsByName('isPublic');
     for (const radio of radios) {
       radio.checked = false;
     }
     this.$add.hidden = true;
   }
   resetFolder() {
-    const radios = this.$add.getElementsByName('folder');
+    const radios = document.getElementsByName('folder');
     for (const radio of radios) {
       radio.checked = false;
     }

@@ -7,7 +7,7 @@ class DoneList {
     this._totalDonelist = +this.$donelist.dataset.count;
     this._lastPage = this._totalDonelist % 15 === 0 ? this._totalDonelist / 15 : Math.floor(this._totalDonelist / 15) + 1;
     // 리스트 박스 클릭 시 색깔 변화
-    this.$listBoxes = document.querySelectorAll('.list-box');
+    this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
     this.clickBox = this.clickBox.bind(this);
     [...this.$listBoxes].forEach(box => {
       box.addEventListener('click', this.clickBox);
@@ -23,6 +23,7 @@ class DoneList {
     this._current = 1;
     this._target = null;
     this.$current = document.querySelector('.page-current');
+    this.$last = document.querySelector('.page-last');
     this.$pagenation = document.querySelector('.pagenation');
     this.$pagenation.onclick = this.pagenation.bind(this);
     this.$current.oninput = this.targetPage.bind(this);
@@ -41,7 +42,7 @@ class DoneList {
     imgBox.classList.toggle('clicked', !imgBox.classList.contains('clicked'));
   }
   clickedBoxes() {
-    return [...this.$listBoxes].filter(box => box.querySelector('.list-img-box').classList.contains('clicked'));
+    return [...this.$listBoxes].filter(box => box.querySelector('.donelist-img-box').classList.contains('clicked'));
   }
   clickBtn(e) {
     if(this.checkMe()) {
@@ -94,7 +95,7 @@ class DoneList {
       // 15개 초과인데, 현재 페이지가 마지막 페이지인 경우
       // 그냥 삭제
       // 근데 마지막 하나 남은 경우? 그럼 그 이전 페이지로 이동
-      this.$listBoxes = document.querySelectorAll('.list-box');
+      this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
       const length = [...this.$listBoxes].length;
       if(length === 0) {
         // 이전 페이지 보여주기
@@ -146,7 +147,7 @@ class DoneList {
     const text = '선택된 리스트들의 완독을 해제하시겠습니까?';
     if(!confirm(text)) {
       for(let target of targets) {
-        target.classList.remove('clicked');
+        target.querySelector('.donelist-img-box').classList.remove('clicked');
       }  
       return;
     } 
@@ -154,25 +155,23 @@ class DoneList {
     const ids = [];
     for(let target of targets) {
       ids[ids.length] = target.dataset.listId;
+      target.remove();
     }
     const res = await this.backRearrange(ids);
     const lists = !res ? undefined : res.data.lists;
-    for(let target of targets) {
-      target.remove();
-    }
     this._totalDonelist -= length;
     this.$totalDoneList.textContent = this._totalDonelist;
-    this._lastPage();
+    this.lastPage();
     if(this._totalDonelist === 0) {
       this.isZero();
-    }
+    } 
     if(lists) {
       lists.forEach(list => {
         this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
       });  
     }
     alert('해제했습니다.');
-    this.$listBoxes = document.querySelectorAll('.list-box');
+    this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }  
   async deleteRearrange(ids) {
     // 삭제, 이동 시 대처
@@ -203,7 +202,7 @@ class DoneList {
       // 15개 초과인데, 현재 페이지가 마지막 페이지인 경우
       // 그냥 삭제
       // 근데 마지막 하나 남은 경우? 그럼 그 이전 페이지로 이동
-      this.$listBoxes = document.querySelectorAll('.list-box');
+      this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
       const length = [...this.$listBoxes].length;
       if(length === 0) {
         // 이전 페이지 보여주기
@@ -234,7 +233,7 @@ class DoneList {
     const text = '선택된 리스트들을 삭제하시겠습니까?';
     if(!confirm(text)) {
       for(let target of targets) {
-        target.classList.remove('clicked');
+        target.querySelector('.donelist-img-box').classList.remove('clicked');
       }  
       return;
     } 
@@ -242,25 +241,23 @@ class DoneList {
     const ids = [];
     for(let target of targets) {
       ids[ids.length] = target.dataset.listId;
+      target.remove();
     }
     const res = await this.deleteRearrange(ids);
     const lists = !res ? undefined : res.data.lists;
-    for(let target of targets) {
-      target.remove();
-    }
     this._totalDonelist -= length;
     this.$totalDoneList.textContent = this._totalDonelist;
-    this._lastPage();
+    this.lastPage();
     if(this._totalDonelist === 0) {
       this.isZero();
-    }
+    } 
     if(lists) {
       lists.forEach(list => {
         this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
       });  
     }
     alert('삭제했습니다.');
-    this.$listBoxes = document.querySelectorAll('.list-box');
+    this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }
   targetPage(e) {
     this._target = +e.target.value;
@@ -315,6 +312,7 @@ class DoneList {
     lists.forEach(list => {
       this.$listContents.append(this.listDOM(this.$clone.cloneNode(true), list));
     });
+    this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }
   async movePage() {
     if(this._current === this._target) {

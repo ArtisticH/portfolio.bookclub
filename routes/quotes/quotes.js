@@ -22,8 +22,12 @@ router.get('/', (req, res) => {
 });
 
 router.post('/img', upload.single('image'), (req, res) => {
-  const url = `/img/${req.file.filename}`;
-  res.json({ url });
+  try {
+    const url = `/img/${req.file.filename}`;
+    res.json({ url });  
+  } catch(err) {
+    console.error(err);
+  }
 });
 
 module.exports = router;

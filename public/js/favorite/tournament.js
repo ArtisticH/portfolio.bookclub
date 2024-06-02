@@ -213,12 +213,10 @@ class Tournament {
   // 클릭 시 bottom이면 index 1, 3, 5, ..등의 홀수 this._index + 1의 값
   clickBox(e) {
     const direction = e.currentTarget.dataset.dir;
-    // 클릭 된 정보 저장
-    // 일단 클릭 된 놈의 win++;
-    // 이런건 다 this._original에 저장, 이게 나중에 서버로 보내서 합칠 놈임.
     let index;
     if(direction === 'top') {
       // 만약 위쪽이면 현재 this._index
+      // index는 좌 vs 우 대결에서 이긴 랜덤 숫자임
       index = this._random[this._index];
     } else if(direction === 'bot') {
       // 아래면 this._index + 1
@@ -273,15 +271,15 @@ class Tournament {
     this.showFinal(index);
   }
   showFinal(index) {
+    // 노래 재생되는거있으면 다 멈추기
+    this.topPause();
+    this.bottomPause();    
     this.$final.hidden = false;
     this.$finalImg.src = `/img/${this._model}/${this._original[index].main}.jpeg`;
     this.$finalMain.textContent = this._original[index].main;
     this.$finalSub.textContent = this._original[index].sub;
     this.$finalImgOpt.href = `/img/${this._model}/${this._original[index].main}.jpeg`;
     this.$finalImgOpt.download = `${this._original[index].main}.jpeg`;
-    // 노래 재생되는거있으면 다 멈추기
-    this.topPause();
-    this.bottomPause();
   }
 }
 

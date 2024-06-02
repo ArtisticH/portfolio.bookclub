@@ -20,7 +20,7 @@ const upload = multer({
 router.get('/', (req, res) => {
   res.render('quotes/quotes');
 });
-
+// 이미지 직접 올릴때
 router.post('/img', upload.single('image'), (req, res) => {
   try {
     const url = `/img/${req.file.filename}`;

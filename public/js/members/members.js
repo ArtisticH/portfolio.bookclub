@@ -1,9 +1,10 @@
 
 class Member {
   constructor() {
-    // 멤버 클릭
     this.$members = document.getElementById('members');
+    // 지금까지 진행한 책 권수
     this._totalBooks = this.$members.dataset.bookTotal;
+    // 각 멤버들 이름 클릭할때
     this.$names = document.querySelector('.members-names');
     this.$name = document.querySelectorAll('.members-name');
     this.$names.onclick = this.names.bind(this);
@@ -23,8 +24,10 @@ class Member {
   }
   async names(e) {
     const target = e.target.closest('.members-name');
+    // 이 멤버 아이디
     this._memberId = target.dataset.id;
     if(!target) return;
+    // 이 멤버만 강조
     [...this.$name].forEach(item => {
       if(item == target) {
         target.classList.add('clicked');
@@ -37,6 +40,7 @@ class Member {
     const ids = res.data.ids;
     // 이 멤버가 참여한 미팅 횟수
     const attend = res.data.attend;
+    // 책의 아이디를 순회하면서 이 멤버가 추천한 책아이디 배열에 포함한다면 강조
     [...this.$books.children].forEach(item => {
       const id = +item.dataset.id;
       if(ids.includes(id)) {
@@ -52,16 +56,17 @@ class Member {
     this.$wishlist.style.backgroundColor = '#039753';
     this.$wishlist.style.cursor = 'pointer';
   }
-
+  // 미팅 참여 횟수 / 총 미팅 횟수
   attend(attend, total) {
     this.$attend.querySelector('.attend-num-count').textContent = attend;
     this.$attend.querySelector('.attend-num-total').textContent = total;
   }
+  // 책 추천 횟수 / 총 미팅 횟수
   recommend(rec, total) {
     this.$recommend.querySelector('.recommend-num-count').textContent = rec;
     this.$recommend.querySelector('.recommend-num-total').textContent = total;
   }
-
+  // 멤버 아이디 선택한 상태에서만 위시리스트 버튼 활성화된다.
   async wishlist() {
     if(!this._memberId) {
       return;

@@ -1,9 +1,10 @@
 class Quotes {
   constructor() {
-    // 클릭에 맞는 박스 보여주기
+    // 클릭에 맞는 박스 보여주기: 기본 이미지, 이미지 올리기, 폰트, 사이즈 등등..
     this.$opers = document.querySelector('.quotes-opers');
     this.$opers.onclick = this.operation.bind(this);
     this._type = null;
+    // 세부 사항 설정 박스들
     this.$boxes = Array.from(document.querySelectorAll('.quotes-box'));
     // 박스의 내용 클릭할때
     this.$contents = Array.from(document.querySelectorAll('.quotes-box-contents'));
@@ -16,7 +17,7 @@ class Quotes {
     // 글자 색상
     this.$quotes = document.querySelector('.quotes-img-inputs-quotes');
     this.$from = document.querySelector('.quotes-img-inputs-from');
-    // 글자 폰트
+    // 입력된 글자가 표기되는 이미지 위의 상자
     this.$inputs = document.querySelector('.quotes-img-inputs');
     // 제출 시
     this.$inputForm = document.querySelector('.quotes-form.input');
@@ -107,9 +108,12 @@ class Quotes {
   operation(e) {
     const target = e.target.closest('.quotes-oper-box');
     if(!target) return;
+    // 이미지, 폰트, 색상, 사이즈...
     this._type = target.dataset.type;
     this.changeBox(this._type);
   }
+  // quotes-box basic처럼.. 
+  // 한 가지만 보여주기
   changeBox(type) {
     this.$boxes.forEach(box => {
       if(box.classList[1] === type) {
@@ -119,6 +123,8 @@ class Quotes {
       }
     })
   }
+  // 옵션들을 클릭할때
+  // 예를 들어 this._type은 color, value는 black 아니면 white
   clickContents(e) {
     const target = e.target.closest('.quotes-box-con');
     if(!target) return;
@@ -198,15 +204,21 @@ class Quotes {
     const target = e.currentTarget;
     const quotes = target.quotes.value;
     const from = target.from.value;
+    if(quotes.length === 0 || from.length === 0) {
+      alert('모두 입력하세요.');
+      return;
+    }
     this.$quotes.textContent = quotes;
     this.$from.textContent = from;
     target.quotes.value = '';
     target.from.value = '';
   }
+  // 기본 이미지 선택 시
   basic(e) {
     const value = e.target.value;
     this.$imgBox.style.backgroundImage = `url("/img/quotes/${value}.jpeg")`;
   }
+  // 이미지 올릴때
   async myImg(e) {
     const target = e.currentTarget;
     const file = target.userimage.files[0];
@@ -215,11 +227,13 @@ class Quotes {
     const res = await axios.post('/quotes/img', formData);
     this.$imgBox.style.backgroundImage = `url(${res.data.url})`;
   }
+  // 취소 버튼 누르면 none 상태로 간다.
   cancel(e) {
     const box = e.target.closest('.quotes-box');
     box.hidden = true;
     this.$noneBox.hidden = false;
   }
+  // 리셋 버튼 클릭 시
   reset() {
     // 텍스트 리셋
     this.$quotes.textContent = '';
@@ -238,7 +252,27 @@ class Quotes {
     this.$from.style.color = '';
     // 비율 리셋
     this.$imgBox.style.aspectRatio = '1 / 1';
+    // 클라우드
+    [...this.$cloudBtns.children][0].hidden = false;
+    [...this.$cloudBtns.children][0].textContent = 'Yes';
+    [...this.$cloudBtns.children][1].textContent = 'No';  
+    this._cloud = 0;
+    this.$cloudText.textContent = this._cloudYes[this._cloud];
+    this.$cloudOne.style.display = 'none';
+    this.$cloudTwo.style.display = 'none';
+    this.$cloudThree.style.display = 'none';
+    // 캣
+    this.$catText.textContent = 'Are you a Cat person? 😾';
+    this.$catImg.style.display = '';
+    [...this.$catBtns.children][0].hidden = false;
+    [...this.$catBtns.children][0].textContent = 'Yes';
+    [...this.$catBtns.children][1].textContent = 'No';
+    // Reading Quotes
+    this._readingQuotes = 0;
+    this.$RQText.textContent = this._rqText[this._readingQuotes];
+    this.$RQFrom.textContent = this._rqTextFrom[this._readingQuotes];  
   }
+  // 내가 꾸민 이미지 다운로드
   async download() {
     html2canvas(this.$imgBox, { scale: 1 })
       .then((canvas) => {
@@ -248,10 +282,11 @@ class Quotes {
         this.$link.click();
       });
   }
-  // 클라우드
+  // 클라우드 버튼 클릭시
   cloud(e) {
     const target = e.target.closest('.quotes-other-btn');
     if(!target) return;
+    // Yes클릭했는지 No클릭했는지
     const answer = target.textContent;
     if(answer === 'Yes') {
       this._cloud++;
@@ -262,10 +297,12 @@ class Quotes {
         this.$cloudText.textContent = this._cloudYes[this._cloud];
       } else if(this._cloud === 4) {
         this.$cloudText.textContent = this._cloudYes[this._cloud];
+        // Reset하나만
         this.cloudNo(0);
       }
     } else if (answer === 'No') {
       this.$cloudText.textContent = this._cloudNo[this._cloud];
+      // 비포어와 리셋
       this.cloudNo(this._cloud);
     } else if (answer === 'Reset') {
       [...this.$cloudBtns.children][0].hidden = false;
@@ -290,6 +327,7 @@ class Quotes {
       }
     }
   }
+  // 구름 하나씩 추가
   addCloud(cloud) {
     switch(cloud) {
       case 1:
@@ -336,7 +374,6 @@ class Quotes {
       this.$RQFrom.textContent = this._rqTextFrom[this._readingQuotes];  
     } 
   }
-
   cat(e) {
     const target = e.target.closest('.quotes-other-btn');
     if(!target) return;
@@ -359,7 +396,6 @@ class Quotes {
       this.$catText.textContent = 'Are you a Cat person? 😾'
     }
   }
-
   readingQuotes(e) {
     const target = e.target.closest('.quotes-other-btn');
     if(!target) return;

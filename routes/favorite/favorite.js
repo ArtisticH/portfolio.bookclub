@@ -3,10 +3,9 @@ const { Favorite, TS, POP, KPOP, HFC, KFC, HMC, KMC } = require('../../models/fa
 const { sequelize } = require('../../models');
 
 function totalGame(arr) {
-  const finalWin = arr.map(item => {
-    return item.finalWin;
-  });
-  return Math.max(...finalWin);
+  return arr.reduce((arr, cur) => {
+    return arr + cur.finalWin;
+  }, 0);
 }
 function makeRanking(arr, modelName, total) {
   const lists = arr.map(item => {
@@ -49,6 +48,7 @@ router.get('/ranking/:id', async (req, res) => {
     switch(modelName) {
       case 'TS':
         items = await TS.findAll({});
+        // 총 게임 수 => finalWin들의 합
         total = totalGame(items);
         lists = makeRanking(items, modelName, total);
         break;

@@ -189,6 +189,10 @@ router.patch('/', async (req, res) => {
       stars: req.body.stars,
     }, {
       where: { id },
+      include: [{
+        model: Book,
+        where: { id: bookId },
+      }],
     });
     const stars = await Review.findAll({
       include: [{
@@ -198,7 +202,12 @@ router.patch('/', async (req, res) => {
       attributes: ['stars'],
     });
     const { starArr, starSum } = makeStar(stars);
+    // 업데이트된 친구
     const result = await Review.findOne({
+      include: [{
+        model: Book,
+        where: { id: bookId },
+      }],
       where: { id },
     });
     const review = {
@@ -224,6 +233,10 @@ router.delete('/:reviewid/:bookid', async (req, res) => {
     const bookId = req.params.bookid;
     await Review.destroy({
       where: { id },
+      include: [{
+        model: Book,
+        where: { id: bookId },
+      }],
     });
     const stars = await Review.findAll({
       include: [{

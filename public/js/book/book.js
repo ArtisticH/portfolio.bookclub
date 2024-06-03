@@ -255,13 +255,19 @@ class Book {
           // prepend: node 맨 앞에
           this.$container.prepend(this.reviewDOM(this.$clone.cloneNode(true), review));
         } else {
+          this.showPage();
+          // 내가 어느 곳에서 리뷰를 작성하든 1페이지로 돌아오게 한다. 
+          this._cur = 1;
+          this.$ex = this.$current;
+          this.$ex.classList.remove('clicked');
+          this.$current = [...this.$number][0];
+          this.$current.classList.add('clicked');   
+          this.getReviews();
           this.$container.prepend(this.reviewDOM(this.$clone.cloneNode(true), review));
           const length = [...this.$container.children].length;
           // 가장 마지막 삭제
           [...this.$container.children][length - 1].remove();
         }
-        // 페이지 버튼, 페이지 넘버 뭐 보여줄지
-        this.showPage();
       } else {
         // 몇번 리뷰를 수정해라
         const res = await axios.patch(`/review`, {
@@ -407,8 +413,7 @@ class Book {
   pagenation(e) {
     const target = e.target;
     if(target.className === 'page-number') {
-      // 넘버 클릭시에는 방향 설정해야돼
-      this.direction(target);
+      this._cur = +target.textContent;
       this.number(target);
     } else if(target === this.$after) {
       this.after();
@@ -420,43 +425,22 @@ class Book {
       this.first();
     }
   }
-  direction(target) {
-    // 현재 페이지 넘버
-    this._ex = +this.$current.textContent;
-    // 내가 클릭한 페이지 넘버
-    this._cur = +target.textContent;
-    this._direction = this._ex < this._cur ? 'right' : 'left';
-  }
-  number(target) {
-    if(this._direction === 'right') {
-      this.right(target);
-    } else if(this._direction === 'left') {
-      this.left(target);
-    }
-    // 페이지 번호에 맞는 리뷰 가져와
-    this.getReviews();
-  }
   // 페이지 넘버를 재배열하고
   // 현재 강조 요소 결정
-  right(target) {
+  number(target) {
     // 현재 페이지 넘버 강조 제거하고
     this.$ex = this.$current;
     this.$ex.classList.remove('clicked');
-    if(this._cur >= 4 && this._cur <= this._lastPage - 2) {
-      // 4이상 클릭하고, (마지막 페이지 - 2)보다 같거나 작은 경우
+    if(this._cur >= 3 && this._cur <= this._lastPage - 2) {
+      // 3이상 클릭하고, (마지막 페이지 - 2)보다 같거나 작은 경우
       // 센터에 위치
       // 예를 들어 마지막 페이지가 6이고 나는 4를 클릭했어.
       // 그럼 2, 3, 4, 5, 6이런식으로..
       this.middle(this._cur);
       // 가운데 강조
       this.$current = [...this.$number][2];
-    } else if(this._cur >= 4 && this._cur === this._lastPage) {
-      // 마지막 페이지를 클릭했을떄
-      this.middle(this._lastPage - 2);
-      this.$current = [...this.$number][4];
-    } else if(this._cur >= 4 && this._cur === this._lastPage - 1) {
-      // 예를 들어 1, 2, 3, 4, 5 상태에서 마지막 페이지가 6이고 나는 5를 클릭했어.
-      // 그럼 2, 3, 4, 5, 6식으로 있어야돼
+    } else if(this._cur === this._lastPage || this._cur === this._lastPage - 1) {
+      // 마지막 페이지나 마지막 페지 - 1을 클릭
       this.middle(this._lastPage - 2);
       [...this.$number].forEach((item) => {
         if(+item.textContent === this._cur) {
@@ -464,10 +448,12 @@ class Book {
         }
       });  
     } else {
-      // 그게 아니면 그냥 강조만
+      // 그 외
       this.$current = target;
     }
     this.$current.classList.add('clicked');   
+    // 페이지 가져오기
+    this.getReviews();
   }
   middle(num) {
     const arr = [num - 2, num - 1, num, num + 1, num + 2];
@@ -475,30 +461,6 @@ class Book {
       item.hidden = false;
       item.textContent = arr[index];
     });
-  }
-  left(target) {
-    this.$ex = this.$current;
-    this.$ex.classList.remove('clicked');
-    if(this._cur >= 3 && this._cur <= this._lastPage - 2) {
-      this.middle(this._cur);
-      this.$current = [...this.$number][2];
-    } else if(this._cur >= 4 && this._cur === this._lastPage) {
-      // 마지막 페이지를 클릭했을떄
-      this.middle(this._lastPage - 2);
-      this.$current = [...this.$number][4];
-    } else if(this._cur >= 4 && this._cur === this._lastPage - 1) {
-      // 예를 들어 1, 2, 3, 4, 5 상태에서 마지막 페이지가 6이고 나는 5를 클릭했어.
-      // 그럼 2, 3, 4, 5, 6식으로 있어야돼
-      this.middle(this._lastPage - 2);
-      [...this.$number].forEach((item) => {
-        if(+item.textContent === this._cur) {
-          this.$current = item;
-        }
-      });  
-    } else {
-      this.$current = target;
-    }
-    this.$current.classList.add('clicked');   
   }
   async getReviews() {
     const res = await axios.get(`/review/page/${this._bookId}/${this._cur}`);
@@ -517,7 +479,7 @@ class Book {
     }
     const target = this.$current.nextElementSibling;
     this._cur++;
-    this.right(target);
+    this.number(target);
     this.getReviews();
   }
   before() {
@@ -527,7 +489,7 @@ class Book {
     }
     const target = this.$current.previousElementSibling;
     this._cur--;
-    this.left(target);
+    this.number(target);
     this.getReviews();
   }
   last() {
@@ -589,6 +551,7 @@ class Book {
       return;
     }
     const $box = e.currentTarget.closest('.rebox');
+    // 리뷰 아이디
     const id = $box.dataset.reviewId;
     // 위로 올라가는 하트
     const $img = $box.querySelector('.heart-img');
@@ -669,53 +632,71 @@ class Book {
       c.querySelector('.more-btn').hidden = false;
     }
   }
+  /*
+  하나씩만 삭제가 되기 때문에
+  - 5개 이하: 1. 그냥 삭제만
+  - 5개 이상
+    - 마지막 페이지 아닌 경우: 2. 삭제+하나 메꾸기
+    - 마지막 페이지인 경우
+      - 다 삭제: 3. 앞 페이지로 이동
+      - 남은 경우: 4. 그냥 삭제
+  */
   // 삭제
   async delete(e) {
     const box = e.target.closest('.rebox');
     const reviewId = box.dataset.reviewId;
-    box.remove();
     // 삭제
+    box.remove();
     const res = await axios.delete(`/review/${reviewId}/${this._bookId}`);
     const starArr = res.data.starArr;
     const starSum = res.data.starSum;
+    // 삭제 후 평점 업데이트
     this.star(starArr, starSum);
     this.$totalReview.textContent = --this._totalReview;
+    // 마지막 페이지 다시 산정
     this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
-    // 삭제 후 리뷰가 5개 미만이면 추가하지 않고 삭제만 한다.
-    // 마지막 페이지에서 삭제 + 남은 게시글 하나 이상 => 삭제만
-    // 삭제 후 리뷰가 5개 이상이고, 현재 페이지와 마지막 페이지가 같지 않을때 => 하나만 아래에 추가
-    if(this._totalReview >= 5 && [...this.$container.children].length !== 0 && this._lastPage !== this._cur) {
+    if(this._totalReview === 0) {
+      this.zeroReview();
+      return;
+    } 
+    if(this._totalReview >= 5 && this._cur === this._lastPage) {
+      // 삭제 후 남은 리뷰들의 갯수
+      const length = [...this.$container.children].length;
+      if(length == 0) {
+        // 3. 앞 페이지로 이동
+        // 현재 페이지가 막 페이지가 되고 
+        this._cur = this._lastPage;
+        if(this._lastPage <= 5) {
+          // 마지막 페이지가 5이하이면
+          // 1, 2, 3, 혹은 1, 2, 3, 4 혹은 1, 2, 3, 4, 5 이런식으로..
+          this.under25Page();
+          this.$current = [...this.$number][this._lastPage - 1];
+        } else {
+          // 그 외는 가장 끝이 마지막 페이지일테고, 
+          const arr = [this._cur - 4, this._cur - 3, this._cur - 2, this._cur - 1, this._cur];
+          [...this.$number].forEach((item, index) => {
+            item.hidden = false;
+            item.textContent = arr[index];
+          });  
+          // 마지막
+          this.$current = [...this.$number][4];
+        }  
+        this.$ex.classList.remove('clicked');
+        this.$current.classList.add('clicked');   
+        this.getReviews();
+      }
+    } else if(this._totalReview >= 5 && this._cur !== this._lastPage) {
+      // 2. 삭제 + 메꾸기
       const res = await axios.get(`/review/delete/${this._bookId}/${this._cur}`);
       const review = res.data.review;   
       // 가장 마지막에 추가
       this.$container.append(this.reviewDOM(this.$clone.cloneNode(true), review));
     } 
-    if(this._lastPage === 0 && [...this.$container.children].length == 0) {
-      this._cur = 1;
-      this.$current = [...this.$number][0];
-    }
-    // 마지막 페이지의 마지막 게시글 삭제 
-    // => 페이지를 그 전 페이지로 전환하고, 그 전 페이지 가져오기
-    if(this._lastPage !== 0 && [...this.$container.children].length == 0) {
-      // 페이지가 1이 아닌 곳에서 마지막 게시글을 삭제한 경우
-      this._cur = this._lastPage;
-      if(this._lastPage <= 5) {
-        this.under25Page();
-        this.$current = [...this.$number][this._lastPage - 1];
-      } else {
-        const arr = [this._cur - 4, this._cur - 3, this._cur - 2, this._cur - 1, this._cur];
-        [...this.$number].forEach((item, index) => {
-          item.hidden = false;
-          item.textContent = arr[index];
-        });  
-        // 마지막
-        this.$current = [...this.$number][4];
-      }
-      this.$ex.classList.remove('clicked');
-      this.$current.classList.add('clicked');   
-      this.getReviews();
-    }
-    this.showPage();
+    if(this._totalReview <= 5) {
+      this.underFive();
+    } else if(this._totalReview > 5 && this._totalReview <= 25) {
+      this.under25();
+    } 
   }
 }
 

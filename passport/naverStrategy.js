@@ -23,7 +23,7 @@ module.exports = () => {
                  // 가입되지 않는 유저면 회원가입 시키고 로그인을 시킨다
                  const newUser = await Member.create({
                     email: profile.email,
-                    nick: profile.name,
+                    nick: profile.nickname,
                     snsId: profile.id,
                     provider: 'naver',
                  });

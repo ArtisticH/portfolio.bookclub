@@ -1,1 +1,134 @@
-바보
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOK CLUB</title>
+  <link rel="stylesheet" href="/css/index.css">
+  <script defer src="/js/index.js"></script>
+  <script defer src="/js/prefixfree.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+</head>
+<body>
+  <section id="index">
+    <div id="top">
+      <div class="top-left">
+        <a href="/" class="top-left__title">Book Club</a>
+        <!-- 로그인 or 회원가입 버튼 노출 -->
+        <!-- 이벤트 위임 -->
+        {% if not user %}
+        <div class="top-left__btns">
+          <div class="top-left__btn" data-form="login">LOG IN</div>
+          <div class="top-left__btn" data-form="signup">SIGN UP</div>
+        </div>
+        {% endif %}
+      </div>
+      {% if not user %}
+      <!-- 로그인 폼 -->
+      <div id="login" class="form-target">
+        <div id="cancel">
+          <div class="cancel">
+            <div class="cancel__left"></div>
+            <div class="cancel__right"></div>
+          </div>
+        </div>
+        <div class="form-target__center">
+          <div class="form-target__title">LOG IN</div>
+          <form class="login" method="post" action="/auth/login">
+            <input class="form__input input--common" name="email" type="email" placeholder="e-mail*">
+            <input class="form__input input--common" name="password" type="password" placeholder="password*">
+            <input class="form__input input--common form__input--button" type="submit" value="LOG IN">
+          </form>
+          <a href="/auth/kakao" class="kakao input--common">KAKAO</a>
+          <a href="/auth/naver" class="naver input--common">NAVER</a>    
+        </div>
+      </div> 
+      <!-- 회원가입 폼 -->
+      <div id="signup" class="form-target">
+        <div id="cancel">
+          <div class="cancel">
+            <div class="cancel__left"></div>
+            <div class="cancel__right"></div>
+          </div>
+        </div>
+        <div class="form-target__center">
+          <div class="form-target__title">SIGN UP</div>
+          <form class="signup" method="post" action="/auth/signup">
+            <input class="form__input input--common" type="email" name="email" placeholder="e-mail*">
+            <input class="form__input input--common" type="text" name="nick" placeholder="nickname*">
+            <input class="form__input input--common" type="password" name="password" placeholder="password*">
+            <input class="form__input input--common form__input--button" type="submit" value="SIGN UP">
+          </form>  
+        </div>
+      </div> 
+      {% endif %}  
+      <div class="top-right">
+        <div id="top-right__title">
+          <a href="/books" class="top-right__title">Books.</a>
+          <a href="/books" class="top-right__title top-right__title--italic">Books.</a>  
+        </div>
+        <div id="top-right__rest">
+          <a href="/books" class="top-right__arrow">
+            <img class="index-img" src="/img/index/arrow.png" alt="arrow">
+          </a>
+          <div class="top-right__rest">
+            <div id="top-right__number"><span class="top-right__number">1</span>&nbsp;/&nbsp;4</div>
+            <div class="top-right__scroll">Scroll</div>
+          </div>  
+        </div>
+      </div>
+    </div>
+    <div id="bottom">
+      <div class="bottom-left"></div>
+      <div class="bottom-right">
+        <div class="bottom__name">Seo Hanna</div>
+        <div class="bottom__name">Kim Jungkyung</div>
+        <div class="bottom__name">Kang Yerim</div>
+        <div class="bottom__name">Kim Hyuna</div>
+      </div>  
+    </div>
+    {% if user and user.id %}
+    <div id="user" data-user-id="{{user.id}}">
+      {% if user.type == 'MEMBER' %}
+      <a href="/member/{{user.id}}" class="user__nick">{{user.nick}}</a>
+      {% else %}
+      <div class="user__nick">{{user.nick}}</div>
+      {% endif %}
+      <div id="user__wishlist">
+        <div class="user__wishlist__text">CHECK YOUR WISHLIST</div>
+        <a href="/wishlist/{{user.id}}" class="user__wishlist">WISHLIST</a>   
+      </div>
+      <div id="user__logout">
+        <a href="/auth/logout" class="user__logout">LOGOUT</a>   
+      </div>
+    </div>
+    {% endif %} 
+  </section>
+  <section id="wishlist" hidden>
+    <div class="wishlist-nav">
+      <div class="wishlist-title">WISHLIST</div>
+      <div class="wishlist-cancel">
+        <div class="wishlist-cancel-left"></div>
+        <div class="wishlist-cancel-right"></div>
+      </div>
+    </div>
+    <form action="" class="wishlist">
+      <div class="wishlist-select">
+        {% for member in members %}
+        <div class="wishlist-box">
+          <input id="{{member.nick}}" class="radio-input" type="radio" name="wishlist" value="{{member.id}}">
+          <label for="{{member.nick}}" class="radio-label">{{member.nick}}</label>  
+        </div>
+        {% endfor %}   
+      </div>
+      <input type="submit" value="선택" class="wishlist-submit">
+    </form>
+  </section>
+</body>
+</html>

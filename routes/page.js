@@ -12,8 +12,9 @@ router.get('/', async (req, res) => {
   const members = await Member.findAll({
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],
-  })
-  res.render('index', { members });
+  });
+  // res.render('index', { members });
+  res.render(path.join(__dirname, 'views', 'index.html'), { members });
 });
 
 router.get('/books', async (req, res) => {

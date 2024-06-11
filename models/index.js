@@ -1,28 +1,31 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.js')[env];
+const config = require(__dirname + '/../config/config')[env];
 const { Book, Member, Attend, Review } = require('./main');
 const { Folder, List, DoneFolder, DoneList, Sort } = require('./wishlist');
 const { Favorite, TS, POP, KPOP, HFC, KFC, HMC, KMC } = require('./favorite');
 const Quote = require('./quotes');
 
 const db = {};
-const sequelize = new Sequelize(config.database, config.username, config.password, {
-  host: config.host,
-  port: process.env.DB_PORT,
-  dialect: 'mysql',
-  dialectOptions: {
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
-  }
-});
+// const sequelize = new Sequelize(config.database, config.username, config.password, {
+//   host: config.host,
+//   port: process.env.DB_PORT,
+//   dialect: 'mysql',
+//   dialectOptions: {
+//     socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+//   }
+// });
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+// sequelize.authenticate()
+//   .then(() => {
+//     console.log('Connection has been established successfully.');
+//   })
+//   .catch(err => {
+//     console.error('Unable to connect to the database:', err);
+//   });
+
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
 
 db.sequelize = sequelize;
 db.Book = Book;

@@ -1,6 +1,5 @@
 const express = require('express');
 const { Book, Member } = require('../models/main');
-const path = require('path');
 
 const router = express.Router();
 

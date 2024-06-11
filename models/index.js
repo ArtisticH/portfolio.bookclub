@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.js')[env];
 const { Book, Member, Attend, Review } = require('./main');
 const { Folder, List, DoneFolder, DoneList, Sort } = require('./wishlist');
 const { Favorite, TS, POP, KPOP, HFC, KFC, HMC, KMC } = require('./favorite');

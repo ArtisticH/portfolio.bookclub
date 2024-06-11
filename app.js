@@ -21,6 +21,7 @@ const openRouter = require('./routes/open/open');
 
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
+const logger = require('./logger');
 
 const app = express();
 passportConfig();
@@ -39,7 +40,11 @@ sequelize.sync({ force: false })
     console.error(err);
   });
 
-app.use(morgan('dev'));
+if(process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined'));
+} else {
+  app.use(morgan('dev'));
+}
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
@@ -73,6 +78,8 @@ app.use('/open', openRouter);
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다`);
   error.status = 404;
+  logger.info('hello');
+  logger.error(error.message);
   next(error);
 });
 

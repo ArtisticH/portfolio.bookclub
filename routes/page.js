@@ -13,8 +13,7 @@ router.get('/', async (req, res) => {
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],
   });
-  // res.render('index', { members });
-  res.render(path.join(__dirname, 'views', 'index.html'), { members });
+  res.render('index', { members });
 });
 
 router.get('/books', async (req, res) => {

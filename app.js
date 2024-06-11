@@ -6,14 +6,16 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const passport = require('passport');
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
+const { createClient } = require('redis');
+const RedisStore = require('connect-redis').default;
 
 dotenv.config();
-const redisClient = redis.createClient({
+const redisClient = createClient({
   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD,
-})
+});
+
+redisClient.connect().catch(console.error);
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth/auth');
 const bookRouter = require('./routes/book/book');

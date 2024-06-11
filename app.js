@@ -6,8 +6,14 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const passport = require('passport');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
 
 dotenv.config();
+const redisClient = redis.createClient({
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  password: process.env.REDIS_PASSWORD,
+})
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth/auth');
 const bookRouter = require('./routes/book/book');
@@ -49,7 +55,7 @@ app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cooikeParser(process.env.COOKIE_SECRET));
-app.use(session({
+const sessionOption = {
   resave: false,
   saveUninitialized: false,
   secret: process.env.COOKIE_SECRET,
@@ -58,8 +64,10 @@ app.use(session({
     httpOnly: true,
     secure: false,
   },
+  store: new RedisStore({ client: redisClient }),
   name: 'BOOKCLUB',
-}));
+}
+app.use(session(sessionOption));
 app.use(passport.initialize());
 app.use(passport.session());
 

@@ -92,11 +92,11 @@ router.get('/aladin', async (req, res) => {
 const fakerLists = [];
 router.get('/faker', async (req, res) => {
   try {
-    const url = 'http://localhost:8081/api';
-    const response = await fetch(url);
+    const url = process.env.FAKER;
+    const response = await fetch(process.env.FAKER);
     const json = await response.json();
     const title = '다독가 페이커의 독서목록';
-    const img = '/img/open/faker-list.png';
+    const img = `${process.env.URL}/img/open/faker-list.png`;
     const length = json.data.length;
     const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
     json.data.forEach((item) => {
@@ -105,7 +105,7 @@ router.get('/faker', async (req, res) => {
         title: item.title,
         author: item.author,
         publisher: item.pub,
-        img: `http://localhost:8081/${item.img}`,
+        img: item.img,
       }
     });
     // 처음에 12개만 보낸다. 

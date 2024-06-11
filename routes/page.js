@@ -1,5 +1,6 @@
 const express = require('express');
 const { Book, Member } = require('../models/main');
+const path = require('path');
 
 const router = express.Router();
 
@@ -9,6 +10,10 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+router.get('/index', async (req, res) => {
   const members = await Member.findAll({
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],

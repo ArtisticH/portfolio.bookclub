@@ -8,17 +8,7 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const { createClient } = require('redis');
 const RedisStore = require('connect-redis').default;
-const mysql = require('mysql');
 
-const db = mysql.createConnection({
-  host: '127.0.0.1',
-  user: 'root',
-  password: 'hannamysql',
-  database: 'bookclub',
-  port: '3306',
-});
-
-db.connect();
 dotenv.config();
 const redisClient = createClient({
   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
@@ -42,7 +32,7 @@ const passportConfig = require('./passport');
 
 const app = express();
 passportConfig();
-// app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 8080);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
   express: app, 

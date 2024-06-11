@@ -7,20 +7,12 @@ const { Favorite, TS, POP, KPOP, HFC, KFC, HMC, KMC } = require('./favorite');
 const Quote = require('./quotes');
 
 const db = {};
-// const sequelize = new Sequelize(config.database, config.username, config.password, {
-//   port: 3306,
-//   host: config.host,
-//   dialect: 'mysql',
-//   logging: false,
-// });
-
-const sequelize = new Sequelize('bookclub', 'root', 'hannamysql', {
+const sequelize = new Sequelize(config.database, config.username, config.password, {
   port: 3306,
   host: config.host,
   dialect: 'mysql',
   logging: false,
 });
-
 
 db.sequelize = sequelize;
 db.Book = Book;

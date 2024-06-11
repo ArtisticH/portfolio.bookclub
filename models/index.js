@@ -12,9 +12,6 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   host: config.host,
   dialect: 'mysql',
   logging: false,
-  dialectOptions: {
-    socketPath: '/tmp/mysql.sock',
-  },
 });
 
 db.sequelize = sequelize;

@@ -11,7 +11,18 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   host: config.host,
   port: process.env.DB_PORT,
   dialect: 'mysql',
+  dialectOptions: {
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+  }
 });
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 db.sequelize = sequelize;
 db.Book = Book;

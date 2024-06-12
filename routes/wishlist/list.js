@@ -483,6 +483,15 @@ router.post('/back', async (req, res) => {
       }],
       where: { id: ids },
     });
+    // 만약 기존 폴더가 이미 사라지고 없다면?
+    let folders = await Folder.findAll({
+      attributes: ['id'],
+    });
+    folders = folders.map(item => item.id);
+    // 폴더가 있는 애들만 추가
+    items = items.filter(item => {
+      return item.Folder && folders.includes(item.Folder.id);
+    });
     const moveLists = items.map(item => {
       return List.create({
         id: item.id,

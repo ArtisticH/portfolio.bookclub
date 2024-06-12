@@ -185,8 +185,10 @@ class Tournament {
     }
   }
   tournament(index) {
-    this.topPause();
-    this.bottomPause();
+    if(this._types === 'music') {
+      this.topPause();
+      this.bottomPause();  
+    }
     this.top(index);
     this.bottom(index + 1);
   }

@@ -301,7 +301,7 @@ class List {
   그래서 전자는 last: true + count: 15,
   후자는 last: false + count: 15로 구분
   */
-  async afterDelete(ids) {
+  async afterDelete(ids, leng) {
     // 삭제, 이동 시 대처
     if(this._totalList <= 15) {
       // 1. 15개 이하면 그냥 삭제만
@@ -318,6 +318,8 @@ class List {
       });  
       // 4에서 this.lastPage()를 호출했기 때문에
       // 그냥 1, 2, 3,에서도 다 호출해준다.
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       // 아무것도 내려받은게 없기 때문에
       // 새로 화면에 채울 것도 없음.
@@ -335,7 +337,9 @@ class List {
           count: ids.length,
           last: false,
         }
-      });  
+      }); 
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;   
       this.lastPage();
       // 이제 이 리스트들을 새로 메꾸는데 사용해야 한다. 
       return res;
@@ -358,6 +362,8 @@ class List {
           }
         });  
         // 마지막 페이지와 현재 페이지가 하나씩 줄어들고 반영된다.
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         this._current = this._lastPage;
         this.$current.value = this._current;
@@ -374,6 +380,8 @@ class List {
             last: true,
           }
         });  
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         return undefined;  
       }
@@ -399,9 +407,7 @@ class List {
     // _totalList를 먼저 줄이는 이유는
     // afterDelete에서 this.lastPage()를 호출하기 때문
     // this._lastPage 는 _totalList를 바탕으로 계산
-    this._totalList -= length;
-    this.$totalList.textContent = this._totalList;
-    const res = await this.afterDelete(ids);
+    const res = await this.afterDelete(ids, length);
     // 만약 메꿀 애들이 있는 경우
     const lists = res ? res.data.lists : undefined;
     if(this._totalList === 0) {
@@ -416,7 +422,7 @@ class List {
     // 삭제 후 없어지거나 새로 메꿔진 애들이 있기 때문에
     this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }
-  async afterMove(ids, targetId) {
+  async afterMove(ids, targetId, leng) {
     let res;
     if(this._totalList <= 15) {
       res = await axios.post('/list/move', {
@@ -428,6 +434,8 @@ class List {
         count: 0,
         last: true,
       });  
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
     } else if(this._totalList > 15 && this._current !== this._lastPage) {
       // 15개 초과인데, 현재 페이지가 마지막 페이지가 아닌 경우
@@ -441,6 +449,8 @@ class List {
         count: ids.length,
         last: false,
       });  
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
     } else if(this._totalList > 15 && this._current === this._lastPage) {
       // 15개 초과인데, 현재 페이지가 마지막 페이지인 경우
@@ -459,6 +469,8 @@ class List {
           count: 15,
           last: true,
         }); 
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         this._current = this._lastPage;
         this.$current.value = this._current;
@@ -472,6 +484,8 @@ class List {
           count: 0,
           last: true,
         });  
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
       }
     }
@@ -505,10 +519,8 @@ class List {
       ids[ids.length] = target.dataset.listId;
       target.remove();
     }
-    this._totalList -= length;
-    this.$totalList.textContent = this._totalList;
     // 이동은 삭제와 같아.
-    const res = await this.afterMove(ids, targetId);
+    const res = await this.afterMove(ids, targetId, length);
     const lists = res.data.lists ? res.data.lists: undefined;
     const counts = res.data.counts;
     this.resetMove();
@@ -531,7 +543,20 @@ class List {
   changeLabel(c, count) {
     c.querySelector('.move-count').textContent = count;
   }
-  async afterRead(ids) {
+    /*
+  - 1. 총 리스트 갯수가 15개 이하: 그냥 삭제만
+  - 근데 15개 이상
+    - 2. 마지막 페이지가 아닌 경우: 삭제한만큼 뒤에서 끌어와서 메꾼다.
+    - 마지막 페이지인 경우
+      - 3. 다 삭제하지 않은 경우: 그냥 삭제
+      - 4. 다 삭제한 경우: 앞의 페이지로 이동하고 15개 다 채워 보여준다. 
+  근데 마지막 페이지에서 15개 삭제한 경우와 마지막 페이지가 아닌 곳에서 15개를 삭제한 경우는 다르다.
+  전자는 앞페이지로 이동해야 하고
+  후자는 뒤에서 끌어오는 것.
+  그래서 전자는 last: true + count: 15,
+  후자는 last: false + count: 15로 구분
+  */
+  async afterRead(ids, leng) {
     if(this._totalList <= 15) {
       await axios.post('/list/read', {
         id: JSON.stringify(ids),
@@ -541,6 +566,8 @@ class List {
         count: 0,
         last: true,
       });
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       return undefined;
     } else if(this._totalList > 15 && this._current !== this._lastPage) {
@@ -554,6 +581,8 @@ class List {
         count: ids.length,
         last: false,
       });
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       return res;
     } else if(this._totalList > 15 && this._current === this._lastPage) {
@@ -572,9 +601,12 @@ class List {
           count: 15,
           last: true,
         });
-        this.lastPage();
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
+        this.lastPage();      
         this._current = this._lastPage;
         this.$current.value = this._current;
+        console.log(this._current, this._lastPage, this.$current.value)
         return res;
       } else {
         await axios.post('/list/read', {
@@ -585,6 +617,8 @@ class List {
           count: 0,
           last: true,
         });
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         return undefined;  
       }
@@ -604,9 +638,7 @@ class List {
       ids[ids.length] = target.dataset.listId;
       target.remove();
     }
-    this._totalList -= length;
-    this.$totalList.textContent = this._totalList;
-    const res = await this.afterRead(ids);
+    const res = await this.afterRead(ids, length);
     const lists = res ? res.data.lists : undefined;
     if(this._totalList === 0) {
       this.isZero();
@@ -635,11 +667,9 @@ class List {
       ids[ids.length] = target.dataset.listId;
       target.remove();
     }
-    this._totalDonelist -= length;
-    this.$totalDoneList.textContent = this._totalDonelist;
-    const res = await this.afterBack(ids);
+    const res = await this.afterBack(ids, length);
     const lists = res ? res.data.lists : undefined;
-    if(this._totalDonelist === 0) {
+    if(this._totalList === 0) {
       this.isZero();
     } 
     if(lists) {
@@ -650,7 +680,7 @@ class List {
     alert('해제했습니다.');
     this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }
-  async afterBack(ids) {
+  async afterBack(ids, leng) {
     // 삭제, 이동 시 대처
     if(this._totalList <= 15) {
       // 15개 이하면 그냥 삭제만
@@ -661,6 +691,8 @@ class List {
         count: 0,
         last: true,
       });
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       return undefined;
     } else if(this._totalList > 15 && this._current !== this._lastPage) {
@@ -673,6 +705,8 @@ class List {
         count: ids.length,
         last: false,
       });
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       return res;
     } else if(this._totalList > 15 && this._current === this._lastPage) {
@@ -690,6 +724,8 @@ class List {
           count: 15,
           last: true,
         });
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         this._current = this._lastPage;
         this.$current.value = this._current;
@@ -702,6 +738,8 @@ class List {
           count: 0,
           last: true,
         });
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         return undefined;  
       }
@@ -721,11 +759,9 @@ class List {
       ids[ids.length] = target.dataset.listId;
       target.remove();
     }
-    this._totalDonelist -= length;
-    this.$totalDoneList.textContent = this._totalDonelist;
-    const res = await this.afterDoneDelete(ids);
+    const res = await this.afterDoneDelete(ids, length);
     const lists = res ? res.data.lists : undefined;
-    if(this._totalDonelist === 0) {
+    if(this._totalList === 0) {
       this.isZero();
     } 
     if(lists) {
@@ -736,7 +772,7 @@ class List {
     alert('삭제했습니다.');
     this.$listBoxes = [...document.querySelectorAll('.list-box')].filter(item => item.classList.length === 1);
   }  
-  async afterDoneDelete(ids) {
+  async afterDoneDelete(ids, leng) {
     // 삭제, 이동 시 대처
     if(this._totalList <= 15) {
       // 15개 이하면 그냥 삭제만
@@ -749,6 +785,8 @@ class List {
           last: true,
         }
       });
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       return undefined;
     } else if(this._totalList > 15 && this._current !== this._lastPage) {
@@ -763,6 +801,8 @@ class List {
           last: false,
         }
       }); 
+      this._totalList -= leng;
+      this.$totalList.textContent = this._totalList;  
       this.lastPage();
       return res;
     } else if(this._totalList > 15 && this._current === this._lastPage) {
@@ -782,6 +822,8 @@ class List {
             last: true,
           }
         });  
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         this._current = this._lastPage;
         this.$current.value = this._current;
@@ -796,6 +838,8 @@ class List {
             last: true,
           }
         });  
+        this._totalList -= leng;
+        this.$totalList.textContent = this._totalList;    
         this.lastPage();
         return undefined;  
       }
@@ -863,12 +907,22 @@ class List {
       alert('현재 페이지입니다.');
       return;
     }
-    const res = await axios.post('/list/page', {
-      page: this._target,
-      done: false,
-      MemberId: this._memberId,
-      FolderId: this._folderId,
-    });
+    let res;
+    if(this._type == 'list') {
+      res = await axios.post('/list/page', {
+        page: this._target,
+        done: false,
+        MemberId: this._memberId,
+        FolderId: this._folderId,
+      });
+    } else if(this._type === 'donelist') {
+      res = await axios.post('/list/page', {
+        page: this._target,
+        done: true,
+        MemberId: this._memberId,
+        FolderId: this._folderId,
+      })
+    }
     const lists = res.data.lists;
     this.pageArrange(lists);
   }

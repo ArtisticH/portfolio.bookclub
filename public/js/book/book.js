@@ -255,7 +255,6 @@ class Book {
           // prepend: node 맨 앞에
           this.$container.prepend(this.reviewDOM(this.$clone.cloneNode(true), review));
         } else {
-          this.showPage();
           // 내가 어느 곳에서 리뷰를 작성하든 1페이지로 돌아오게 한다. 
           this._cur = 1;
           this.$ex = this.$current;
@@ -268,6 +267,7 @@ class Book {
           // 가장 마지막 삭제
           [...this.$container.children][length - 1].remove();
         }
+        this.showPage();
       } else {
         // 몇번 리뷰를 수정해라
         const res = await axios.patch(`/review`, {
@@ -285,6 +285,8 @@ class Book {
         // 수정 분 바로 반영
         // this.$edit은 해당 .rebox
         this.editDOM(this.$edit, review);
+        // 이거 안하면 수정 후 등록된 리뷰가 수정분과 바꿔치기 돼
+        this.$form.dataset.id = '';
       }
     } catch (err) {
       console.error(err);
@@ -439,7 +441,7 @@ class Book {
       this.middle(this._cur);
       // 가운데 강조
       this.$current = [...this.$number][2];
-    } else if(this._cur === this._lastPage || this._cur === this._lastPage - 1) {
+    } else if((this._cur === this._lastPage && this._lastPage >= 5) || (this._cur === this._lastPage - 1 && this._lastPage >= 5)) {
       // 마지막 페이지나 마지막 페지 - 1을 클릭
       this.middle(this._lastPage - 2);
       [...this.$number].forEach((item) => {
@@ -654,7 +656,6 @@ class Book {
     this.star(starArr, starSum);
     this.$totalReview.textContent = --this._totalReview;
     // 마지막 페이지 다시 산정
-    this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
     if(this._totalReview === 0) {
       this.zeroReview();
       return;
@@ -665,6 +666,7 @@ class Book {
       if(length == 0) {
         // 3. 앞 페이지로 이동
         // 현재 페이지가 막 페이지가 되고 
+        this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
         this._cur = this._lastPage;
         if(this._lastPage <= 5) {
           // 마지막 페이지가 5이하이면
@@ -692,11 +694,9 @@ class Book {
       // 가장 마지막에 추가
       this.$container.append(this.reviewDOM(this.$clone.cloneNode(true), review));
     } 
-    if(this._totalReview <= 5) {
-      this.underFive();
-    } else if(this._totalReview > 5 && this._totalReview <= 25) {
-      this.under25();
-    } 
+    // 그냥 마지막에 한번 더
+    this._lastPage = (this._totalReview % 5) === 0 ? this._totalReview / 5 : Math.floor(this._totalReview / 5) + 1;
+    this.showPage();
   }
 }
 

@@ -96,7 +96,7 @@ router.get('/faker', async (req, res) => {
     const response = await fetch(process.env.FAKER);
     const json = await response.json();
     const title = '다독가 페이커의 독서목록';
-    const img = `${process.env.URL}/img/open/faker-list.png`;
+    const img = `/img/open/faker-list.png`;
     const length = json.data.length;
     const last = length % 12 === 0 ? length / 12 : Math.floor(length / 12) + 1;
     json.data.forEach((item) => {

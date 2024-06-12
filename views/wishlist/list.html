@@ -28,17 +28,17 @@
           </div>
         </div>
         <div class="list-btns">
-          {{% if isDone %}}
+          {% if isDone == true %}
           <!-- "읽은 것들"일때 -->
           <div class="list-btn" data-btn="back">완독 해제</div>
           <div class="list-btn" data-btn="done-delete">삭제</div>
-          {{% else %}}
+          {% else %}
           <!-- 그냥 보통 폴더의 리스트일때 -->
           <div class="list-btn" data-btn="add">리스트 추가</div>
           <div class="list-btn" data-btn="delete">삭제</div>
           <div class="list-btn" data-btn="move">폴더 이동</div>
           <div class="list-btn" data-btn="read">완독</div>
-          {{% endif %}}          
+          {% endif %}          
         </div>
       </div>
       {% if lists.length == 0 %}
@@ -85,7 +85,7 @@
       </div>  
     </div>
   </section>
-  {{% if not isDone %}}
+  {% if not isDone %}
   <section id="add" class="root" hidden>
     <div class="list-nav">
       <div class="list-title">
@@ -141,6 +141,6 @@
       {% endif %}
     </div>
   </section>
-  {{% endif %}}
+  {% endif %}
 </body>
 </html>

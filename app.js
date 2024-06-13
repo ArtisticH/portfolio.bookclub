@@ -4,12 +4,10 @@ const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
-// const dotenv = require('dotenv');
 const passport = require('passport');
 const { createClient } = require('redis');
 const RedisStore = require('connect-redis').default;
 
-// dotenv.config();
 const redisClient = createClient({
   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD,

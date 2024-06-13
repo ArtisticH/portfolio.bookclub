@@ -8,8 +8,8 @@ const Quote = require('./quotes');
 
 const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, {
-  port: DB_PORT,
-  host: DB_HOST,
+  port: process.env.DB_PORT,
+  host: process.env.DB_HOST,
   dialect: 'mysql',
   logging: false,
 });

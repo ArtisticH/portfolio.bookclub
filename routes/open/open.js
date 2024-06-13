@@ -92,8 +92,8 @@ router.get('/aladin', async (req, res) => {
 const fakerLists = [];
 router.get('/faker', async (req, res) => {
   try {
-    const url = process.env.FAKER;
-    const response = await fetch(process.env.FAKER);
+    const url = 'https://artistich.github.io/faker.books/faker.json'
+    const response = await fetch(url);
     const json = await response.json();
     const title = '다독가 페이커의 독서목록';
     const img = `/img/open/faker-list.png`;

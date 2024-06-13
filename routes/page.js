@@ -9,6 +9,10 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+router.get('/index', async (req, res) => {
   const members = await Member.findAll({
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],

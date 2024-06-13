@@ -29,7 +29,7 @@ const natLists = [];
 router.get('/nat', async (req, res) => {
   try {
     // 2023년 1월부터 2024년 6월까지의
-    const url = `https://cors-anywhere.herokuapp.com/https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.NATIONAL_KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
+    const url = `https://nl.go.kr/NL/search/openApi/saseoApi.do?key=${process.env.NATIONAL_KEY}&startRowNumApi=1&endRowNumApi=100&start_date=20230101&end_date=20240601`;
     const response = await fetch(url);
     const xml = await response.text();
     // xml => JSON
@@ -65,7 +65,7 @@ function aladinDate(date) {
 }
 router.get('/aladin', async (req, res) => {
   try {
-    const url = `https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=${process.env.ALADIN_KEY}&QueryType=Bestseller&start=1&MaxResults=100&Output=JS&Version=20131101&SearchTarget=Book&CategoryId=1&Cover=Big`;
+    const url = `http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=${process.env.ALADIN_KEY}&QueryType=Bestseller&start=1&MaxResults=100&Output=JS&Version=20131101&SearchTarget=Book&CategoryId=1&Cover=Big`;
     const response = await fetch(url);
     const json = await response.json();
     const title = '알라딘 베스트셀러 리스트 - 소설/시/희곡';
@@ -92,7 +92,7 @@ router.get('/aladin', async (req, res) => {
 const fakerLists = [];
 router.get('/faker', async (req, res) => {
   try {
-    const url = 'https://cors-anywhere.herokuapp.com/https://artistich.github.io/faker.books/faker.json'
+    const url = 'https://artistich.github.io/faker.books/faker.json'
     const response = await fetch(url);
     const json = await response.json();
     const title = '다독가 페이커의 독서목록';
@@ -232,7 +232,7 @@ router.post('/search', async (req, res) => {
     const target = req.body.target;
     const kwd = req.body.kwd;
     const url = `
-    https://cors-anywhere.herokuapp.com/https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.NATIONAL_KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
+    https://www.nl.go.kr/NL/search/openApi/search.do?key=${process.env.NATIONAL_KEY}&apiType=json&systemType=${encodeURIComponent('오프라인자료')}&category=${encodeURIComponent('도서')}&pageSize=10&pageNum=1&srchTarget=${encodeURIComponent(target)}&kwd=${encodeURIComponent(kwd)}
     `;
     const response = await fetch(url);
     const json = await response.json();

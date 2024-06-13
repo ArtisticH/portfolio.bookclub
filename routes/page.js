@@ -9,6 +9,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
+  console.log('in');
   const members = await Member.findAll({
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],

@@ -32,7 +32,6 @@ const passportConfig = require('./passport');
 
 const app = express();
 passportConfig();
-// app.set('port', process.env.PORT || 8080);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
   express: app, 
@@ -95,9 +94,5 @@ app.use((err, req, res, next) => {
   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
   res.status(err.status || 500);
   res.render('error/error');
-});
-
-app.listen(app.get('port'), () => {
-  console.log(`${app.get('port')}번 포트에서 대기 중`);
 });
 

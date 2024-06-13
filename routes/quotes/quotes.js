@@ -24,8 +24,7 @@ router.get('/', (req, res) => {
 // 이미지 직접 올릴때
 router.post('/img', upload.single('image'), (req, res) => {
   try {
-    // const url = `/img/${req.file.filename}`;
-    const url = `/uploads/${req.file.filename}`;
+    const url = `/img/${req.file.filename}`;
     console.log(url);
     res.json({ url });  
   } catch(err) {

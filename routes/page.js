@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],
   });
-  res.sendFile(path(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
   // res.render('index', { members });
 });
 

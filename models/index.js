@@ -7,13 +7,6 @@ const { Favorite, TS, POP, KPOP, HFC, KFC, HMC, KMC } = require('./favorite');
 const Quote = require('./quotes');
 
 const db = {};
-// const sequelize = new Sequelize(config.database, config.username, config.password, {
-//   port: process.env.DB_PORT,
-//   host: process.env.DB_HOST,
-//   dialect: 'mysql',
-//   logging: false,
-// });
-
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   port: process.env.DB_PORT,
   host: process.env.DB_HOST,

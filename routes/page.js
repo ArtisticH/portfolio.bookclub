@@ -1,6 +1,6 @@
 const express = require('express');
 const { Book, Member } = require('../models/main');
-
+const path = require('path');
 const router = express.Router();
 
 router.use((req, res, next) => {
@@ -13,7 +13,8 @@ router.get('/', async (req, res) => {
     where: { type: 'MEMBER' },
     attributes: ['id', 'nick'],
   });
-  res.render('index', { members });
+  res.sendFile(path(__dirname, 'index.html'));
+  // res.render('index', { members });
 });
 
 router.get('/books', async (req, res) => {

@@ -5,12 +5,14 @@ const { Favorite, TS, POP, KPOP, HFC, KFC, HMC, KMC } = require('./favorite');
 const Quote = require('./quotes');
 
 const db = {};
+// 배포
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   port: process.env.DB_PORT,
   host: process.env.DB_HOST,
   dialect: 'mysql',
   logging: false,
 });
+// 개발
 
 db.sequelize = sequelize;
 db.Book = Book;

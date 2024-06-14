@@ -7,6 +7,9 @@ const nunjucks = require('nunjucks');
 const passport = require('passport');
 const { createClient } = require('redis');
 const RedisStore = require('connect-redis').default;
+// 배포 지워
+// const dotenv = require('dotenv');
+// dotenv.config();
 
 const redisClient = createClient({
   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
@@ -30,6 +33,8 @@ const passportConfig = require('./passport');
 
 const app = express();
 passportConfig();
+// 배포 지워
+// app.set('port', 8080);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
   express: app, 
@@ -94,3 +99,7 @@ app.use((err, req, res, next) => {
   res.render('error/error');
 });
 
+// 배포 지워
+app.listen(3000, () => {
+  console.log(`${app.get('port')}에서 실행 중...`);
+})

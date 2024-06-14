@@ -236,7 +236,6 @@ router.post('/search', async (req, res) => {
     `;
     const response = await fetch(url);
     const json = await response.json();
-    console.log(target, kwd, json, process.env.NATIONAL_KEY);
     const lists = json.result.map(item => {
       return {
         title: item.titleInfo,
